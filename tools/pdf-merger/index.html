@@ -1,1 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PDF Merger Tool</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>📄 PDF Merger Tool</h1>
+    <p>Select multiple PDF files and merge them into one document.</p>
+
+    <input type="file" id="pdfFiles" accept="application/pdf" multiple />
+    <button id="mergeBtn">Merge PDFs</button>
+
+    <div id="output"></div>
+
+    <footer><a href="../index.html">← Back to Toolbox</a></footer>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
 
