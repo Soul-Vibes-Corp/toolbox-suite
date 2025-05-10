@@ -1,9 +1,28 @@
 // Dark mode toggle
 const toggleBtn = document.getElementById('toggle-dark');
+
+function updateToggleIcon() {
+  if (document.body.classList.contains('dark')) {
+    toggleBtn.textContent = '☀️';
+  } else {
+    toggleBtn.textContent = '🌙';
+  }
+}
+
 toggleBtn.addEventListener('click', () => {
   document.body.classList.toggle('dark');
-  localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+  updateToggleIcon();
+
+  // Save
+  localStorage.setItem('mode', document.body.classList.contains('dark') ? 'dark' : 'light');
 });
+
+// Initialize on page load
+if (localStorage.getItem('mode') === 'dark') {
+  document.body.classList.add('dark');
+}
+updateToggleIcon();
+
 
 // Remember preference
 if (localStorage.getItem('theme') === 'dark') {
