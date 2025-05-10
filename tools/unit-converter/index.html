@@ -1,1 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Unit Converter</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Unit Converter</h1>
+
+    <button id="themeToggle">🌙 Toggle Dark Mode</button>
+
+    <label for="category">Choose category:</label>
+    <select id="category">
+      <option value="length">Length</option>
+      <option value="weight">Weight</option>
+      <option value="temperature">Temperature</option>
+      <option value="time">Time</option>
+      <option value="area">Area</option>
+      <option value="volume">Volume</option>
+    </select>
+
+    <div class="converter">
+      <input type="number" id="inputValue" placeholder="Enter value">
+
+      <select id="fromUnit"></select>
+      <select id="toUnit"></select>
+
+      <button id="convertBtn">Convert</button>
+
+      <h2>Result: <span id="result">-</span></h2>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
 
