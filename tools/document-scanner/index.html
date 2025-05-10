@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Grade Document Scanner</title>
+
+    <!-- jsPDF Library for PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
+    <!-- Tesseract.js Library for OCR Text Extraction -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/2.1.1/tesseract.min.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>Pro Grade Document Scanner</h1>
+
+    <button id="openCameraBtn">Open Camera</button>
+    <video id="cameraPreview" style="display:none;"></video>
+    <canvas id="canvas" style="display:none;"></canvas>
+
+    <div class="controls">
+        <button id="captureBtn" style="display:none;">Capture Document</button>
+        <button id="processBtn" style="display:none;">Process Scan</button>
+    </div>
+
+    <div id="scanPreviewContainer" style="display:none;">
+        <h2>Scan Preview:</h2>
+        <img id="scanPreviewImage" alt="Preview will appear here">
+    </div>
+
+    <div class="download-options">
+        <button id="downloadPdfBtn" style="display:none;">Download PDF</button>
+        <button id="downloadTextBtn" style="display:none;">Download Text</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
