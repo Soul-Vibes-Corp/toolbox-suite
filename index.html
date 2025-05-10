@@ -1,85 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>🧰 Toolbox Suite - Ultimate Business Toolkit</title>
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="assets/favicon.png">
-  <link rel="apple-touch-icon" href="assets/logo-192.png">
-  <meta name="theme-color" content="#6200ee">
-
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>🧰 Toolbox Suite</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/logo-192.png">
+<meta name="theme-color" content="#000000">
+<link rel="stylesheet" href="style.css" />
 </head>
-<body>
-  <header>
-    <h1>🧰 Toolbox Suite</h1>
+<body class="dark">
+
+<header class="header">
+  <h1>🧰 Toolbox Suite</h1>
+  <div class="actions">
+    <input type="text" id="search" placeholder="Search tools..." />
     <button id="toggle-dark">🌙 Toggle Dark Mode</button>
-  </header>
+  </div>
+</header>
 
-  <p class="subtitle">40+ Free Tools for Creators & Business Owners — Fast, Private, No Signup 🚀</p>
+<main class="dashboard">
 
-  <main class="grid">
+<section class="category">
+  <h2>✨ Everyday Productivity</h2>
+  <div class="tool-row scroll-x">
+    <a href="tools/pdf-merger/index.html" class="tool-card">📄<span>PDF Merger</span></a>
+    <a href="tools/image-compressor/index.html" class="tool-card">🖼️<span>Image Compressor</span></a>
+    <a href="tools/qr-code-generator/index.html" class="tool-card">🔗<span>QR Code Generator</span></a>
+    <a href="tools/color-picker/index.html" class="tool-card">🎨<span>Color Picker</span></a>
+  </div>
+</section>
 
-    <h2>✨ Everyday Productivity</h2>
-    <a href="tools/pdf-merger/index.html">📄 PDF Merger</a>
-    <a href="tools/image-compressor/index.html">🖼️ Image Compressor</a>
-    <a href="tools/qr-code-generator/index.html">🔗 QR Code Generator</a>
-    <a href="tools/color-picker/index.html">🎨 Color Picker</a>
-    <a href="tools/text-to-speech/index.html">🗣️ Text to Speech</a>
-    <a href="tools/image-editor/index.html">🖌️ Image Editor</a>
-    <a href="tools/password-generator/index.html">🔐 Password Generator</a>
-    <a href="tools/json-formatter/index.html">🧩 JSON Formatter</a>
-    <a href="tools/unit-converter/index.html">📏 Unit Converter</a>
-    <a href="tools/currency-converter/index.html">💱 Currency Converter</a>
-    <a href="tools/Qoute-Box/index.html">🗨️ Quote Box</a>
+<section class="category">
+  <h2>💼 Business Essentials</h2>
+  <div class="tool-row scroll-x">
+    <a href="tools/invoice-generator/index.html" class="tool-card">🧾<span>Invoice Generator</span></a>
+    <a href="tools/esign-pdf/index.html" class="tool-card">✍️<span>eSign PDF</span></a>
+    <a href="tools/resume-builder/index.html" class="tool-card">📄<span>Resume Builder</span></a>
+    <a href="tools/calendar-event-creator/index.html" class="tool-card">🗓️<span>Calendar Creator</span></a>
+  </div>
+</section>
 
-    <h2>💼 Business Essentials</h2>
-    <a href="tools/invoice-generator/index.html">🧾 Invoice Generator</a>
-    <a href="tools/proposal-generator/index.html">📃 Proposal Generator</a>
-    <a href="tools/contract-generator/index.html">📑 Contract Generator</a>
-    <a href="tools/nda-generator/index.html">🕵️ NDA Generator</a>
-    <a href="tools/business-plan-generator/index.html">📊 Business Plan Generator</a>
-    <a href="tools/profit-calculator/index.html">💰 Profit Calculator</a>
-    <a href="tools/smart-kpi-dashboard/index.html">📈 KPI Dashboard</a>
-    <a href="tools/swot-generator/index.html">⚙️ SWOT Analysis Generator</a>
+<section class="category">
+  <h2>🛠️ Sales & Marketing</h2>
+  <div class="tool-row scroll-x">
+    <a href="tools/social-media-post-scheduler/index.html" class="tool-card">📅<span>Post Scheduler</span></a>
+    <a href="tools/email-signature-generator/index.html" class="tool-card">✉️<span>Email Signature</span></a>
+    <a href="tools/lead-magnet-builder/index.html" class="tool-card">📥<span>Lead Magnet Builder</span></a>
+  </div>
+</section>
 
-    <h2>🛠️ Sales & Marketing</h2>
-    <a href="tools/brand-kit-creator/index.html">🎨 Brand Kit Creator</a>
-    <a href="tools/lead-magnet-creator/index.html">📥 Lead Magnet Creator</a>
-    <a href="tools/marketing-calendar/index.html">🗓️ Marketing Calendar Generator</a>
-    <a href="tools/business-name-finder/index.html">🔍 Business Name Finder</a>
-    <a href="tools/social-analytics-snapshot/index.html">📊 Social Analytics Snapshot</a>
-    <a href="tools/email-sequence-generator/index.html">✉️ Email Sequence Generator</a>
+<section class="category">
+  <h2>👥 Client & Team Management</h2>
+  <div class="tool-row scroll-x">
+    <a href="tools/client-agreement-generator/index.html" class="tool-card">📝<span>Agreement Generator</span></a>
+    <a href="tools/meeting-scheduler/index.html" class="tool-card">🕒<span>Meeting Scheduler</span></a>
+  </div>
+</section>
 
-    <h2>👥 Client & Team Management</h2>
-    <a href="tools/calendar-event-creator/index.html">🗓️ Calendar Event Creator</a>
-    <a href="tools/esign-pdf/index.html">✍️ eSign PDF</a>
-    <a href="tools/meeting-summary-maker/index.html">📝 Meeting Summary Maker</a>
-    <a href="tools/customer-avatar-builder/index.html">🧑‍💼 Customer Avatar Builder</a>
-    <a href="tools/onboarding-kit-generator/index.html">🎁 Employee Onboarding Kit</a>
-    <a href="tools/team-taskboard/index.html">🗂️ Team Taskboard</a>
+<section class="category">
+  <h2>⚡ Personal Growth & Lifestyle</h2>
+  <div class="tool-row scroll-x">
+    <a href="tools/fitness-tracker/index.html" class="tool-card">🏋️<span>Fitness Tracker</span></a>
+    <a href="tools/meditation-timer/index.html" class="tool-card">🧘<span>Meditation Timer</span></a>
+    <a href="tools/habit-tracker/index.html" class="tool-card">📊<span>Habit Tracker</span></a>
+    <a href="tools/bmi-calculator/index.html" class="tool-card">⚖️<span>BMI Calculator</span></a>
+  </div>
+</section>
 
-    <h2>⚡ Personal Growth & Lifestyle</h2>
-    <a href="tools/fitness-tracker/index.html">🏋️‍♂️ Fitness Tracker</a>
-    <a href="tools/meditation-timer/index.html">🧘‍♂️ Meditation Timer</a>
-    <a href="tools/habit-tracker/index.html">📊 Habit Tracker</a>
-    <a href="tools/bmi-calculator/index.html">⚖️ BMI Calculator</a>
+<section class="category">
+  <h2>🗣️ Voice & Communication</h2>
+  <div class="tool-row scroll-x">
+    <a href="tools/text-to-speech/index.html" class="tool-card">🗣️<span>Text to Speech</span></a>
+    <a href="tools/speech-to-text/index.html" class="tool-card">🎙️<span>Speech to Text</span></a>
+    <a href="tools/qoute-box/index.html" class="tool-card">🗨️<span>Quote Box</span></a>
+  </div>
+</section>
 
-    <h2>🗣️ Voice & Communication</h2>
-    <a href="tools/speech-to-text/index.html">🎙️ Speech to Text</a>
-  </main>
+</main>
 
-  <footer>
-    <p>© 2025 Toolbox Suite — All tools work offline | No data collection</p>
-  </footer>
+<footer>
+<p>© 2025 Toolbox Suite — Fast, Private, Free | No signup 🚀</p>
+</footer>
 
-  <script src="script.js"></script>
-  <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(() => console.log('Service Worker Registered ✔️'));
-  }
-  </script>
+<script src="script.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js')
+    .then(() => console.log('Service Worker Registered ✔️'));
+}
+</script>
+
 </body>
 </html>
