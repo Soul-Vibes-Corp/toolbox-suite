@@ -1,72 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>🧰 Toolbox Suite - 40+ Tools</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8">
+<title>Toolbox Suite</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/logo-192.png">
+<meta name="theme-color" content="#000000">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="header">
-    <h1>🧰 Toolbox Suite</h1>
-    <button id="toggle-dark">🌙</button>
-  </header>
 
-  <p class="subtitle">40+ Free Tools — Fast, Private, No Signup 🚀</p>
+<header class="header">
+  <h1>🧰 Toolbox Suite</h1>
+  <div class="actions">
+    <input type="text" id="search" placeholder="Search tools...">
+    <button id="toggle-dark">🌙 Toggle Dark Mode</button>
+  </div>
+</header>
 
-  <section class="category">
-    <h2>📂 File & Document Tools</h2>
-    <div class="grid">
-      <a class="card" href="tools/pdf-merger/index.html">📄 PDF Merger</a>
-      <a class="card" href="tools/image-compressor/index.html">🖼️ Image Compressor</a>
-      <a class="card" href="tools/esign-pdf/index.html">✍️ eSign PDF</a>
-      <a class="card" href="tools/json-formatter/index.html">🧩 JSON Formatter</a>
-    </div>
-  </section>
+<main>
 
-  <section class="category">
-    <h2>🌐 Web & Content Tools</h2>
-    <div class="grid">
-      <a class="card" href="tools/qr-code-generator/index.html">🔗 QR Code Generator</a>
-      <a class="card" href="tools/color-picker/index.html">🎨 Color Picker</a>
-      <a class="card" href="tools/password-generator/index.html">🔐 Password Generator</a>
-      <a class="card" href="tools/calendar-event-creator/index.html">🗓️ Calendar Event Creator</a>
-    </div>
-  </section>
+<section class="category">
+  <h2>✨ Everyday Productivity</h2>
+  <div class="tool-grid">
+    <a href="tools/pdf-merger/index.html" class="tool-card">📄 PDF Merger</a>
+    <a href="tools/image-compressor/index.html" class="tool-card">🖼️ Image Compressor</a>
+    <a href="tools/qr-code-generator/index.html" class="tool-card">🔗 QR Code Generator</a>
+    <a href="tools/color-picker/index.html" class="tool-card">🎨 Color Picker</a>
+  </div>
+</section>
 
-  <section class="category">
-    <h2>🧠 Productivity & Business</h2>
-    <div class="grid">
-      <a class="card" href="tools/invoice-generator/index.html">🧾 Invoice Generator</a>
-      <a class="card" href="tools/resume-builder/index.html">📄 Resume Builder</a>
-      <a class="card" href="tools/speech-to-text/index.html">🎙️ Speech to Text</a>
-      <a class="card" href="tools/text-to-speech/index.html">🗣️ Text to Speech</a>
-    </div>
-  </section>
+<section class="category">
+  <h2>💼 Business Essentials</h2>
+  <div class="tool-grid">
+    <a href="tools/invoice-generator/index.html" class="tool-card">🧾 Invoice Generator</a>
+    <a href="tools/esign-pdf/index.html" class="tool-card">✍️ eSign PDF</a>
+    <a href="tools/resume-builder/index.html" class="tool-card">📄 Resume Builder</a>
+    <a href="tools/calendar-event-creator/index.html" class="tool-card">🗓️ Calendar Creator</a>
+  </div>
+</section>
 
-  <section class="category">
-    <h2>⚡ Quick Utilities</h2>
-    <div class="grid">
-      <a class="card" href="tools/unit-converter/index.html">📏 Unit Converter</a>
-      <a class="card" href="tools/currency-converter/index.html">💱 Currency Converter</a>
-      <a class="card" href="tools/bmi-calculator/index.html">⚖️ BMI Calculator</a>
-      <a class="card" href="tools/quote-box/index.html">🗨️ Quote Box</a>
-    </div>
-  </section>
+<section class="category">
+  <h2>🛠️ Sales & Marketing</h2>
+  <div class="tool-grid">
+    <a href="tools/social-media-post-scheduler/index.html" class="tool-card">📅 Post Scheduler</a>
+    <a href="tools/email-signature-generator/index.html" class="tool-card">✉️ Email Signature</a>
+    <a href="tools/lead-magnet-builder/index.html" class="tool-card">📥 Lead Magnet Builder</a>
+  </div>
+</section>
 
-  <section class="category">
-    <h2>🧘‍♂️ Health & Mind</h2>
-    <div class="grid">
-      <a class="card" href="tools/fitness-tracker/index.html">🏋️‍♂️ Fitness Tracker</a>
-      <a class="card" href="tools/meditation-timer/index.html">🧘‍♂️ Meditation Timer</a>
-      <a class="card" href="tools/habit-tracker/index.html">📊 Habit Tracker</a>
-    </div>
-  </section>
+<section class="category">
+  <h2>👥 Client & Team Management</h2>
+  <div class="tool-grid">
+    <a href="tools/client-agreement-generator/index.html" class="tool-card">📝 Agreement Generator</a>
+    <a href="tools/meeting-scheduler/index.html" class="tool-card">🕒 Meeting Scheduler</a>
+  </div>
+</section>
 
-  <footer>
-    <p>© 2025 Toolbox Suite — All tools work offline | No data collection</p>
-  </footer>
+<section class="category">
+  <h2>⚡ Personal Growth & Lifestyle</h2>
+  <div class="tool-grid">
+    <a href="tools/fitness-tracker/index.html" class="tool-card">🏋️ Fitness Tracker</a>
+    <a href="tools/meditation-timer/index.html" class="tool-card">🧘 Meditation Timer</a>
+    <a href="tools/habit-tracker/index.html" class="tool-card">📊 Habit Tracker</a>
+    <a href="tools/bmi-calculator/index.html" class="tool-card">⚖️ BMI Calculator</a>
+  </div>
+</section>
 
-  <script src="script.js"></script>
+<section class="category">
+  <h2>🗣️ Voice & Communication</h2>
+  <div class="tool-grid">
+    <a href="tools/text-to-speech/index.html" class="tool-card">🗣️ Text to Speech</a>
+    <a href="tools/speech-to-text/index.html" class="tool-card">🎙️ Speech to Text</a>
+    <a href="tools/qoute-box/index.html" class="tool-card">🗨️ Quote Box</a>
+  </div>
+</section>
+
+</main>
+
+<footer>
+<p>© 2025 Toolbox Suite — Fast, Private, Free | No signup 🚀</p>
+</footer>
+
+<script src="script.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js')
+    .then(() => console.log('Service Worker Registered ✔️'));
+}
+</script>
+
 </body>
 </html>
