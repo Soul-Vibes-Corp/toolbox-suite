@@ -3,6 +3,7 @@
   --container-bg: #ffffff;
   --text-color: #000000;
   --button-bg: #e0e0e0;
+  --border-color: #ccc;
 }
 
 body.dark {
@@ -10,6 +11,7 @@ body.dark {
   --container-bg: #1e1e1e;
   --text-color: #ffffff;
   --button-bg: #333333;
+  --border-color: #555;
 }
 
 body {
@@ -31,15 +33,18 @@ body {
   transition: background 0.3s;
 }
 
-select, input, button {
-  padding: 10px;
-  border-radius: 6px;
-  margin: 5px 0;
+input, select {
   width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
   box-sizing: border-box;
 }
 
 button {
+  padding: 10px;
+  border-radius: 6px;
   background: var(--button-bg);
   color: var(--text-color);
   border: none;
@@ -48,4 +53,9 @@ button {
 
 button:hover {
   background: #ccc;
+}
+
+input[readonly] {
+  background: #f0f0f0;
+  cursor: not-allowed;
 }
