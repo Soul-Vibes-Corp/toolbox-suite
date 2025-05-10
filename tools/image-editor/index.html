@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simple Image Editor</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Simple Image Editor</h1>
+
+    <button id="themeToggle">🌙 Toggle Dark Mode</button>
+
+    <input type="file" id="imageUpload" accept="image/*">
+
+    <canvas id="canvas"></canvas>
+
+    <div class="controls">
+      <button id="cropBtn">✂️ Crop</button>
+      <button id="rotateLeftBtn">⟲ Rotate -90°</button>
+      <button id="rotateRightBtn">⟳ Rotate +90°</button>
+      <button id="flipHBtn">↔️ Flip Horizontal</button>
+      <button id="flipVBtn">↕️ Flip Vertical</button>
+      <button id="downloadBtn">⬇️ Download Image</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
