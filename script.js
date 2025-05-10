@@ -14,6 +14,9 @@ toggleBtn.addEventListener('click', () => {
 
   localStorage.setItem('mode', document.body.classList.contains('dark') ? 'dark' : 'light');
 });
+document.getElementById('toggle-dark').addEventListener('click', () => {
+  document.body.classList.toggle('dark');
+});
 
 // Load saved mode on startup
 if (localStorage.getItem('mode') === 'dark') {
