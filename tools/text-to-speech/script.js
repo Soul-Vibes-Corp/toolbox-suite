@@ -8,6 +8,7 @@ const pitchValue = document.getElementById('pitchValue');
 const playBtn = document.getElementById('playBtn');
 const pauseBtn = document.getElementById('pauseBtn');
 const stopBtn = document.getElementById('stopBtn');
+const themeToggle = document.getElementById('themeToggle');
 
 let voices = [];
 let utterance = new SpeechSynthesisUtterance();
@@ -22,13 +23,21 @@ function populateVoices() {
     option.textContent = `${voice.name} (${voice.lang}) ${voice.default ? ' - Default' : ''}`;
     voiceSelect.appendChild(option);
   });
+
+  // Auto-select based on browser language
+  const browserLang = navigator.language || navigator.userLanguage;
+  const matchedVoiceIndex = voices.findIndex(voice => voice.lang.startsWith(browserLang.slice(0, 2)));
+
+  if (matchedVoiceIndex !== -1) {
+    voiceSelect.value = matchedVoiceIndex;
+  }
 }
 
 speechSynthesis.onvoiceschanged = populateVoices;
 
 function speak() {
   if (speechSynthesis.speaking) {
-    speechSynthesis.cancel(); // Stop any ongoing speech
+    speechSynthesis.cancel();
   }
 
   utterance = new SpeechSynthesisUtterance(textInput.value);
@@ -62,5 +71,11 @@ pitchInput.addEventListener('input', () => {
   pitchValue.textContent = pitchInput.value;
 });
 
-// Initial populate
+// Theme toggle
+themeToggle.addEventListener('click', () => {
+  document.body.classList.toggle('dark');
+  themeToggle.textContent = document.body.classList.contains('dark') ? '☀️ Toggle Light Mode' : '🌙 Toggle Dark Mode';
+});
+
+// Initial
 populateVoices();
