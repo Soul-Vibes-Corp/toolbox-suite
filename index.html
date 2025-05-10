@@ -1,220 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Toolbox Suite</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="manifest" href="manifest.json">
-<link rel="icon" href="assets/favicon.png">
-<link rel="apple-touch-icon" hr<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Toolbox Suite</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="manifest" href="manifest.json">
-<link rel="icon" href="assets/favicon.png">
-<link rel="apple-touch-icon" href="assets/logo-192.png">
-<meta name="theme-color" content="#000000">
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#000000">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="assets/favicon.png">
+    <link rel="apple-touch-icon" href="assets/logo-192.png">
+    <title>Toolbox Suite</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header class="header">
-  <h1>🧰 Toolbox Suite</h1>
-  <div class="actions">
-    <input type="text" id="search" placeholder="Search tools..." aria-label="Search tools">
-    <span id="result-count"></span>
-    <button id="toggle-dark">🌙 Toggle Dark Mode</button>
-  </div>
+    <h1>🧰 Toolbox Suite</h1>
+    <div class="actions">
+        <input type="text" id="search" placeholder="Search tools..." aria-label="Search tools">
+        <span id="result-count"></span>
+        <button id="toggle-dark">🌙 Toggle Dark Mode</button>
+    </div>
 </header>
 
 <main>
-  <!-- Everyday Productivity Category -->
-  <section class="category" data-category="Everyday Productivity">
-    <h2>✨ Everyday Productivity</h2>
-    <div class="tool-grid">
-      <a href="tools/pdf-merger/index.html" class="tool-card" title="Merge multiple PDFs into one easily">📄 PDF Merger</a>
-      <a href="tools/image-compressor/index.html" class="tool-card" title="Reduce image file size without losing quality">🖼️ Image Compressor</a>
-      <a href="tools/qr-code-generator/index.html" class="tool-card" title="Generate custom QR codes for links or text">🔗 QR Code Generator</a>
-      <a href="tools/color-picker/index.html" class="tool-card" title="Pick and copy colors from anywhere">🎨 Color Picker</a>
-      <a href="tools/currency-converter/index.html" class="tool-card">💵 Currency Converter</a>
-      <a href="tools/json-formatter/index.html" class="tool-card">🔧 JSON Formatter</a>
-    </div>
-  </section>
+    <!-- Everyday Productivity Category -->
+    <section class="category" data-category="Everyday Productivity">
+        <h2>✨ Everyday Productivity</h2>
+        <div class="tool-grid">
+            <a href="tools/pdf-merger/index.html" class="tool-card" title="Merge multiple PDFs into one easily">📄 PDF Merger</a>
+            <a href="tools/image-compressor/index.html" class="tool-card" title="Reduce image file size without losing quality">🖼️ Image Compressor</a>
+            <a href="tools/qr-code-generator/index.html" class="tool-card" title="Generate custom QR codes for links or text">🔗 QR Code Generator</a>
+            <a href="tools/color-picker/index.html" class="tool-card" title="Pick and copy colors from anywhere">🎨 Color Picker</a>
+            <a href="tools/json-formatter/index.html" class="tool-card" title="Format JSON data for easy reading">🔧 JSON Formatter</a>
+            <a href="tools/currency-converter/index.html" class="tool-card" title="Convert currencies with ease">💵 Currency Converter</a>
+        </div>
+    </section>
 
-  <!-- Business Essentials Category -->
-  <section class="category" data-category="Business Essentials">
-    <h2>💼 Business Essentials</h2>
-    <div class="tool-grid">
-      <a href="tools/invoice-generator/index.html" class="tool-card">🧾 Invoice Generator</a>
-      <a href="tools/esign-pdf/index.html" class="tool-card">✍️ eSign PDF</a>
-      <a href="tools/resume-builder/index.html" class="tool-card">📄 Resume Builder</a>
-      <a href="tools/calendar-event-creator/index.html" class="tool-card">🗓️ Calendar Creator</a>
-    </div>
-  </section>
+    <!-- Business Essentials Category -->
+    <section class="category" data-category="Business Essentials">
+        <h2>💼 Business Essentials</h2>
+        <div class="tool-grid">
+            <a href="tools/invoice-generator/index.html" class="tool-card" title="Create invoices for your business">🧾 Invoice Generator</a>
+            <a href="tools/esign-pdf/index.html" class="tool-card" title="Sign and send PDFs electronically">✍️ eSign PDF</a>
+            <a href="tools/resume-builder/index.html" class="tool-card" title="Build professional resumes in minutes">📄 Resume Builder</a>
+            <a href="tools/calendar-event-creator/index.html" class="tool-card" title="Create and manage calendar events">🗓️ Calendar Creator</a>
+        </div>
+    </section>
 
-  <!-- Sales & Marketing Category -->
-  <section class="category" data-category="Sales & Marketing">
-    <h2>🛠️ Sales & Marketing</h2>
-    <div class="tool-grid">
-      <a href="tools/social-media-post-scheduler/index.html" class="tool-card">📅 Post Scheduler</a>
-      <a href="tools/email-signature-generator/index.html" class="tool-card">✉️ Email Signature</a>
-      <a href="tools/lead-magnet-builder/index.html" class="tool-card">📥 Lead Magnet Builder</a>
-    </div>
-  </section>
+    <!-- Sales & Marketing Category -->
+    <section class="category" data-category="Sales & Marketing">
+        <h2>🛠️ Sales & Marketing</h2>
+        <div class="tool-grid">
+            <a href="tools/social-media-post-scheduler/index.html" class="tool-card" title="Schedule your social media posts">📅 Post Scheduler</a>
+            <a href="tools/email-signature-generator/index.html" class="tool-card" title="Generate professional email signatures">✉️ Email Signature</a>
+            <a href="tools/lead-magnet-builder/index.html" class="tool-card" title="Create lead magnets for your business">📥 Lead Magnet Builder</a>
+        </div>
+    </section>
 
-  <!-- Client & Team Management Category -->
-  <section class="category" data-category="Client & Team Management">
-    <h2>👥 Client & Team Management</h2>
-    <div class="tool-grid">
-      <a href="tools/client-agreement-generator/index.html" class="tool-card">📝 Agreement Generator</a>
-      <a href="tools/meeting-scheduler/index.html" class="tool-card">🕒 Meeting Scheduler</a>
-    </div>
-  </section>
+    <!-- Client & Team Management Category -->
+    <section class="category" data-category="Client & Team Management">
+        <h2>👥 Client & Team Management</h2>
+        <div class="tool-grid">
+            <a href="tools/client-agreement-generator/index.html" class="tool-card" title="Generate client agreements easily">📝 Agreement Generator</a>
+            <a href="tools/meeting-scheduler/index.html" class="tool-card" title="Schedule and manage meetings">🕒 Meeting Scheduler</a>
+        </div>
+    </section>
 
-  <!-- Personal Growth & Lifestyle Category -->
-  <section class="category" data-category="Personal Growth & Lifestyle">
-    <h2>⚡ Personal Growth & Lifestyle</h2>
-    <div class="tool-grid">
-      <a href="tools/fitness-tracker/index.html" class="tool-card">🏋️ Fitness Tracker</a>
-      <a href="tools/meditation-timer/index.html" class="tool-card">🧘 Meditation Timer</a>
-      <a href="tools/habit-tracker/index.html" class="tool-card">📊 Habit Tracker</a>
-      <a href="tools/bmi-calculator/index.html" class="tool-card">⚖️ BMI Calculator</a>
-    </div>
-  </section>
+    <!-- Personal Growth & Lifestyle Category -->
+    <section class="category" data-category="Personal Growth & Lifestyle">
+        <h2>⚡ Personal Growth & Lifestyle</h2>
+        <div class="tool-grid">
+            <a href="tools/fitness-tracker/index.html" class="tool-card" title="Track your fitness goals">🏋️ Fitness Tracker</a>
+            <a href="tools/meditation-timer/index.html" class="tool-card" title="Track your meditation sessions">🧘 Meditation Timer</a>
+            <a href="tools/habit-tracker/index.html" class="tool-card" title="Monitor your habits and goals">📊 Habit Tracker</a>
+            <a href="tools/bmi-calculator/index.html" class="tool-card" title="Calculate your BMI for health insights">⚖️ BMI Calculator</a>
+        </div>
+    </section>
 
-  <!-- Voice & Communication Category -->
-  <section class="category" data-category="Voice & Communication">
-    <h2>🗣️ Voice & Communication</h2>
-    <div class="tool-grid">
-      <a href="tools/text-to-speech/index.html" class="tool-card">🗣️ Text to Speech</a>
-      <a href="tools/speech-to-text/index.html" class="tool-card">🎙️ Speech to Text</a>
-      <a href="tools/qoute-box/index.html" class="tool-card">🗨️ Quote Box</a>
-    </div>
-  </section>
+    <!-- Voice & Communication Category -->
+    <section class="category" data-category="Voice & Communication">
+        <h2>🗣️ Voice & Communication</h2>
+        <div class="tool-grid">
+            <a href="tools/text-to-speech/index.html" class="tool-card" title="Convert text to speech">🗣️ Text to Speech</a>
+            <a href="tools/speech-to-text/index.html" class="tool-card" title="Convert speech to text">🎙️ Speech to Text</a>
+            <a href="tools/quote-box/index.html" class="tool-card" title="Create beautiful quote boxes">🗨️ Quote Box</a>
+        </div>
+    </section>
 
-  <!-- New Tools Section -->
-  <section class="category" data-category="New Tools">
-    <h2>🆕 New Tools</h2>
-    <div class="tool-grid">
-      <a href="tools/image-editor/index.html" class="tool-card">🖌️ Image Editor</a>
-      <a href="tools/password-generator/index.html" class="tool-card">🔑 Password Generator</a>
-      <a href="tools/unit-converter/index.html" class="tool-card">⚖️ Unit Converter</a>
-    </div>
-  </section>
+    <!-- New Tools Section -->
+    <section class="category" data-category="New Tools">
+        <h2>🆕 New Tools</h2>
+        <div class="tool-grid">
+            <a href="tools/image-editor/index.html" class="tool-card" title="Edit images with ease">🖌️ Image Editor</a>
+            <a href="tools/password-generator/index.html" class="tool-card" title="Generate strong passwords">🔑 Password Generator</a>
+            <a href="tools/unit-converter/index.html" class="tool-card" title="Convert units across various systems">⚖️ Unit Converter</a>
+        </div>
+    </section>
 </main>
 
 <footer>
-  <p>© 2025 Toolbox Suite — Fast, Private, Free | No signup 🚀</p>
-</footer>
-
-<script src="script.js"></script>
-<script>
-// Register Service Worker for PWA
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js')
-    .then(() => console.log('✅ Service Worker Registered'));
-}
-</script>
-
-</body>
-</html>
-ef="assets/logo-192.png">
-<meta name="theme-color" content="#000000">
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-<header class="header">
-  <h1>🧰 Toolbox Suite</h1>
-  <div class="actions">
-    <input type="text" id="search" placeholder="Search tools..." aria-label="Search tools">
-    <span id="result-count"></span>
-    <button id="toggle-dark">🌙 Toggle Dark Mode</button>
-  </div>
-</header>
-
-<main>
-  <!-- Everyday Productivity Category -->
-  <section class="category" data-category="Everyday Productivity">
-    <h2>✨ Everyday Productivity</h2>
-    <div class="tool-grid">
-      <a href="tools/pdf-merger/index.html" class="tool-card" title="Merge multiple PDFs into one easily">📄 PDF Merger</a>
-      <a href="tools/image-compressor/index.html" class="tool-card" title="Reduce image file size without losing quality">🖼️ Image Compressor</a>
-      <a href="tools/qr-code-generator/index.html" class="tool-card" title="Generate custom QR codes for links or text">🔗 QR Code Generator</a>
-      <a href="tools/color-picker/index.html" class="tool-card" title="Pick and copy colors from anywhere">🎨 Color Picker</a>
-      <!-- New Tools -->
-      <a href="tools/currency-converter/index.html" class="tool-card">💵 Currency Converter</a>
-      <a href="tools/json-formatter/index.html" class="tool-card">🔧 JSON Formatter</a>
-    </div>
-  </section>
-
-  <!-- Business Essentials Category -->
-  <section class="category" data-category="Business Essentials">
-    <h2>💼 Business Essentials</h2>
-    <div class="tool-grid">
-      <a href="tools/invoice-generator/index.html" class="tool-card">🧾 Invoice Generator</a>
-      <a href="tools/esign-pdf/index.html" class="tool-card">✍️ eSign PDF</a>
-      <a href="tools/resume-builder/index.html" class="tool-card">📄 Resume Builder</a>
-      <a href="tools/calendar-event-creator/index.html" class="tool-card">🗓️ Calendar Creator</a>
-    </div>
-  </section>
-
-  <!-- Sales & Marketing Category -->
-  <section class="category" data-category="Sales & Marketing">
-    <h2>🛠️ Sales & Marketing</h2>
-    <div class="tool-grid">
-      <a href="tools/social-media-post-scheduler/index.html" class="tool-card">📅 Post Scheduler</a>
-      <a href="tools/email-signature-generator/index.html" class="tool-card">✉️ Email Signature</a>
-      <a href="tools/lead-magnet-builder/index.html" class="tool-card">📥 Lead Magnet Builder</a>
-    </div>
-  </section>
-
-  <!-- Client & Team Management Category -->
-  <section class="category" data-category="Client & Team Management">
-    <h2>👥 Client & Team Management</h2>
-    <div class="tool-grid">
-      <a href="tools/client-agreement-generator/index.html" class="tool-card">📝 Agreement Generator</a>
-      <a href="tools/meeting-scheduler/index.html" class="tool-card">🕒 Meeting Scheduler</a>
-    </div>
-  </section>
-
-  <!-- Personal Growth & Lifestyle Category -->
-  <section class="category" data-category="Personal Growth & Lifestyle">
-    <h2>⚡ Personal Growth & Lifestyle</h2>
-    <div class="tool-grid">
-      <a href="tools/fitness-tracker/index.html" class="tool-card">🏋️ Fitness Tracker</a>
-      <a href="tools/meditation-timer/index.html" class="tool-card">🧘 Meditation Timer</a>
-      <a href="tools/habit-tracker/index.html" class="tool-card">📊 Habit Tracker</a>
-      <a href="tools/bmi-calculator/index.html" class="tool-card">⚖️ BMI Calculator</a>
-    </div>
-  </section>
-
-  <!-- Voice & Communication Category -->
-  <section class="category" data-category="Voice & Communication">
-    <h2>🗣️ Voice & Communication</h2>
-    <div class="tool-grid">
-      <a href="tools/text-to-speech/index.html" class="tool-card">🗣️ Text to Speech</a>
-      <a href="tools/speech-to-text/index.html" class="tool-card">🎙️ Speech to Text</a>
-      <a href="tools/qoute-box/index.html" class="tool-card">🗨️ Quote Box</a>
-    </div>
-  </section>
-
-  <!-- New Tools Section -->
-  <section class="category" data-category="New Tools">
-    <h2>🆕 New Tools</h2>
-    <div class="tool-grid">
-      <a href="tools/image-editor/index.html" class="tool-card">🖌️ Image Editor</a>
-      <a href="tools/password-generator/index.html" class="tool-card">🔑 Password Generator</a>
-      <a href="tools/unit-converter/index.html" class="tool-card">⚖️ Unit Converter</a>
-    </div>
-  </section>
-
-</main>
-
-<footer>
-  <p>© 2025 Toolbox Suite — Fast, Private, Free | No signup 🚀</p>
+    <p>© 2025 Toolbox Suite — Fast, Private, Free | No signup 🚀</p>
 </footer>
 
 <script src="script.js"></script>
