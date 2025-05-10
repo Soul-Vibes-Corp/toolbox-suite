@@ -1,1 +1,82 @@
+body {
+  font-family: system-ui, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f0f0f0;
+  color: #333;
+  transition: background 0.3s, color 0.3s;
+}
+
+header {
+  background: #6200ee;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}
+
+header button {
+  margin-top: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 5px;
+  background: #ffffff22;
+  color: white;
+  cursor: pointer;
+}
+
+.subtitle {
+  text-align: center;
+  margin: 1rem;
+  font-weight: 500;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+  padding: 1rem;
+}
+
+.grid a {
+  display: block;
+  padding: 1rem;
+  background: white;
+  text-align: center;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #333;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: transform 0.1s;
+}
+
+.grid a:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+footer {
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.9rem;
+  background: #e0e0e0;
+}
+
+/* Dark mode */
+body.dark {
+  background: #121212;
+  color: #ddd;
+}
+
+body.dark header {
+  background: #3700b3;
+}
+
+body.dark .grid a {
+  background: #1e1e1e;
+  color: #ddd;
+}
+
+body.dark footer {
+  background: #1e1e1e;
+}
 
