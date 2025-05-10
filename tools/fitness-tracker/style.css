@@ -1,0 +1,75 @@
+:root {
+  --bg-color: #f7f7f7;
+  --container-bg: #ffffff;
+  --text-color: #000000;
+  --button-bg: #e0e0e0;
+  --border-color: #ccc;
+}
+
+body.dark {
+  --bg-color: #121212;
+  --container-bg: #1e1e1e;
+  --text-color: #ffffff;
+  --button-bg: #333333;
+  --border-color: #555;
+}
+
+body {
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+  transition: background 0.3s, color 0.3s;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+  background: var(--container-bg);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: background 0.3s;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  box-sizing: border-box;
+}
+
+button {
+  padding: 10px;
+  border-radius: 6px;
+  background: var(--button-bg);
+  color: var(--text-color);
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #ccc;
+}
+
+h1, h2 {
+  text-align: center;
+}
+
+.report {
+  margin-top: 30px;
+  padding: 20px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+}
+
+#fitnessReport {
+  display: none;
+}
+
+#reportContent {
+  white-space: pre-wrap;
+}
