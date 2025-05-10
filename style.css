@@ -27,41 +27,37 @@ body {
   gap: 0.5rem;
 }
 
+.category {
+  margin-bottom: 2rem;
+}
+
 .category h2 {
-  margin-left: 1rem;
-  margin-top: 2rem;
+  margin: 1rem;
+  font-size: 1.5rem;
+  color: #f0f0f0;
 }
 
-.tool-row {
-  display: flex;
-  overflow-x: auto;
-  padding: 1rem;
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 1rem;
+  padding: 0 1rem;
 }
 
-.tool-card {
-  flex: 0 0 auto;
-  width: 140px;
-  height: 140px;
-  background: #333;
+.card {
+  background: #1e1e1e;
   border-radius: 12px;
+  padding: 1.5rem 0.75rem;
   text-align: center;
   text-decoration: none;
-  color: white;
-  font-size: 2rem;
-  padding-top: 20px;
-  transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.tool-card span {
-  display: block;
-  margin-top: 0.5rem;
+  color: #fff;
   font-size: 1rem;
+  transition: background 0.3s, box-shadow 0.3s;
 }
 
-.tool-card:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 15px #6200ee;
+.card:hover {
+  background: #292929;
+  box-shadow: 0 0 10px #6200ee;
 }
 
 footer {
@@ -70,8 +66,4 @@ footer {
   background: #1e1e1e;
   margin-top: 2rem;
   font-size: 0.9rem;
-}
-
-.scroll-x::-webkit-scrollbar {
-  display: none;
 }
