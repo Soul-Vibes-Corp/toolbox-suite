@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Password Generator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Password Generator</h1>
+
+    <button id="themeToggle">🌙 Toggle Dark Mode</button>
+
+    <label for="length">Password Length: <span id="lengthValue">12</span></label>
+    <input type="range" id="length" min="4" max="50" value="12">
+
+    <div class="options">
+      <label><input type="checkbox" id="uppercase" checked> Include Uppercase</label>
+      <label><input type="checkbox" id="lowercase" checked> Include Lowercase</label>
+      <label><input type="checkbox" id="numbers" checked> Include Numbers</label>
+      <label><input type="checkbox" id="symbols" checked> Include Symbols</label>
+    </div>
+
+    <button id="generateBtn">Generate Password</button>
+
+    <input type="text" id="passwordOutput" readonly>
+    <button id="copyBtn">📋 Copy to Clipboard</button>
+
+    <div id="strength">Strength: <span id="strengthValue">-</span></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
