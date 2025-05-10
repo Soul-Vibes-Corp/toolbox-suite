@@ -67,3 +67,63 @@ footer {
   margin-top: 2rem;
   font-size: 0.9rem;
 }
+
+:root {
+  --bg: #ffffff;
+  --text: #121212;
+  --card-bg: #f0f0f0;
+  --accent: #6a1b9a; /* Light purple */
+  --hover-bg: #ede7f6;
+  --hover-shadow: rgba(106, 27, 154, 0.4);
+}
+
+body.dark {
+  --bg: #121212;
+  --text: #ffffff;
+  --card-bg: #1e1e1e;
+  --accent: #9c27b0; /* Bright purple */
+  --hover-bg: #292929;
+  --hover-shadow: #ff1744; /* Neon red */
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.header, footer {
+  background: var(--card-bg);
+}
+
+.header input {
+  background: var(--hover-bg);
+  color: var(--text);
+}
+
+.category h2 {
+  color: var(--accent);
+}
+
+.card {
+  background: var(--card-bg);
+  color: var(--text);
+  border: 2px solid var(--accent);
+}
+
+.card:hover {
+  background: var(--hover-bg);
+  box-shadow: 0 0 10px var(--hover-shadow);
+  border-color: var(--hover-shadow);
+}
+
+button {
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 0.5rem;
+}
+
+button:hover {
+  box-shadow: 0 0 5px var(--hover-shadow);
+}
