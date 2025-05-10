@@ -1,185 +1,121 @@
-/* === Base Dark Mode === */
-body.dark-mode {
-  background-color: #121212;
-  color: #e0e0e0;
+/* Base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-/* Header & Footer */
-body.dark-mode header,
-body.dark-mode footer {
-  background-color: #1e1e1e;
-  color: #ffffff;
-  border-bottom: 1px solid #333;
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #1a1a1a;
+  color: #fff;
+  transition: background-color 0.3s ease;
 }
 
-/* Search Input & Toggle Button */
-body.dark-mode input#search {
+header {
   background-color: #222;
   color: #fff;
-  border: 1px solid #444;
-}
-body.dark-mode input#search::placeholder {
-  color: #aaa;
-}
-body.dark-mode button {
-  background-color: #333;
-  color: #fff;
-  border: 1px solid #444;
-}
-
-/* Tool Cards */
-body.dark-mode .tool-card {
-  background-color: #1f1f1f;
-  color: #f0f0f0;
-  border: 1px solid #333;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.6);
-}
-body.dark-mode .tool-card:hover {
-  background-color: #333;
-  border-color: #555;
-}
-
-/* Section Titles */
-body.dark-mode .category h2 {
-  color: #f0f0f0;
-}
-
-/* Tooltips (title attribute fallback) — optional enhancement */
-body.dark-mode .tool-card[title]:hover::after {
-  background: #333;
-  color: #fff;
-}
-
-/* Actions Area */
-body.dark-mode .actions {
-  background-color: #1e1e1e;
-}
-
-/* Smooth transition */
-body,
-header,
-footer,
-.tool-card,
-input,
-button {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-}
-
-/* General Styling */
-body {
-  margin: 0;
-  font-family: 'Poppins', sans-serif;
-  background: #f4f4f4;
-  color: #222;
-  transition: background 0.3s, color 0.3s;
-}
-
-body.dark {
-  background: #121212;
-  color: #fff;
-}
-
-.header {
-  position: sticky;
-  top: 0;
-  background: #333;
-  color: white;
-  padding: 1rem;
+  padding: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 2px solid #444;
 }
 
-.actions {
-  display: flex;
-  gap: 0.5rem;
+header h1 {
+  font-size: 2.5rem;
 }
 
-.header input {
-  padding: 0.5rem;
-  border-radius: 5px;
+header .actions input {
+  padding: 8px 15px;
   border: none;
+  border-radius: 8px;
+  background-color: #333;
+  color: #fff;
+  font-size: 1rem;
 }
 
-#toggle-dark {
-  padding: 0.5rem;
+header button {
+  background-color: #e60000;
+  color: #fff;
   border: none;
+  padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
 }
 
+header button:hover {
+  background-color: #c70000;
+}
+
 main {
-  padding: 1rem;
+  padding: 30px;
+}
+
+.category {
+  margin-bottom: 40px;
 }
 
 .category h2 {
-  margin-top: 2rem;
-  border-bottom: 2px solid #ccc;
-  padding-bottom: 0.5rem;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: #ff00cc; /* Neon purple */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .tool-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 1rem;
-  margin-top: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
 }
 
 .tool-card {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #eee;
-  padding: 1rem;
-  border-radius: 10px;
+  display: block;
+  text-align: center;
+  padding: 20px;
+  background: #333;
+  color: #fff;
   text-decoration: none;
-  color: inherit;
+  border-radius: 10px;
+  border: 1px solid #444;
+  transition: background 0.3s, transform 0.3s;
   font-size: 1.1rem;
-  transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
 }
 
 .tool-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-  background: #ddd;
-}
-
-body.dark .tool-card {
-  background: #222;
-}
-
-body.dark .tool-card:hover {
-  background: #333;
+  background: linear-gradient(45deg, #ff00cc, #ff1a1a); /* Neon red and purple */
+  transform: translateY(-5px);
 }
 
 footer {
   text-align: center;
-  padding: 1rem;
-  background: #333;
-  color: white;
-  margin-top: 2rem;
+  padding: 20px;
+  background-color: #222;
+  color: #bbb;
 }
 
-/* Animation */
-.tool-card {
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeUp 0.6s forwards;
+footer p {
+  font-size: 0.9rem;
 }
 
-@keyframes fadeUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Dark Mode */
+body[data-theme='dark'] {
+  background-color: #121212;
 }
 
-/* Staggered Animation Delay */
-.tool-grid .tool-card:nth-child(1) { animation-delay: 0.1s; }
-.tool-grid .tool-card:nth-child(2) { animation-delay: 0.2s; }
-.tool-grid .tool-card:nth-child(3) { animation-delay: 0.3s; }
-.tool-grid .tool-card:nth-child(4) { animation-delay: 0.4s; }
-.tool-grid .tool-card:nth-child(5) { animation-delay: 0.5s; }
-.tool-grid .tool-card:nth-child(6) { animation-delay: 0.6s; }
-.tool-grid .tool-card:nth-child(7) { animation-delay: 0.7s; }
-.tool-grid .tool-card:nth-child(8) { animation-delay: 0.8s; }
+body[data-theme='dark'] .tool-card {
+  background-color: #333;
+  border: 1px solid #444;
+}
+
+body[data-theme='dark'] header {
+  background-color: #121212;
+}
+
+body[data-theme='dark'] header button {
+  background-color: #e60000;
+}
+
+body[data-theme='dark'] header button:hover {
+  background-color: #c70000;
+}
