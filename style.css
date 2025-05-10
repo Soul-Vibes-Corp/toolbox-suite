@@ -1,3 +1,71 @@
+/* === Base Dark Mode === */
+body.dark-mode {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+/* Header & Footer */
+body.dark-mode header,
+body.dark-mode footer {
+  background-color: #1e1e1e;
+  color: #ffffff;
+  border-bottom: 1px solid #333;
+}
+
+/* Search Input & Toggle Button */
+body.dark-mode input#search {
+  background-color: #222;
+  color: #fff;
+  border: 1px solid #444;
+}
+body.dark-mode input#search::placeholder {
+  color: #aaa;
+}
+body.dark-mode button {
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #444;
+}
+
+/* Tool Cards */
+body.dark-mode .tool-card {
+  background-color: #1f1f1f;
+  color: #f0f0f0;
+  border: 1px solid #333;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.6);
+}
+body.dark-mode .tool-card:hover {
+  background-color: #333;
+  border-color: #555;
+}
+
+/* Section Titles */
+body.dark-mode .category h2 {
+  color: #f0f0f0;
+}
+
+/* Tooltips (title attribute fallback) — optional enhancement */
+body.dark-mode .tool-card[title]:hover::after {
+  background: #333;
+  color: #fff;
+}
+
+/* Actions Area */
+body.dark-mode .actions {
+  background-color: #1e1e1e;
+}
+
+/* Smooth transition */
+body,
+header,
+footer,
+.tool-card,
+input,
+button {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* General Styling */
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
