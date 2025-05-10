@@ -59,7 +59,7 @@ main {
 .category h2 {
   font-size: 1.8rem;
   margin-bottom: 20px;
-  color: #ff00cc; /* Neon purple */
+  color: #ff00cc;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
@@ -83,7 +83,7 @@ main {
 }
 
 .tool-card:hover {
-  background: linear-gradient(45deg, #ff00cc, #ff1a1a); /* Neon red and purple */
+  background: linear-gradient(45deg, #ff00cc, #ff1a1a);
   transform: translateY(-5px);
 }
 
