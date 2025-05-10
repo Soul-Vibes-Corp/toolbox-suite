@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Image Compressor & Converter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>Image Compressor & Converter</h1>
+
+    <input type="file" id="imageInput" accept="image/*">
+
+    <div class="options">
+        <label for="formatSelect">Convert to:</label>
+        <select id="formatSelect">
+            <option value="jpeg">JPEG</option>
+            <option value="png">PNG</option>
+            <option value="webp">WebP</option>
+        </select>
+
+        <label for="qualityRange">Quality:</label>
+        <input type="range" id="qualityRange" min="10" max="100" value="80">
+        <span id="qualityValue">80%</span>
+    </div>
+
+    <button id="processBtn">Compress & Convert</button>
+
+    <div id="previewContainer">
+        <h2>Preview:</h2>
+        <img id="previewImage" alt="Preview will appear here">
+    </div>
+
+    <a id="downloadBtn" download="processed-image">Download Processed Image</a>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
