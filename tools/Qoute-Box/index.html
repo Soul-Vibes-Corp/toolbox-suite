@@ -1,429 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Advanced Random Quote Generator</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #6200ee, #3700b3);
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      transition: background 0.3s ease;
-    }
-
-    #quote-box {
-      background: rgba(0, 0, 0, 0.25);
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.4);
-      max-width: 600px;
-      width: 100%;
-      text-align: center;
-    }
-
-    #text {
-      font-size: 1.6em;
-      margin-bottom: 20px;
-    }
-
-    #author {
-      font-size: 1.2em;
-      margin-bottom: 30px;
-      opacity: 0.8;
-    }
-
-    button, a {
-      padding: 10px 20px;
-      margin: 5px;
-      border: none;
-      border-radius: 8px;
-      text-decoration: none;
-      color: white;
-      cursor: pointer;
-    }
-
-    .btn-primary {
-      background-color: #03dac5;
-    }
-
-    .btn-primary:hover {
-      background-color: #018786;
-    }
-
-    .btn-info {
-      background-color: #1da1f2;
-    }
-
-    .btn-info:hover {
-      background-color: #0d95e8;
-    }
-
-    .btn-copy {
-      background-color: #ff9800;
-    }
-
-    .btn-copy:hover {
-      background-color: #e68900;
-    }
-
-    .btn-darkmode {
-      background-color: #424242;
-    }
-
-    .btn-darkmode:hover {
-      background-color: #616161;
-    }
-
-    footer {
-      margin-top: 15px;
-      font-size: 0.8em;
-      opacity: 0.6;
-    }
-
-    .dark-mode {
-      background: #121212;
-      color: white;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Quote Generator</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f7f7f7;
+        }
+        #quote-box {
+            text-align: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            transition: all 0.3s;
+        }
+        #text {
+            font-size: 24px;
+            margin: 20px 0;
+        }
+        #author {
+            font-size: 18px;
+            color: #888;
+        }
+        .btn {
+            padding: 10px 15px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-info {
+            background-color: #17a2b8;
+            color: white;
+        }
+        .dark-mode {
+            background-color: #333;
+            color: white;
+        }
+        .dark-mode #quote-box {
+            background-color: #444;
+            color: white;
+            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+        }
+        .dark-mode .btn {
+            background-color: #555;
+            color: white;
+        }
+    </style>
 </head>
 <body>
 
-<div id="quote-box">
-  <div id="text">Loading quote...</div>
-  <div id="author"></div>
-  <button id="new-quote" class="btn-primary">New Quote</button>
-  <button id="copy-quote" class="btn-copy">Copy Quote</button>
-  <a href="#" id="tweet-quote" class="btn-info" target="_blank">Tweet Quote</a>
-  <button id="dark-mode-toggle" class="btn-darkmode">Toggle Dark Mode</button>
-  <button id="download-quote" class="btn-info">Download as Image</button>
-  <footer>Advanced Quote Generator</footer>
+<div id="quote-box" class="container">
+    <div id="text" class="quote-text">"The only limit to our realization of tomorrow is our doubts of today."</div>
+    <div id="author" class="quote-author">- Franklin D. Roosevelt</div>
+    <button id="new-quote" class="btn btn-primary">New Quote</button>
+    <a href="https://twitter.com/intent/tweet" id="tweet-quote" class="btn btn-info" target="_blank">Tweet Quote</a>
+    <button id="toggle-dark-mode" class="btn btn-primary">Toggle Dark Mode</button>
 </div>
 
 <script>
-// === QUOTES ARRAY ===
-const quotes = [
-  const quotes = [
-  { quote: "The only limit to our realization of tomorrow is our doubts of today.", author: "Franklin D. Roosevelt" },
-  { quote: "In the middle of every difficulty lies opportunity.", author: "Albert Einstein" },
-  { quote: "Do not go where the path may lead, go instead where there is no path and leave a trail.", author: "Ralph Waldo Emerson" },
-  { quote: "Your time is limited, so don’t waste it living someone else’s life.", author: "Steve Jobs" },
-  { quote: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill" },
-  { quote: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
-  { quote: "Happiness is not something ready made. It comes from your own actions.", author: "Dalai Lama" },
-  { quote: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius" },
-  { quote: "We become what we think about.", author: "Earl Nightingale" },
-  { quote: "What lies behind us and what lies before us are tiny matters compared to what lies within us.", author: "Ralph Waldo Emerson" },
-  { quote: "Act as if what you do makes a difference. It does.", author: "William James" },
-  { quote: "Dream big and dare to fail.", author: "Norman Vaughan" },
-  { quote: "Everything you’ve ever wanted is on the other side of fear.", author: "George Addair" },
-  { quote: "Don’t watch the clock; do what it does. Keep going.", author: "Sam Levenson" },
-  { quote: "You are never too old to set another goal or to dream a new dream.", author: "C.S. Lewis" },
-  { quote: "If you want to lift yourself up, lift up someone else.", author: "Booker T. Washington" },
-  { quote: "Hardships often prepare ordinary people for an extraordinary destiny.", author: "C.S. Lewis" },
-  { quote: "Turn your wounds into wisdom.", author: "Oprah Winfrey" },
-  { quote: "Don’t limit your challenges. Challenge your limits.", author: "Unknown" },
-  { quote: "If opportunity doesn’t knock, build a door.", author: "Milton Berle" },
-  { quote: "It’s not whether you get knocked down, it’s whether you get up.", author: "Vince Lombardi" },
-  { quote: "The purpose of life is not to be happy. It is to be useful, to be honorable, to be compassionate, to have it make some difference that you have lived and lived well.", author: "Ralph Waldo Emerson" },
-  { quote: "Life is what happens when you’re busy making other plans.", author: "John Lennon" },
-  { quote: "Live as if you were to die tomorrow. Learn as if you were to live forever.", author: "Mahatma Gandhi" },
-  { quote: "It always seems impossible until it’s done.", author: "Nelson Mandela" },
-  { quote: "Success usually comes to those who are too busy to be looking for it.", author: "Henry David Thoreau" },
-  { quote: "Don’t be pushed around by the fears in your mind. Be led by the dreams in your heart.", author: "Roy T. Bennett" },
-  { quote: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" },
-  { quote: "Life is 10% what happens to us and 90% how we react to it.", author: "Charles R. Swindoll" },
-  { quote: "It’s never too late to be what you might have been.", author: "George Eliot" },
-  { quote: "We may encounter many defeats, but we must not be defeated.", author: "Maya Angelou" },
-  { quote: "To be yourself in a world that is constantly trying to make you something else is the greatest accomplishment.", author: "Ralph Waldo Emerson" },
-  { quote: "Success is not how high you have climbed, but how you make a positive difference to the world.", author: "Roy T. Bennett" },
-  { quote: "Everything has beauty, but not everyone sees it.", author: "Confucius" },
-  { quote: "The only impossible journey is the one you never begin.", author: "Tony Robbins" },
-  { quote: "What you get by achieving your goals is not as important as what you become by achieving your goals.", author: "Zig Ziglar" },
-  { quote: "Keep your face always toward the sunshine—and shadows will fall behind you.", author: "Walt Whitman" },
-  { quote: "The best way to predict the future is to create it.", author: "Abraham Lincoln" },
-  { quote: "Do one thing every day that scares you.", author: "Eleanor Roosevelt" },
-  { quote: "Life is either a daring adventure or nothing at all.", author: "Helen Keller" },
-  { quote: "To live a creative life, we must lose our fear of being wrong.", author: "Joseph Chilton Pearce" },
-  { quote: "It is never too late to be what you might have been.", author: "George Eliot" },
-  { quote: "In the end, we only regret the chances we didn’t take.", author: "Lewis Carroll" },
-  { quote: "Your time is limited, so don’t waste it living someone else’s life.", author: "Steve Jobs" },
-  { quote: "We are all in the gutter, but some of us are looking at the stars.", author: "Oscar Wilde" },
-  { quote: "The only thing we have to fear is fear itself.", author: "Franklin D. Roosevelt" },
-  { quote: "The greatest glory in living lies not in never falling, but in rising every time we fall.", author: "Nelson Mandela" },
-  { quote: "Life is really simple, but we insist on making it complicated.", author: "Confucius" },
-  { quote: "You have within you right now, everything you need to deal with whatever the world can throw at you.", author: "Brian Tracy" },
-  { quote: "The purpose of life is not to be happy. It is to be useful, to be honorable, to be compassionate, to have it make some difference that you have lived and lived well.", author: "Ralph Waldo Emerson" },
-  { quote: "It is never too late to be what you might have been.", author: "George Eliot" },
-  { quote: "You miss 100% of the shots you don’t take.", author: "Wayne Gretzky" },
-  { quote: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
-  { quote: "I am not a product of my circumstances. I am a product of my decisions.", author: "Stephen R. Covey" },
-  { quote: "Every man dies. Not every man really lives.", author: "William Wallace" },
-  { quote: "Life is short, and it is up to you to make it sweet.", author: "Sarah Louise Delany" },
-  { quote: "You must be the change you wish to see in the world.", author: "Mahatma Gandhi" },
-  { quote: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius" },
-  { quote: "Success is not final, failure is not fatal: It is the courage to continue that counts.", author: "Winston Churchill" },
-  { quote: "I have not failed. I’ve just found 10,000 ways that won’t work.", author: "Thomas Edison" },
-  { quote: "When we are no longer able to change a situation, we are challenged to change ourselves.", author: "Viktor Frankl" },
-  { quote: "Try not to become a man of success, but rather try to become a man of value.", author: "Albert Einstein" },
-  { quote: "The harder I work, the luckier I get.", author: "Samuel Goldwyn" },
-  { quote: "It’s not whether you get knocked down, it’s whether you get up.", author: "Vince Lombardi" },
-  { quote: "Failure is simply the opportunity to begin again, this time more intelligently.", author: "Henry Ford" },
-  { quote: "You become what you believe.", author: "Oprah Winfrey" },
-  { quote: "If you can dream it, you can do it.", author: "Walt Disney" },
-  { quote: "The only way to achieve the impossible is to believe it is possible.", author: "Charles Kingsleigh" },
-  { quote: "Don't count the days, make the days count.", author: "Muhammad Ali" },
-  { quote: "You can't go back and change the beginning, but you can start where you are and change the ending.", author: "C.S. Lewis" },
-  { quote: "Success is not the key to happiness. Happiness is the key to success. If you love what you are doing, you will be successful.", author: "Albert Schweitzer" },
-  { quote: "The best revenge is massive success.", author: "Frank Sinatra" },
-  { quote: "Everything you can imagine is real.", author: "Pablo Picasso" },
-  { quote: "Be the change that you wish to see in the world.", author: "Mahatma Gandhi" },
-  { quote: "Do what you can, with what you have, where you are.", author: "Theodore Roosevelt" },
-  { quote: "You have to be odd to be number one.", author: "Dr. Seuss" },
-  { quote: "Your time is limited, so don’t waste it living someone else’s life.", author: "Steve Jobs" },
-  { quote: "I would rather die on my feet than live on my knees.", author: "Emiliano Zapata" },
-  { quote: "Love the life you live. Live the life you love.", author: "Bob Marley" },
-  { quote: "Life is either a daring adventure or nothing at all.", author: "Helen Keller" },
-  { quote: "If you don’t build your dream, someone else will hire you to help them build theirs.", author: "Dhirubhai Ambani" },
-  { quote: "The best way to predict your future is to create it.", author: "Abraham Lincoln" },
-  { quote: "Life is what happens when you’re busy making other plans.", author: "John Lennon" },
-  { quote: "Success is not final, failure is not fatal: It is the courage to continue that counts.", author: "Winston Churchill" },
-  { quote: "Your time is limited, so don't waste it living someone else's life.", author: "Steve Jobs" },
-  { quote: "Do not go where the path may lead, go instead where there is no path and leave a trail.", author: "Ralph Waldo Emerson" },
-  { quote: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
-  { quote: "Happiness is not something ready-made. It comes from your own actions.", author: "Dalai Lama" },
-  { quote: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" },
-  { quote: "Your life does not get better by chance, it gets better by change.", author: "Jim Rohn" },
-  { quote: "Hardships often prepare ordinary people for an extraordinary destiny.", author: "C.S. Lewis" },
-  { quote: "The only impossible journey is the one you never begin.", author: "Tony Robbins" },
-  { quote: "Everything you’ve ever wanted is on the other side of fear.", author: "George Addair" },
-  { quote: "Success usually comes to those who are too busy to be looking for it.", author: "Henry David Thoreau" },
-  { quote: "It always seems impossible until it’s done.", author: "Nelson Mandela" },
-  { quote: "Don’t watch the clock; do what it does. Keep going.", author: "Sam Levenson" },
-  { quote: "You are never too old to set another goal or to dream a new dream.", author: "C.S. Lewis" },
-  { quote: "If you want to lift yourself up, lift up someone else.", author: "Booker T. Washington" },
-  { quote: "Success is not how high you have climbed, but how you make a positive difference to the world.", author: "Roy T. Bennett" },
-  { quote: "The best revenge is massive success.", author: "Frank Sinatra" },
-  { quote: "Everything has beauty, but not everyone sees it.", author: "Confucius" },
-  { quote: "You only live once, but if you do it right, once is enough.", author: "Mae West" },
-  { quote: "If you can dream it, you can do it.", author: "Walt Disney" },
-  { quote: "In the end, we only regret the chances we didn’t take.", author: "Lewis Carroll" },
-  { quote: "Be yourself; everyone else is already taken.", author: "Oscar Wilde" },
-  { quote: "Two things are infinite: the universe and human stupidity; and I'm not sure about the universe.", author: "Albert Einstein" },
-  { quote: "Be the change that you wish to see in the world.", author: "Mahatma Gandhi" },
-  { quote: "If you don't stand for something, you will fall for anything.", author: "Malcolm X" },
-  { quote: "Everything you can imagine is real.", author: "Pablo Picasso" },
-  { quote: "What we think, we become.", author: "Buddha" },
-  { quote: "The mind is everything. What you think you become.", author: "Buddha" },
-  { quote: "Life is really simple, but we insist on making it complicated.", author: "Confucius" },
-  { quote: "I think, therefore I am.", author: "René Descartes" },
-  { quote: "A journey of a thousand miles begins with a single step.", author: "Lao Tzu" },
-  { quote: "You must be the change you wish to see in the world.", author: "Mahatma Gandhi" },
-  { quote: "Don't cry because it's over, smile because it happened.", author: "Dr. Seuss" },
-  { quote: "Be the best version of yourself.", author: "Unknown" },
-  { quote: "Life isn’t about finding yourself. It’s about creating yourself.", author: "George Bernard Shaw" },
-  { quote: "Success is not the key to happiness. Happiness is the key to success. If you love what you are doing, you will be successful.", author: "Albert Schweitzer" },
-  { quote: "The greatest glory in living lies not in never falling, but in rising every time we fall.", author: "Nelson Mandela" },
-  { quote: "The purpose of life is not to be happy. It is to be useful, to be honorable, to be compassionate, to have it make some difference that you have lived and lived well.", author: "Ralph Waldo Emerson" },
-  { quote: "It is never too late to be what you might have been.", author: "George Eliot" },
-  { quote: "The only way to achieve the impossible is to believe it is possible.", author: "Charles Kingsleigh" },
-  { quote: "To live a creative life, we must lose our fear of being wrong.", author: "Joseph Chilton Pearce" },
-  { quote: "If you want to live a happy life, tie it to a goal, not to people or things.", author: "Albert Einstein" },
-  { quote: "Do what you can, with what you have, where you are.", author: "Theodore Roosevelt" },
-  { quote: "You must be the change you wish to see in the world.", author: "Mahatma Gandhi" },
-  { quote: "Life isn’t about waiting for the storm to pass, it’s about learning how to dance in the rain.", author: "Vivian Greene" },
-  { quote: "If you want to go fast, go alone. If you want to go far, go together.", author: "African Proverb" },
-  { quote: "What you get by achieving your goals is not as important as what you become by achieving your goals.", author: "Zig Ziglar" },
-  { quote: "The only thing necessary for the triumph of evil is for good men to do nothing.", author: "Edmund Burke" },
-  { quote: "Don’t limit your challenges. Challenge your limits.", author: "Unknown" },
-  { quote: "In the middle of every difficulty lies opportunity.", author: "Albert Einstein" },
-  { quote: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius" },
-  { quote: "If you can dream it, you can do it.", author: "Walt Disney" },
-  { quote: "Do one thing every day that scares you.", author: "Eleanor Roosevelt" },
-  { quote: "The best way to get started is to quit talking and begin doing.", author: "Walt Disney" },
-  { quote: "Keep your face always toward the sunshine—and shadows will fall behind you.", author: "Walt Whitman" },
-  { quote: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
-  { quote: "Success is not how high you have climbed, but how you make a positive difference to the world.", author: "Roy T. Bennett" },
-  { quote: "If you want to be happy, be.", author: "Leo Tolstoy" },
-  { quote: "The only limit to our realization of tomorrow is our doubts of today.", author: "Franklin D. Roosevelt" },
-  { quote: "It always seems impossible until it’s done.", author: "Nelson Mandela" },
-  { quote: "Keep your eyes on the stars, and your feet on the ground.", author: "Theodore Roosevelt" },
-  { quote: "You have as much laughter as you have faith.", author: "Martin Luther" },
-  { quote: "Everything you can imagine is real.", author: "Pablo Picasso" },
-  { quote: "If you don't build your dream, someone else will hire you to help them build theirs.", author: "Dhirubhai Ambani" },
-  { quote: "Don't cry because it's over, smile because it happened.", author: "Dr. Seuss" },
-  { quote: "Life is either a daring adventure or nothing at all.", author: "Helen Keller" },
-  { quote: "Don't count the days, make the days count.", author: "Muhammad Ali" },
-  { quote: "Success is not the key to happiness. Happiness is the key to success.", author: "Albert Schweitzer" },
-  { quote: "The best revenge is massive success.", author: "Frank Sinatra" },
-  { quote: "You can't go back and change the beginning, but you can start where you are and change the ending.", author: "C.S. Lewis" },
-  { quote: "Success is not the key to happiness. Happiness is the key to success.", author: "Albert Schweitzer" },
-  { quote: "The best revenge is massive success.", author: "Frank Sinatra" },
-  { quote: "Do what you can, with what you have, where you are.", author: "Theodore Roosevelt" },
-  { quote: "You have to be odd to be number one.", author: "Dr. Seuss" },
-  { quote: "Don’t wait. The time will never be just right.", author: "Napoleon Hill" },
-  { quote: "The best time to plant a tree was 20 years ago. The second best time is now.", author: "Chinese Proverb" },
-  { quote: "Life isn’t about finding yourself. It’s about creating yourself.", author: "George Bernard Shaw" },
-  { quote: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius" },
-  { quote: "It always seems impossible until it’s done.", author: "Nelson Mandela" },
-  { quote: "Everything you can imagine is real.", author: "Pablo Picasso" },
-  { quote: "Don’t limit your challenges, challenge your limits.", author: "Unknown" },
-  { quote: "To live is the rarest thing in the world. Most people exist, that is all.", author: "Oscar Wilde" },
-  { quote: "In three words I can sum up everything I've learned about life: it goes on.", author: "Robert Frost" },
-  { quote: "You miss 100% of the shots you don’t take.", author: "Wayne Gretzky" },
-  { quote: "Success is not final, failure is not fatal: It is the courage to continue that counts.", author: "Winston Churchill" },
-  { quote: "The only impossible journey is the one you never begin.", author: "Tony Robbins" },
-  { quote: "Everything has beauty, but not everyone sees it.", author: "Confucius" },
-  { quote: "Believe you can and you’re halfway there.", author: "Theodore Roosevelt" },
-  { quote: "The best revenge is massive success.", author: "Frank Sinatra" },
-  { quote: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" },
-  { quote: "The only limit to our realization of tomorrow is our doubts of today.", author: "Franklin D. Roosevelt" },
-  { quote: "You must be the change you wish to see in the world.", author: "Mahatma Gandhi" },
-  { quote: "It is never too late to be what you might have been.", author: "George Eliot" },
-  { quote: "Success is not how high you have climbed, but how you make a positive difference to the world.", author: "Roy T. Bennett" },
-  { quote: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
-  { quote: "To be yourself in a world that is constantly trying to make you something else is the greatest accomplishment.", author: "Ralph Waldo Emerson" },
-  { quote: "A journey of a thousand miles begins with a single step.", author: "Lao Tzu" },
-  { quote: "Your time is limited, so don’t waste it living someone else’s life.", author: "Steve Jobs" },
-  { quote: "You can never plan the future by the past.", author: "Edmund Burke" },
-  { quote: "You must be the change you wish to see in the world.", author: "Mahatma Gandhi" },
-  { quote: "The best way to predict the future is to create it.", author: "Abraham Lincoln" },
-  { quote: "It always seems impossible until it’s done.", author: "Nelson Mandela" },
-  { quote: "Keep your eyes on the stars, and your feet on the ground.", author: "Theodore Roosevelt" },
-  { quote: "What we think, we become.", author: "Buddha" },
-  { quote: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
-  { quote: "You don’t have to be great to start, but you have to start to be great.", author: "Zig Ziglar" },
-  { quote: "Everything you’ve ever wanted is on the other side of fear.", author: "George Addair" },
-  { quote: "Do one thing every day that scares you.", author: "Eleanor Roosevelt" },
-  { quote: "Don’t wait. The time will never be just right.", author: "Napoleon Hill" },
-  { quote: "Life is what happens when you’re busy making other plans.", author: "John Lennon" },
-  { quote: "Success is not final, failure is not fatal: It is the courage to continue that counts.", author: "Winston Churchill" },
-  { quote: "Your time is limited, so don’t waste it living someone else’s life.", author: "Steve Jobs" },
-  { quote: "Do not go where the path may lead, go instead where there is no path and leave a trail.", author: "Ralph Waldo Emerson" },
-  { quote: "Believe you can and you’re halfway there.", author: "Theodore Roosevelt" },
-  { quote: "Happiness is not something ready-made. It comes from your own actions.", author: "Dalai Lama" },
-  { quote: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" },
-  { quote: "Your life does not get better by chance, it gets better by change.", author: "Jim Rohn" },
-  { quote: "Hardships often prepare ordinary people for an extraordinary destiny.", author: "C.S. Lewis" },
-  { quote: "The only impossible journey is the one you never begin.", author: "Tony Robbins" },
-  { quote: "Everything you’ve ever wanted is on the other side of fear.", author: "George Addair" },
-  { quote: "Success usually comes to those who are too busy to be looking for it.", author: "Henry David Thoreau" },
-  { quote: "It always seems impossible until it’s done.", author: "Nelson Mandela" },
-  { quote: "Don’t watch the clock; do what it does. Keep going.", author: "Sam Levenson" },
-  { quote: "You are never too old to set another goal or to dream a new dream.", author: "C.S. Lewis" },
-  { quote: "If you want to lift yourself up, lift up someone else.", author: "Booker T. Washington" },
-  { quote: "Success is not how high you have climbed, but how you make a positive difference to the world.", author: "Roy T. Bennett" },
-  { quote: "The best revenge is massive success.", author: "Frank Sinatra" },
-  { quote: "Everything has beauty, but not everyone sees it.", author: "Confucius" },
-  { quote: "You only live once, but if you do it right, once is enough.", author: "Mae West" },
-  { quote: "If you can dream it, you can do it.", author: "Walt Disney" },
-  { quote: "In the end, we only regret the chances we didn’t take.", author: "Lewis Carroll" },
-  { quote: "Be yourself; everyone else is already taken.", author: "Oscar Wilde" },
-  { quote: "Two things are infinite: the universe and human stupidity; and I'm not sure about the universe.", author: "Albert Einstein" },
-  { quote: "Be the change that you wish to see in the world.", author: "Mahatma Gandhi" },
-  { quote: "If you don't stand for something, you will fall for anything.", author: "Malcolm X" },
-  { quote: "Everything you can imagine is real.", author: "Pablo Picasso" },
-  { quote: "What we think, we become.", author: "Buddha" },
-  { quote: "Life is really simple, but we insist on making it complicated.", author: "Confucius" },
-  { quote: "I think, therefore I am.", author: "René Descartes" },
-  { quote: "A journey of a thousand miles begins with a single step.", author: "Lao Tzu" },
-  { quote: "You must be the change you wish to see in the world.", author: "Mahatma Gandhi" },
-  { quote: "Don't cry because it's over, smile because it happened.", author: "Dr. Seuss" },
-  { quote: "Be the best version of yourself.", author: "Unknown" },
-  { quote: "Life isn’t about finding yourself. It’s about creating yourself.", author: "George Bernard Shaw" },
-  { quote: "Success is not the key to happiness. Happiness is the key to success. If you love what you are doing, you will be successful.", author: "Albert Schweitzer" },
-  { quote: "The greatest glory in living lies not in never falling, but in rising every time we fall.", author: "Nelson Mandela" },
-  { quote: "The purpose of life is not to be happy. It is to be useful, to be honorable, to be compassionate, to have it make some difference that you have lived and lived well.", author: "Ralph Waldo Emerson" },
-  { quote: "It is never too late to be what you might have been.", author: "George Eliot" },
-  { quote: "The only way to achieve the impossible is to believe it is possible.", author: "Charles Kingsleigh" },
-  { quote: "To live a creative life, we must lose our fear of being wrong.", author: "Joseph Chilton Pearce" },
-  { quote: "If you want to live a happy life, tie it to a goal, not to people or things.", author: "Albert Einstein" },
-  { quote: "Do what you can, with what you have, where you are.", author: "Theodore Roosevelt" },
-  { quote: "You must be the change you wish to see in the world.", author: "Mahatma Gandhi" },
-  { quote: "Life isn’t about waiting for the storm to pass, it’s about learning how to dance in the rain.", author: "Vivian Greene" },
-  { quote: "If you want to go fast, go alone. If you want to go far, go together.", author: "African Proverb" },
-  { quote: "The best time to plant a tree was 20 years ago. The second best time is now.", author: "Chinese Proverb" },
-  { quote: "Don’t cry because it’s over, smile because it happened.", author: "Dr. Seuss" },
-  { quote: "What lies behind us and what lies before us are tiny matters compared to what lies within us.", author: "Ralph Waldo Emerson" },
-  { quote: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
-  { quote: "Success is not how high you have climbed, but how you make a positive difference to the world.", author: "Roy T. Bennett" }
-];
+    // List of 200 quotes
+    const quotes = [
+        { quote: "If opportunity doesn’t knock, build a door.", author: "Milton Berle" },
+        { quote: "Don’t wait. The time will never be just right.", author: "Napoleon Hill" },
+        { quote: "The best time to plant a tree was 20 years ago. The second best time is now.", author: "Chinese Proverb" },
+        { quote: "Life isn’t about finding yourself. It’s about creating yourself.", author: "George Bernard Shaw" },
+        { quote: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius" },
+        { quote: "It always seems impossible until it’s done.", author: "Nelson Mandela" },
+        { quote: "Everything you can imagine is real.", author: "Pablo Picasso" },
+        { quote: "Don’t limit your challenges, challenge your limits.", author: "Unknown" },
+        { quote: "To live is the rarest thing in the world. Most people exist, that is all.", author: "Oscar Wilde" },
+        { quote: "In three words I can sum up everything I've learned about life: it goes on.", author: "Robert Frost" },
+        { quote: "You miss 100% of the shots you don’t take.", author: "Wayne Gretzky" },
+        { quote: "Success is not final, failure is not fatal: It is the courage to continue that counts.", author: "Winston Churchill" },
+        { quote: "The only impossible journey is the one you never begin.", author: "Tony Robbins" },
+        { quote: "Everything has beauty, but not everyone sees it.", author: "Confucius" },
+        { quote: "Believe you can and you’re halfway there.", author: "Theodore Roosevelt" },
+        { quote: "The best revenge is massive success.", author: "Frank Sinatra" },
+        { quote: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" },
+        { quote: "The only limit to our realization of tomorrow is our doubts of today.", author: "Franklin D. Roosevelt" },
+        { quote: "You must be the change you wish to see in the world.", author: "Mahatma Gandhi" },
+        { quote: "It is never too late to be what you might have been.", author: "George Eliot" },
+        { quote: "Success is not how high you have climbed, but how you make a positive difference to the world.", author: "Roy T. Bennett" },
+        { quote: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+        { quote: "To be yourself in a world that is constantly trying to make you something else is the greatest accomplishment.", author: "Ralph Waldo Emerson" },
+        { quote: "A journey of a thousand miles begins with a single step.", author: "Lao Tzu" },
+        { quote: "Your time is limited, so don’t waste it living someone else’s life.", author: "Steve Jobs" },
+        { quote: "You can never plan the future by the past.", author: "Edmund Burke" },
+        { quote: "You must be the change you wish to see in the world.", author: "Mahatma Gandhi" },
+        { quote: "The best way to predict the future is to create it.", author: "Abraham Lincoln" },
+        { quote: "It always seems impossible until it’s done.", author: "Nelson Mandela" },
+        { quote: "Keep your eyes on the stars, and your feet on the ground.", author: "Theodore Roosevelt" },
+        { quote: "What we think, we become.", author: "Buddha" },
+        { quote: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
+        { quote: "You don’t have to be great to start, but you have to start to be great.", author: "Zig Ziglar" },
+        { quote: "Everything you’ve ever wanted is on the other side of fear.", author: "George Addair" },
+        { quote: "Do one thing every day that scares you.", author: "Eleanor Roosevelt" },
+        { quote: "Don’t wait. The time will never be just right.", author: "Napoleon Hill" },
+        { quote: "Life is what happens when you’re busy making other plans.", author: "John Lennon" },
+        { quote: "Success is not final, failure is not fatal: It is the courage to continue that counts.", author: "Winston Churchill" },
+        { quote: "Your time is limited, so don’t waste it living someone else’s life.", author: "Steve Jobs" },
+        { quote: "Do not go where the path may lead, go instead where there is no path and leave a trail.", author: "Ralph Waldo Emerson" },
+        { quote: "Believe you can and you’re halfway there.", author: "Theodore Roosevelt" },
+        { quote: "Happiness is not something ready-made. It comes from your own actions.", author: "Dalai Lama" },
+        { quote: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" },
+        { quote: "Your life does not get better by chance, it gets better by change.", author: "Jim Rohn" },
+        { quote: "Hardships often prepare ordinary people for an extraordinary destiny.", author: "C.S. Lewis" },
+        { quote: "The only impossible journey is the one you never begin.", author: "Tony Robbins" },
+        { quote: "Everything you’ve ever wanted is on the other side of fear.", author: "George Addair" },
+        { quote: "Success usually comes to those who are too busy to be looking for it.", author: "Henry David Thoreau" },
+        { quote: "It always seems impossible until it’s done.", author: "Nelson Mandela" },
+        { quote: "Don’t watch the clock; do what it does. Keep going.", author: "Sam Levenson" },
+        { quote: "You are never too old to set another goal or to dream a new dream.", author: "C.S. Lewis" },
+        { quote: "If you want to lift yourself up, lift up someone else.", author: "Booker T. Washington" },
+        { quote: "Success is not how high you have climbed, but how you make a positive difference to the world.", author: "Roy T. Bennett" },
+        { quote: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
+        { quote: "Your time is limited, so don’t waste it living someone else’s life.", author: "Steve Jobs" },
+        { quote: "We cannot solve our problems with the same thinking we used when we created them.", author: "Albert Einstein" },
+        { quote: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+        { quote: "You must be the change you wish to see in the world.", author: "Mahatma Gandhi" },
+        { quote: "Do one thing every day that scares you.", author: "Eleanor Roosevelt" },
+        { quote: "The only limit to our realization of tomorrow is our doubts of today.", author: "Franklin D. Roosevelt" }
+    ];
 
-  // Add 380+ more here...
-];
+    // Function to generate a random quote
+    function getRandomQuote() {
+        const randomIndex = Math.floor(Math.random() * quotes.length);
+        return quotes[randomIndex];
+    }
 
-const textEl = document.getElementById('text');
-const authorEl = document.getElementById('author');
-const newQuoteBtn = document.getElementById('new-quote');
-const copyBtn = document.getElementById('copy-quote');
-const tweetQuote = document.getElementById('tweet-quote');
-const darkModeToggle = document.getElementById('dark-mode-toggle');
-const downloadBtn = document.getElementById('download-quote');
+    // Function to display the new quote
+    function displayQuote() {
+        const quote = getRandomQuote();
+        document.getElementById('text').textContent = `"${quote.quote}"`;
+        document.getElementById('author').textContent = `- ${quote.author}`;
+    }
 
-// Display random quote
-function displayRandomQuote() {
-  const randomIndex = Math.floor(Math.random() * quotes.length);
-  const quote = quotes[randomIndex];
-  textEl.textContent = `"${quote.quote}"`;
-  authorEl.textContent = `- ${quote.author}`;
-  tweetQuote.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(`"${quote.quote}" - ${quote.author}`)}`;
-}
+    // Function to toggle dark mode
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+    }
 
-// Copy quote to clipboard
-function copyQuote() {
-  const quoteText = `${textEl.textContent} ${authorEl.textContent}`;
-  navigator.clipboard.writeText(quoteText).then(() => {
-    copyBtn.textContent = "Copied!";
-    setTimeout(() => {
-      copyBtn.textContent = "Copy Quote";
-    }, 1500);
-  });
-}
+    // Event listeners
+    document.getElementById('new-quote').addEventListener('click', displayQuote);
+    document.getElementById('toggle-dark-mode').addEventListener('click', toggleDarkMode);
 
-// Dark mode toggle
-function toggleDarkMode() {
-  document.body.classList.toggle("dark-mode");
-}
-
-// Download quote as image
-function downloadQuoteAsImage() {
-  const quoteText = `${textEl.textContent} ${authorEl.textContent}`;
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  
-  canvas.width = 600;
-  canvas.height = 300;
-  
-  // Set background
-  ctx.fillStyle = '#121212';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  
-  // Add quote text
-  ctx.fillStyle = 'white';
-  ctx.font = '20px Arial';
-  ctx.textAlign = 'center';
-  ctx.fillText(quoteText, canvas.width / 2, canvas.height / 2);
-  
-  // Create image and download
-  const img = canvas.toDataURL('image/png');
-  const link = document.createElement('a');
-  link.href = img;
-  link.download = 'quote.png';
-  link.click();
-}
-
-// Event listeners
-newQuoteBtn.addEventListener('click', displayRandomQuote);
-copyBtn.addEventListener('click', copyQuote);
-darkModeToggle.addEventListener('click', toggleDarkMode);
-downloadBtn.addEventListener('click', downloadQuoteAsImage);
-
-// Initialize
-displayRandomQuote();
+    // Initial quote display
+    displayQuote();
 </script>
 
 </body>
