@@ -17,6 +17,22 @@ toggleBtn.addEventListener('click', () => {
 document.getElementById('toggle-dark').addEventListener('click', () => {
   document.body.classList.toggle('dark');
 });
+// Dark Mode Toggle
+document.getElementById('toggle-dark').addEventListener('click', () => {
+  document.body.classList.toggle('dark');
+});
+
+// Live Search Filter
+const searchInput = document.getElementById('search');
+const toolCards = document.querySelectorAll('.tool-card');
+
+searchInput.addEventListener('input', () => {
+  const query = searchInput.value.toLowerCase();
+  toolCards.forEach(card => {
+    const text = card.textContent.toLowerCase();
+    card.style.display = text.includes(query) ? 'flex' : 'none';
+  });
+});
 
 // Load saved mode on startup
 if (localStorage.getItem('mode') === 'dark') {
