@@ -4,6 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>🧰 Toolbox Suite - 20 Everyday Tools</title>
+  <link rel="manifest" href="manifest.json">
+<link rel="icon" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/logo-192.png">
+<meta name="theme-color" content="#6200ee">
+
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -42,6 +47,13 @@
   </footer>
 
   <script src="script.js"></script>
+  <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(() => console.log('Service Worker Registered ✔️'));
+  }
+</script>
+
 </body>
 </html>
 
