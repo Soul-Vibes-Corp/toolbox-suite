@@ -1,43 +1,44 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // Cache elements
+  // ---- Cache Elements ----
   const searchInput = document.getElementById('search');
   const resultCount = document.getElementById('result-count');
-  const darkToggle = document.getElementById('toggle-dark');
+  const toggleDarkBtn = document.getElementById('toggle-dark');
   const toolCards = Array.from(document.querySelectorAll('.tool-card'));
   const categories = Array.from(document.querySelectorAll('.category'));
 
   let currentFocus = -1; // For keyboard navigation
 
   // ---- Dark Mode ----
-  const DARK_CLASS = 'dark-mode';
-  const darkPrefKey = 'toolbox-suite-dark';
+  const DARK_CLASS = 'dark';
+  const darkPrefKey = 'darkMode';
 
-  // Function to set dark mode
   const setDarkMode = (enable) => {
     document.body.classList.toggle(DARK_CLASS, enable);
-    localStorage.setItem(darkPrefKey, enable ? '1' : '0');
-    updateToggleIcon(); // Update the dark mode icon
+    localStorage.setItem(darkPrefKey, enable ? 'enabled' : 'disabled');
+    updateToggleIcon();
   };
 
-  // Function to update dark mode icon
   const updateToggleIcon = () => {
-    darkToggle.textContent = document.body.classList.contains(DARK_CLASS) ? '☀️' : '🌙';
+    toggleDarkBtn.textContent = document.body.classList.contains(DARK_CLASS) ? '☀️' : '🌙';
   };
 
-  // Load saved theme preference
-  if (localStorage.getItem(darkPrefKey) === '1') {
+  // Load saved dark mode preference
+  if (localStorage.getItem(darkPrefKey) === 'enabled') {
     setDarkMode(true);
+  } else {
+    updateToggleIcon();
   }
 
-  // Dark mode toggle button event
-  darkToggle.addEventListener('click', () => {
-    setDarkMode(!document.body.classList.contains(DARK_CLASS));
+  // Toggle dark mode on button click
+  toggleDarkBtn.addEventListener('click', () => {
+    const enable = !document.body.classList.contains(DARK_CLASS);
+    setDarkMode(enable);
   });
 
   // ---- Search Functionality ----
-  const searchTools = (term) => {
-    const query = term.toLowerCase().trim();
-    let matches = 0;
+  const filterTools = () => {
+    const query = searchInput.value.toLowerCase().trim();
+    let totalMatches = 0;
 
     categories.forEach(section => {
       const cards = Array.from(section.querySelectorAll('.tool-card'));
@@ -50,20 +51,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (match) sectionMatches++;
       });
 
-      // Auto-expand/collapse based on matches
       section.style.display = sectionMatches > 0 ? 'block' : 'none';
-      matches += sectionMatches;
+      totalMatches += sectionMatches;
     });
 
-    // Update result count
-    resultCount.textContent = query ? `${matches} result${matches !== 1 ? 's' : ''}` : '';
-    currentFocus = -1; // Reset keyboard focus
+    resultCount.textContent = query ? `${totalMatches} tool${totalMatches !== 1 ? 's' : ''} found` : '';
+    currentFocus = -1; // Reset focus after search
   };
 
-  // Search input event listener
-  searchInput.addEventListener('input', (e) => {
-    searchTools(e.target.value);
-  });
+  searchInput.addEventListener('input', filterTools);
 
   // ---- Keyboard Navigation ----
   searchInput.addEventListener('keydown', (e) => {
@@ -84,17 +80,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // ---- Make tool-cards focusable ----
+  // ---- Make tool cards focusable ----
   toolCards.forEach(card => {
-    card.setAttribute('tabindex', '0'); // Ensure tool cards are focusable
+    card.setAttribute('tabindex', '0');
   });
-
-  // ---- Initialize the dark mode icon ----
-  updateToggleIcon();
-
-  // Load saved mode on startup
-  if (localStorage.getItem('mode') === 'dark') {
-    document.body.classList.add('dark');
-    updateToggleIcon(); // Ensure the icon is set correctly
-  }
 });
