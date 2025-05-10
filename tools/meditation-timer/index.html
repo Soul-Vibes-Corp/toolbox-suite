@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mindfulness Meditation Timer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Mindfulness Meditation Timer</h1>
+    
+    <button id="themeToggle">🌙 Toggle Dark Mode</button>
+
+    <div class="settings">
+      <h2>Set Your Meditation Session</h2>
+      <input type="number" id="sessionDuration" placeholder="Session Duration (minutes)" />
+      <input type="number" id="warmupDuration" placeholder="Warm-up Duration (minutes)" />
+      <input type="number" id="cooldownDuration" placeholder="Cooldown Duration (minutes)" />
+      <button id="startSession">Start Session</button>
+    </div>
+
+    <div id="timer" class="timer">
+      <h2>Session Timer</h2>
+      <div id="timerDisplay">00:00</div>
+    </div>
+
+    <div class="sound-settings">
+      <h2>Sound Settings</h2>
+      <label for="soundSelect">Select Sound: </label>
+      <select id="soundSelect">
+        <option value="calm">Calming Music</option>
+        <option value="nature">Nature Sounds</option>
+      </select>
+      <input type="range" id="volumeControl" min="0" max="100" value="50" />
+      <label for="volumeControl">Volume</label>
+    </div>
+
+    <div id="sessionHistory" class="history">
+      <h2>Your Meditation History</h2>
+      <div id="historyContent"></div>
+      <button id="exportHistory">Export History</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
