@@ -91,3 +91,27 @@ footer {
   color: white;
   margin-top: 2rem;
 }
+
+/* Animation */
+.tool-card {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.6s forwards;
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Staggered Animation Delay */
+.tool-grid .tool-card:nth-child(1) { animation-delay: 0.1s; }
+.tool-grid .tool-card:nth-child(2) { animation-delay: 0.2s; }
+.tool-grid .tool-card:nth-child(3) { animation-delay: 0.3s; }
+.tool-grid .tool-card:nth-child(4) { animation-delay: 0.4s; }
+.tool-grid .tool-card:nth-child(5) { animation-delay: 0.5s; }
+.tool-grid .tool-card:nth-child(6) { animation-delay: 0.6s; }
+.tool-grid .tool-card:nth-child(7) { animation-delay: 0.7s; }
+.tool-grid .tool-card:nth-child(8) { animation-delay: 0.8s; }
