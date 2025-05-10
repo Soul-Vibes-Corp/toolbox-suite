@@ -11,29 +11,40 @@
 
     <button id="themeToggle">🌙 Toggle Dark Mode</button>
 
-    <label for="category">Choose category:</label>
-    <select id="category">
-      <option value="length">Length</option>
-      <option value="weight">Weight</option>
-      <option value="temperature">Temperature</option>
-      <option value="time">Time</option>
-      <option value="area">Area</option>
-      <option value="volume">Volume</option>
-    </select>
-
     <div class="converter">
-      <input type="number" id="inputValue" placeholder="Enter value">
+      <div class="input-section">
+        <label for="valueInput">Enter Value:</label>
+        <input type="number" id="valueInput" placeholder="Enter a value" />
 
-      <select id="fromUnit"></select>
-      <select id="toUnit"></select>
+        <label for="fromUnit">From:</label>
+        <select id="fromUnit">
+          <option value="meter">Meter</option>
+          <option value="kilometer">Kilometer</option>
+          <option value="mile">Mile</option>
+          <option value="centimeter">Centimeter</option>
+          <option value="inch">Inch</option>
+          <!-- Add more options as needed -->
+        </select>
+      </div>
 
-      <button id="convertBtn">Convert</button>
+      <div class="output-section">
+        <label for="toUnit">To:</label>
+        <select id="toUnit">
+          <option value="meter">Meter</option>
+          <option value="kilometer">Kilometer</option>
+          <option value="mile">Mile</option>
+          <option value="centimeter">Centimeter</option>
+          <option value="inch">Inch</option>
+          <!-- Add more options as needed -->
+        </select>
 
-      <h2>Result: <span id="result">-</span></h2>
+        <label for="result">Converted Value:</label>
+        <input type="text" id="result" readonly />
+      </div>
     </div>
+
   </div>
 
   <script src="script.js"></script>
 </body>
 </html>
-
