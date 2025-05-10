@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JSON Formatter + Beautifier</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>JSON Formatter + Beautifier</h1>
+
+    <button id="themeToggle">🌙 Toggle Dark Mode</button>
+
+    <label for="jsonInput">Enter your JSON data below:</label>
+    <textarea id="jsonInput" rows="10"></textarea>
+
+    <button id="formatBtn">Format & Beautify</button>
+    <button id="minifyBtn">Minify</button>
+
+    <div class="output">
+      <label for="jsonOutput">Formatted JSON:</label>
+      <textarea id="jsonOutput" readonly rows="10"></textarea>
+    </div>
+
+    <button id="copyBtn">📋 Copy to Clipboard</button>
+    <div id="errorMessage" style="color: red;"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
