@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resume Builder</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Resume Builder</h1>
+
+    <button id="themeToggle">🌙 Toggle Dark Mode</button>
+
+    <form id="resumeForm">
+      <div class="section">
+        <label for="fullName">Full Name:</label>
+        <input type="text" id="fullName" placeholder="John Doe" />
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" placeholder="example@domain.com" />
+
+        <label for="phone">Phone Number:</label>
+        <input type="tel" id="phone" placeholder="123-456-7890" />
+      </div>
+
+      <div class="section">
+        <h3>Experience</h3>
+        <div id="experienceContainer">
+          <input type="text" class="experience" placeholder="Company Name - Job Title" />
+          <input type="text" class="experience" placeholder="Location" />
+          <input type="text" class="experience" placeholder="Date Range" />
+        </div>
+        <button type="button" id="addExperience">Add Experience</button>
+      </div>
+
+      <div class="section">
+        <h3>Education</h3>
+        <div id="educationContainer">
+          <input type="text" class="education" placeholder="School - Degree" />
+          <input type="text" class="education" placeholder="Location" />
+          <input type="text" class="education" placeholder="Graduation Date" />
+        </div>
+        <button type="button" id="addEducation">Add Education</button>
+      </div>
+
+      <div class="section">
+        <label for="skills">Skills:</label>
+        <textarea id="skills" placeholder="e.g., HTML, JavaScript, Python"></textarea>
+      </div>
+
+      <button type="submit" id="downloadResume">Download Resume</button>
+    </form>
+
+    <div id="resumePreview" class="preview">
+      <h2>Resume Preview</h2>
+      <div id="previewContent"></div>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
