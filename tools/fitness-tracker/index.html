@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fitness Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Fitness Tracker</h1>
+
+    <button id="themeToggle">🌙 Toggle Dark Mode</button>
+
+    <div class="goal-container">
+      <h2>Set Your Fitness Goals</h2>
+      <input type="number" id="dailyStepsGoal" placeholder="Daily Steps Goal" />
+      <input type="number" id="caloriesGoal" placeholder="Calories Burned Goal" />
+      <button id="saveGoals">Save Goals</button>
+    </div>
+
+    <div class="log-container">
+      <h2>Log Your Daily Activity</h2>
+      <input type="number" id="stepsLogged" placeholder="Steps Logged" />
+      <input type="number" id="caloriesLogged" placeholder="Calories Burned" />
+      <input type="number" id="hydrationLogged" placeholder="Water Intake (ml)" />
+      <button id="logActivity">Log Activity</button>
+    </div>
+
+    <div id="fitnessReport" class="report">
+      <h2>Your Weekly Fitness Report</h2>
+      <div id="reportContent"></div>
+      <button id="exportData">Export Data</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
