@@ -64,3 +64,56 @@ button {
 button:hover {
   opacity: 0.9;
 }
+
+:root {
+  --bg-color: #f7f7f7;
+  --container-bg: #ffffff;
+  --text-color: #000000;
+  --button-bg: #e0e0e0;
+}
+
+body.dark {
+  --bg-color: #121212;
+  --container-bg: #1e1e1e;
+  --text-color: #ffffff;
+  --button-bg: #333333;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: var(--bg-color);
+  color: var(--text-color);
+  margin: 0;
+  padding: 20px;
+  transition: background 0.3s, color 0.3s;
+}
+
+.container {
+  max-width: 600px;
+  margin: auto;
+  background: var(--container-bg);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: background 0.3s;
+}
+
+textarea {
+  background: var(--button-bg);
+  color: var(--text-color);
+  border: 1px solid #ccc;
+}
+
+button {
+  background: var(--button-bg);
+  color: var(--text-color);
+  transition: background 0.3s, color 0.3s;
+}
+
+#themeToggle {
+  margin-bottom: 15px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
