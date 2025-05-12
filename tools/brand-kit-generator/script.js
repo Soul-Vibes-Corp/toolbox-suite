@@ -163,6 +163,19 @@ function generateSignature() {
   document.getElementById('signaturePreview').innerHTML = signatureHtml;
   allData.signature = signatureHtml;
 }
+import React from "react";
+import BusinessCardPreview from "@/components/BusinessCardPreview";
+import BrandArchetypeTool from "@/components/BrandArchetypeTool";
+
+export default function Home() {
+  return (
+    <div className="min-h-screen p-10 bg-gray-50 flex flex-col items-center space-y-16">
+      <BusinessCardPreview />
+      <BrandArchetypeTool />
+    </div>
+  );
+}
+
 
 // Brandbook PDF Generator
 function generateBrandbook() {
