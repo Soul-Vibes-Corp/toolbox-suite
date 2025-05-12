@@ -1,1 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Instant Brand Kit Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
 
+  <!-- jsPDF for PDF generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+  <!-- FileSaver for ZIP Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <!-- Chroma.js for Color Manipulation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js"></script>
+</head>
+
+<body>
+  <header>
+    <h1>Instant Brand Kit Generator</h1>
+    <p>Build your entire brand identity in minutes</p>
+  </header>
+
+  <main>
+
+    <section id="logo-section">
+      <h2>1️⃣ Logo Generator & Upload</h2>
+      <input type="file" accept="image/*" id="logoUpload">
+      <button onclick="generateLogo()">Generate Logo</button>
+      <canvas id="logoCanvas"></canvas>
+    </section>
+
+    <section id="color-section">
+      <h2>2️⃣ Brand Colors</h2>
+      <input type="color" id="colorPicker">
+      <button onclick="generatePalette()">Generate Palette</button>
+      <div id="paletteDisplay"></div>
+    </section>
+
+    <section id="font-section">
+      <h2>3️⃣ Brand Fonts</h2>
+      <select id="fontSelect">
+        <option>Montserrat & Lora</option>
+        <option>Raleway & Roboto</option>
+        <option>Poppins & Merriweather</option>
+      </select>
+    </section>
+
+    <section id="guideline-section">
+      <h2>4️⃣ Generate Brand Guidelines (PDF)</h2>
+      <button onclick="generateBrandbook()">Generate Brandbook PDF</button>
+    </section>
+
+    <section id="assets-section">
+      <h2>5️⃣ Branded Assets</h2>
+      <button onclick="generateBusinessCard()">Generate Business Card</button>
+      <button onclick="generateEmailSignature()">Generate Email Signature</button>
+      <button onclick="generateSocialMediaAssets()">Generate Social Media Assets</button>
+    </section>
+
+    <section id="download-section">
+      <h2>6️⃣ Download Brand Kit</h2>
+      <button onclick="downloadKit()">Download All (ZIP)</button>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>© 2025 Soul Vibes Corp - Toolbox Suite</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
