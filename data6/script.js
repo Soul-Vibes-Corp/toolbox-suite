@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', () => {
   // ---- Cache Elements ----
   const searchInput = document.getElementById('search');
