@@ -1,211 +1,218 @@
-// Global Data Store
-let allData = {};
-
 // Dark/Light Mode Toggle
 document.getElementById("toggle-dark").addEventListener("click", () => {
   document.body.classList.toggle("dark-mode");
 });
 
-// Tagline & Bio Presets
+// Tagline and Bio Generation
 const taglines = [
-  "Empowering Brands Worldwide", "Innovation Starts Here", "Your Success, Our Mission",
-  "Branding That Speaks", "Creating Icons, Not Just Brands", "Leading the Future of Branding",
-  "Designing Tomorrow’s Vision", "Where Ideas Become Reality", "Your Brand, Our Passion",
-  "Crafting Stories, Building Brands", "Transforming Ideas Into Impact", "Making Brands Matter",
-  "Empowering Bold Ambitions", "Shaping the Future of Business", "Inspiring Growth Through Branding",
-  "Building the Brands of Tomorrow", "Redefining Excellence in Branding", "Designing Brands with Purpose",
-  "Your Brand, Our Blueprint", "Driven by Innovation, Powered by Design",
-  "Passionate About Your Brand’s Future", "Your Vision, Our Brand Expertise", "Mastering the Art of Branding",
-  "Every Brand Has a Story", "We Speak Brand Language", "Innovative Branding for Every Industry",
-  "Stronger Brands, Stronger Business", "Future-Proof Your Brand", "Crafting Powerful, Purposeful Brands",
-  "Branding with Impact", "Building Legacies Through Branding", "Where Creativity Meets Strategy",
-  "Designing Iconic Brand Identities", "Bringing Brands to Life", "Making a Lasting Impression",
-  "Innovative Designs for Future Brands", "From Vision to Victory", "Elevating Brands to New Heights",
-  "Turning Ideas Into Iconic Brands", "Creating Unforgettable Impressions", "Branding That Works",
-  "Revolutionizing Brand Identity", "Redefining What a Brand Can Be", "Crafting Brands with a Purpose",
-  "Turning Dreams Into Brands", "Building Stronger Connections Through Branding", "Next-Level Branding Solutions",
-  "Branding with Heart and Soul", "Transforming Ideas Into Icons", "Creating Tomorrow’s Icons Today",
+  "Empowering Brands Worldwide", 
+  "Innovation Starts Here", 
+  "Your Success, Our Mission", 
+  "Branding That Speaks", 
+  "Creating Icons, Not Just Brands",
+  "Leading the Future of Branding",
+  "Designing Tomorrow’s Vision",
+  "Where Ideas Become Reality",
+  "Your Brand, Our Passion",
+  "Crafting Stories, Building Brands",
+  "Transforming Ideas Into Impact",
+  "Making Brands Matter",
+  "Empowering Bold Ambitions",
+  "Shaping the Future of Business",
+  "Inspiring Growth Through Branding",
+  "Building the Brands of Tomorrow",
+  "Redefining Excellence in Branding",
+  "Designing Brands with Purpose",
+  "Your Brand, Our Blueprint",
+  "Driven by Innovation, Powered by Design",
+  "Passionate About Your Brand’s Future",
+  "Your Vision, Our Brand Expertise",
+  "Mastering the Art of Branding",
+  "Every Brand Has a Story",
+  "We Speak Brand Language",
+  "Innovative Branding for Every Industry",
+  "Stronger Brands, Stronger Business",
+  "Future-Proof Your Brand",
+  "Crafting Powerful, Purposeful Brands",
+  "Branding with Impact",
+  "Building Legacies Through Branding",
+  "Where Creativity Meets Strategy",
+  "Designing Iconic Brand Identities",
+  "Bringing Brands to Life",
+  "Making a Lasting Impression",
+  "Innovative Designs for Future Brands",
+  "From Vision to Victory",
+  "Elevating Brands to New Heights",
+  "Turning Ideas Into Iconic Brands",
+  "Creating Unforgettable Impressions",
+  "Branding That Works",
+  "Revolutionizing Brand Identity",
+  "Redefining What a Brand Can Be",
+  "Crafting Brands with a Purpose",
+  "Turning Dreams Into Brands",
+  "Building Stronger Connections Through Branding",
+  "Next-Level Branding Solutions",
+  "Branding with Heart and Soul",
+  "Transforming Ideas Into Icons",
+  "Creating Tomorrow’s Icons Today",
   "Designing Your Brand’s Future"
 ];
 
 const bios = [
   "We specialize in transforming ideas into unforgettable brands.",
   "Bringing vision to life with powerful branding solutions.",
-  "Your brand's success is our business.", "Innovative branding for the modern entrepreneur.",
-  "Helping brands break through the noise.", "Turning creative ideas into market-leading brands.",
-  "We build brands that make a difference.", "Empowering brands to thrive in a competitive world.",
-  "Designing brands that connect with your audience.", "Transforming your ideas into iconic brands.",
-  "Fueling your brand’s success through innovation.", "Turning concepts into captivating brands.",
-  "We help brands tell their unique story.", "Designing memorable brands that leave a lasting impact.",
-  "Crafting brands that resonate with consumers.", "Transforming businesses with creative branding strategies.",
-  "Delivering exceptional branding solutions that inspire.", "Bringing your vision to life through powerful branding.",
-  "We build authentic, meaningful brands.", "Creating brands that stand out in the marketplace.",
-  "Redefining branding through innovative design.", "Crafting compelling brand identities that drive growth.",
-  "Innovating branding strategies for modern businesses.", "Empowering businesses to connect through branding.",
-  "Designing brands that are built to last.", "We help you create a brand that tells your story.",
-  "Inspiring your brand’s success through creativity.", "Building brands with a purpose and passion.",
-  "Helping you build a brand that stands the test of time.", "Elevating your business with powerful branding strategies.",
-  "Turning your brand vision into reality.", "Designing brands that are as unique as your business.",
-  "We specialize in creating brands that leave an impact.", "Creating branding strategies that drive business success.",
-  "Building brands that inspire trust and loyalty.", "Helping businesses grow through strategic branding.",
-  "Designing brands that are more than just logos.", "Helping brands define their voice in the market.",
-  "We create brands that foster strong connections.", "Helping you build a brand that resonates with your audience.",
-  "Designing brands that make an emotional connection.", "We help you build a brand that is unforgettable.",
-  "Building brands that reflect your company’s values.", "We create brands that people love.",
-  "Designing brands that create a strong identity.", "We help your brand stand out in a crowded market.",
-  "Creating brands that make a lasting impression.", "Transforming brands with fresh, creative ideas.",
-  "Designing brands that are both timeless and modern.", "We specialize in building brands that evolve with the times.",
+  "Your brand's success is our business.",
+  "Innovative branding for the modern entrepreneur.",
+  "Helping brands break through the noise.",
+  "Turning creative ideas into market-leading brands.",
+  "We build brands that make a difference.",
+  "Empowering brands to thrive in a competitive world.",
+  "Designing brands that connect with your audience.",
+  "Transforming your ideas into iconic brands.",
+  "Fueling your brand’s success through innovation.",
+  "Turning concepts into captivating brands.",
+  "We help brands tell their unique story.",
+  "Designing memorable brands that leave a lasting impact.",
+  "Crafting brands that resonate with consumers.",
+  "Transforming businesses with creative branding strategies.",
+  "Delivering exceptional branding solutions that inspire.",
+  "Bringing your vision to life through powerful branding.",
+  "We build authentic, meaningful brands.",
+  "Creating brands that stand out in the marketplace.",
+  "Redefining branding through innovative design.",
+  "Crafting compelling brand identities that drive growth.",
+  "Innovating branding strategies for modern businesses.",
+  "Empowering businesses to connect through branding.",
+  "Designing brands that are built to last.",
+  "We help you create a brand that tells your story.",
+  "Inspiring your brand’s success through creativity.",
+  "Building brands with a purpose and passion.",
+  "Helping you build a brand that stands the test of time.",
+  "Elevating your business with powerful branding strategies.",
+  "Turning your brand vision into reality.",
+  "Designing brands that are as unique as your business.",
+  "We specialize in creating brands that leave an impact.",
+  "Creating branding strategies that drive business success.",
+  "Building brands that inspire trust and loyalty.",
+  "Helping businesses grow through strategic branding.",
+  "Designing brands that are more than just logos.",
+  "Helping brands define their voice in the market.",
+  "We create brands that foster strong connections.",
+  "Helping you build a brand that resonates with your audience.",
+  "Designing brands that make an emotional connection.",
+  "We help you build a brand that is unforgettable.",
+  "Building brands that reflect your company’s values.",
+  "We create brands that people love.",
+  "Designing brands that create a strong identity.",
+  "We help your brand stand out in a crowded market.",
+  "Creating brands that make a lasting impression.",
+  "Transforming brands with fresh, creative ideas.",
+  "Designing brands that are both timeless and modern.",
+  "We specialize in building brands that evolve with the times.",
   "Turning your passion into a brand that connects."
 ];
 
-// Utility Functions
-const getRandomItem = arr => arr[Math.floor(Math.random() * arr.length)];
-const updateElementText = (id, text) => document.getElementById(id).textContent = text;
-
-// Random Generators
+// Tagline Display
 document.getElementById("generate-tagline").addEventListener("click", () => {
-  updateElementText("tagline-display", getRandomItem(taglines));
+  const randomTagline = taglines[Math.floor(Math.random() * taglines.length)];
+  document.getElementById("tagline-display").textContent = randomTagline;
 });
+
+// Bio Display
 document.getElementById("generate-bio").addEventListener("click", () => {
-  updateElementText("bio-display", getRandomItem(bios));
+  const randomBio = bios[Math.floor(Math.random() * bios.length)];
+  document.getElementById("bio-display").textContent = randomBio;
 });
 
-// Custom Generators
-function generateTagline() {
-  const input = document.getElementById('taglineInput').value;
-  const tagline = `Empowering your journey in ${input}.`;
-  updateElementText('taglinePreview', tagline);
-  allData.tagline = tagline;
-}
-
-function generateBio() {
-  const input = document.getElementById('bioInput').value;
-  const bio = `We started because we believe in ${input}. Our mission is to change the world one step at a time.`;
-  updateElementText('bioPreview', bio);
-  allData.bio = bio;
-}
-
-// Placeholder Logo Generator
-function generatePlaceholderLogo() {
-  const canvas = document.createElement('canvas');
-  canvas.width = 200;
-  canvas.height = 200;
-  const ctx = canvas.getContext('2d');
-
-  ctx.fillStyle = "#007bff";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  ctx.fillStyle = "#fff";
-  ctx.font = "bold 40px Arial";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillText("LOGO", 100, 100);
-
-  const img = document.createElement('img');
-  img.src = canvas.toDataURL('image/png');
-
-  const preview = document.getElementById('logoPreview');
-  preview.innerHTML = '';
-  preview.appendChild(img);
-  allData.logo = img.src;
-}
-
-// Logo Upload Handler
-document.getElementById('logoUpload').addEventListener('change', event => {
+// Logo Upload & Preview
+document.getElementById("logo-upload").addEventListener("change", (event) => {
   const file = event.target.files[0];
-  if (!file) return;
-
   const reader = new FileReader();
-  reader.onload = e => {
-    const img = document.createElement('img');
-    img.src = e.target.result;
-    img.style.maxWidth = '200px';
-
-    const preview = document.getElementById('logoPreview');
-    preview.innerHTML = '';
-    preview.appendChild(img);
-    allData.logo = e.target.result;
+  reader.onload = function(e) {
+    document.getElementById("logo-preview").innerHTML = `<img src="${e.target.result}" alt="Logo Preview" width="150">`;
   };
   reader.readAsDataURL(file);
 });
 
-// Palette Generator
+// Random Logo Generator based on description
+function generateRandomLogo() {
+  const logoCanvas = document.getElementById("logoCanvas");
+  const ctx = logoCanvas.getContext("2d");
+
+  // Clear the previous canvas
+  ctx.clearRect(0, 0, logoCanvas.width, logoCanvas.height);
+
+  // Getting values from the description input form
+  const shape = document.getElementById("logo-shape").value; // Circle, Square, etc.
+  const color = document.getElementById("logo-color").value; // Color picker for logo color
+  const text = document.getElementById("logo-text").value; // Text for logo
+
+  // Set canvas size
+  logoCanvas.width = 300;
+  logoCanvas.height = 300;
+
+  // Drawing the logo based on description
+  ctx.fillStyle = color;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 5;
+
+  // Create the logo shape
+  if (shape === "circle") {
+    ctx.beginPath();
+    ctx.arc(150, 150, 100, 0, 2 * Math.PI);
+    ctx.fill();
+  } else if (shape === "square") {
+    ctx.fillRect(50, 50, 200, 200);
+  }
+
+  // Add the logo text
+  if (text) {
+    ctx.fillStyle = "white"; // Text color
+    ctx.font = "30px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(text, 150, 150);
+  }
+}
+
+// Event Listener to trigger the random logo generation
+document.getElementById("generate-logo-button").addEventListener("click", () => {
+  generateRandomLogo();
+});
+
+// Generate Color Palette
 function generatePalette() {
-  const colors = chroma.scale(['#fafa6e', '#2A4858']).mode('lch').colors(5);
-  const preview = document.getElementById('palettePreview');
-  preview.innerHTML = colors.map(color =>
-    `<div class="color-box" style="background:${color}" title="${color}"></div>`
-  ).join('');
-  allData.palette = colors;
+  const baseColor = document.getElementById('colorPicker').value;
+  const paletteDisplay = document.getElementById('paletteDisplay');
+  paletteDisplay.innerHTML = '';
+
+  const scale = chroma.scale([baseColor, 'white']).mode('lab').colors(5);
+  scale.forEach(color => {
+    const div = document.createElement('div');
+    div.style.background = color;
+    div.style.width = '60px';
+    div.style.height = '60px';
+    div.style.display = 'inline-block';
+    paletteDisplay.appendChild(div);
+  });
 }
 
-// Fonts List
-const fonts = [
-  "Arial", "Verdana", "Times New Roman", "Courier New", "Georgia", "Tahoma", "Trebuchet MS", "Palatino", "Impact", "Lucida Sans", 
-  "Comic Sans MS", "Consolas", "Arial Black", "Helvetica", "Courier", "Garamond", "Lobster", "Roboto", "Open Sans", "Montserrat",
-  "Oswald", "Lora", "Raleway", "Poppins", "Merriweather", "Slabo", "Nunito", "Droid Sans", "Lato", "Source Sans Pro", "PT Sans",
-  "Playfair Display", "Bitter", "Dancing Script", "Anton", "Ubuntu", "Quicksand", "Fira Sans", "Josefin Sans", "Cabin", "Karla",
-  "Arvo", "Muli", "Work Sans", "Bungee", "Rock Salt", "Indie Flower", "Bree Serif", "Amatic SC", "Pacifico", "Satisfy", 
-  "Mochiy Pop P One", "Righteous", "Press Start 2P"
-];
-
-// Business Card Generator
-function generateBusinessCard() {
-  const name = document.getElementById('cardName').value;
-  const title = document.getElementById('cardTitle').value;
-  const email = document.getElementById('cardEmail').value;
-  const font = document.getElementById('fontSelector').value;
-
-  const cardHtml = `
-    <div style="border:1px solid #000; padding:10px; width:300px; font-family:${font};">
-      <h3>${name}</h3><p>${title}</p><p>${email}</p>
-    </div>`;
-  document.getElementById('cardPreview').innerHTML = cardHtml;
-  allData.businessCard = cardHtml;
-}
-
-// Auto Business Card Generator (Sample)
-function autoGenerateCard() {
-  const font = document.getElementById('fontSelector').value;
-  const color = document.getElementById('logoColor').value;
-
-  const cardHtml = `
-    <div style="border:1px solid ${color}; padding:10px; width:300px; font-family:${font}; background-color:${color};">
-      <h3>Your Name</h3><p>Your Title</p><p>your@email.com</p>
-    </div>`;
-  document.getElementById('cardPreview').innerHTML = cardHtml;
-}
-
-// Email Signature Generator
-function generateEmailSignature() {
-  const name = document.getElementById('signatureName').value;
-  const title = document.getElementById('signatureTitle').value;
-  const website = document.getElementById('signatureWebsite').value;
-  const font = document.getElementById('fontSelector').value;
-
-  const signatureHtml = `
-    <div style="font-family:${font};">
-      <strong>${name}</strong><br>${title}<br><a href="${website}" target="_blank">${website}</a>
-    </div>`;
-  document.getElementById('signaturePreview').innerHTML = signatureHtml;
-  allData.signature = signatureHtml;
-}
-
-// Brandbook PDF Generator
+// Generate Brandbook PDF
 function generateBrandbook() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
 
-  doc.text('Brandbook', 10, 10);
-  if (allData.tagline) doc.text(`Tagline: ${allData.tagline}`, 10, 20);
-  if (allData.bio) doc.text(`Bio: ${allData.bio}`, 10, 30);
+  doc.text("Brand Guidelines", 20, 20);
+  doc.text("Brand Name: " + document.getElementById("brand-name").value, 20, 30);
+  doc.text("Tagline: " + document.getElementById("tagline-display").textContent, 20, 40);
+  doc.text("Bio: " + document.getElementById("bio-display").textContent, 20, 50);
+  doc.text("Brand Color: " + document.getElementById("brand-color").value, 20, 60);
+  doc.text("Font: " + document.getElementById("brand-font").value, 20, 70);
 
-  if (allData.palette) {
-    allData.palette.forEach((color, i) => {
-      doc.setFillColor(color);
-      doc.rect(10 + (i * 30), 40, 20, 20, 'F');
-    });
-  }
-
-  doc.save('Brandbook.pdf');
+  doc.save("Brandbook.pdf");
 }
+
+// ZIP Export (Dummy functionality - ready to integrate with backend or JSZip)
+document.getElementById("zip-export").addEventListener("click", () => {
+  alert("ZIP Export feature coming soon!");
+});
