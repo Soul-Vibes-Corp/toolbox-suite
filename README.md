@@ -3,6 +3,8 @@
 Free, open-source everyday tools — no signup, no fees.  
 Optimized for desktop and mobile. Powered by HTML, CSS, JavaScript.
 
+https://soul-vibes-corp.github.io/toolbox-suite/
+
 ## 🌟 Tools Included
 
 - PDF Merger
