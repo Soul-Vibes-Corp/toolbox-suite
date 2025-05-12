@@ -133,6 +133,55 @@ document.getElementById("logo-upload").addEventListener("change", (event) => {
   reader.readAsDataURL(file);
 });
 
+// Random Logo Generator based on description (for users without an upload)
+function generateRandomLogo() {
+  const logoCanvas = document.getElementById("logoCanvas");
+  const ctx = logoCanvas.getContext("2d");
+
+  // Clear the previous canvas
+  ctx.clearRect(0, 0, logoCanvas.width, logoCanvas.height);
+
+  // Getting values from the description input form
+  const shape = document.getElementById("logo-shape").value; // Circle, Square, etc.
+  const color = document.getElementById("logo-color").value; // Color picker for logo color
+  const text = document.getElementById("logo-text").value; // Text for logo
+
+  // Set canvas size
+  logoCanvas.width = 300;
+  logoCanvas.height = 300;
+
+  // Drawing the logo based on description
+  ctx.fillStyle = color;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 5;
+
+  // Create the logo shape
+  if (shape === "circle") {
+    ctx.beginPath();
+    ctx.arc(150, 150, 100, 0, 2 * Math.PI);
+    ctx.fill();
+  } else if (shape === "square") {
+    ctx.fillRect(50, 50, 200, 200);
+  }
+
+  // Add the logo text
+  if (text) {
+    ctx.fillStyle = "white"; // Text color
+    ctx.font = "30px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(text, 150, 150);
+  }
+
+  // Optionally add more customization based on the description (this can be extended).
+}
+
+// Event Listener to trigger the random logo generation
+document.getElementById("generate-logo-button").addEventListener("click", () => {
+  generateRandomLogo();
+});
+
+
 // Logo Upload + Display (from previous code)
 function generateLogo() {
   const fileInput = document.getElementById('logoUpload');
