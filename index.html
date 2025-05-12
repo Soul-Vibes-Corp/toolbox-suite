@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#000000">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/logo-192.png">
+  <title>Toolbox Suite Launcher</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    .suite-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .suite-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #007bff;
+      color: white;
+      text-decoration: none;
+      padding: 1.5rem;
+      border-radius: 8px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    .suite-button:hover {
+      background-color: #0056b3;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="header">
+  <h1>🧰 Toolbox Suite Launcher</h1>
+  <div class="actions">
+    <button id="toggle-dark" aria-pressed="false">🌙 Toggle Dark Mode</button>
+  </div>
+</header>
+
+<main>
+  <h2>Choose a Toolbox Suite</h2>
+  <div class="suite-grid">
+    <a href="data/index.html" class="suite-button">🛠️ Toolbox Suite 1</a>
+    <a href="data1/index.html" class="suite-button">🛠️ Toolbox Suite 2</a>
+    <a href="data2/index.html" class="suite-button">🛠️ Toolbox Suite 3</a>
+    <a href="data3/index.html" class="suite-button">🛠️ Toolbox Suite 4</a>
+    <a href="data4/index.html" class="suite-button">🛠️ Toolbox Suite 5</a>
+    <a href="data5/index.html" class="suite-button">🛠️ Toolbox Suite 6</a>
+    <a href="data6/index.html" class="suite-button">🛠️ Toolbox Suite 7</a>
+    <a href="data7/index.html" class="suite-button">🛠️ Toolbox Suite 8</a>
+  </div>
+</main>
+
+<footer>
+  <p>© 2025 Toolbox Suite — Fast, Private, Free | No signup 🚀</p>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(() => console.log('✅ Service Worker Registered'))
+      .catch(err => console.error('Service Worker registration failed:', err));
+  }
+</script>
+
+</body>
+</html>
