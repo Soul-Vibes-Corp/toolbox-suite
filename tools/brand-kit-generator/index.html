@@ -50,7 +50,7 @@
           <option value="square">Square</option>
         </select>
 
-        <button id="generate-logo-button">Generate Random Logo</button>
+        <button onclick="generateRandomLogo()">Generate Random Logo</button>
       </div>
 
       <canvas id="logoCanvas"></canvas>
@@ -67,16 +67,12 @@
       <label for="taglineInput">Tagline:</label>
       <input type="text" id="taglineInput" placeholder="Enter your brand idea...">
       <button onclick="generateTagline()">Generate Tagline</button>
-      <button id="generate-tagline">Generate Tagline (Auto)</button>
       <div id="taglinePreview" class="preview"></div>
-      <div id="tagline-display"></div>
 
       <label for="bioInput">Bio:</label>
       <input type="text" id="bioInput" placeholder="Enter your brand story...">
       <button onclick="generateBio()">Generate Bio</button>
-      <button id="generate-bio">Generate Bio (Auto)</button>
       <div id="bioPreview" class="preview"></div>
-      <div id="bio-display"></div>
     </section>
 
     <!-- Color Palette -->
@@ -85,7 +81,6 @@
       <input type="color" id="colorPicker">
       <button onclick="generatePalette()">Generate Palette</button>
       <div id="palettePreview" class="preview colors"></div>
-      <div id="paletteDisplay"></div>
     </section>
 
     <!-- Font Selection -->
@@ -116,7 +111,6 @@
       <input type="text" id="signatureTitle" placeholder="Your Title">
       <input type="text" id="signatureWebsite" placeholder="Your Website">
       <button onclick="generateSignature()">Generate Signature</button>
-      <button onclick="generateEmailSignature()">Generate Email Signature (Auto)</button>
       <div id="signaturePreview" class="preview"></div>
     </section>
 
