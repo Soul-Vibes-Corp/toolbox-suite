@@ -119,3 +119,7 @@ body[data-theme='dark'] header button {
 body[data-theme='dark'] header button:hover {
   background-color: #c70000;
 }
+
+.clip-hexagon {
+  clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0% 50%);
+}
