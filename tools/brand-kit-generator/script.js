@@ -7,36 +7,36 @@ document.getElementById("toggle-dark").addEventListener("click", () => {
 
 // Tagline and Bio Presets
 const taglines = [
-  "Empowering Brands Worldwide", "Innovation Starts Here", "Your Success, Our Mission",
-  "Branding That Speaks", "Creating Icons, Not Just Brands", "Leading the Future of Branding",
-  "Designing Tomorrow’s Vision", "Where Ideas Become Reality", "Your Brand, Our Passion",
-  "Crafting Stories, Building Brands", "Transforming Ideas Into Impact", "Making Brands Matter",
+  "Empowering Brands Worldwide", "Innovation Starts Here", "Your Success, Our Mission", 
+  "Branding That Speaks", "Creating Icons, Not Just Brands", "Leading the Future of Branding", 
+  "Designing Tomorrow’s Vision", "Where Ideas Become Reality", "Your Brand, Our Passion", 
+  "Crafting Stories, Building Brands", "Transforming Ideas Into Impact", "Making Brands Matter", 
   "Empowering Bold Ambitions", "Shaping the Future of Business", "Inspiring Growth Through Branding",
   "Building the Brands of Tomorrow", "Redefining Excellence in Branding", "Designing Brands with Purpose",
   "Your Brand, Our Blueprint", "Driven by Innovation, Powered by Design", "Passionate About Your Brand’s Future",
-  "Your Vision, Our Brand Expertise", "Mastering the Art of Branding", "Every Brand Has a Story", 
-  "We Speak Brand Language", "Innovative Branding for Every Industry", "Stronger Brands, Stronger Business",
-  "Future-Proof Your Brand", "Crafting Powerful, Purposeful Brands", "Branding with Impact", 
-  "Building Legacies Through Branding", "Where Creativity Meets Strategy", "Designing Iconic Brand Identities",
-  "Bringing Brands to Life", "Making a Lasting Impression", "Innovative Designs for Future Brands", 
-  "From Vision to Victory", "Elevating Brands to New Heights", "Turning Ideas Into Iconic Brands",
-  "Creating Unforgettable Impressions", "Branding That Works", "Revolutionizing Brand Identity",
-  "Redefining What a Brand Can Be", "Crafting Brands with a Purpose", "Turning Dreams Into Brands", 
-  "Building Stronger Connections Through Branding", "Next-Level Branding Solutions", "Branding with Heart and Soul", 
+  "Your Vision, Our Brand Expertise", "Mastering the Art of Branding", "Every Brand Has a Story", "We Speak Brand Language",
+  "Innovative Branding for Every Industry", "Stronger Brands, Stronger Business", "Future-Proof Your Brand", 
+  "Crafting Powerful, Purposeful Brands", "Branding with Impact", "Building Legacies Through Branding",
+  "Where Creativity Meets Strategy", "Designing Iconic Brand Identities", "Bringing Brands to Life",
+  "Making a Lasting Impression", "Innovative Designs for Future Brands", "From Vision to Victory", "Elevating Brands to New Heights",
+  "Turning Ideas Into Iconic Brands", "Creating Unforgettable Impressions", "Branding That Works", "Revolutionizing Brand Identity",
+  "Redefining What a Brand Can Be", "Crafting Brands with a Purpose", "Turning Dreams Into Brands",
+  "Building Stronger Connections Through Branding", "Next-Level Branding Solutions", "Branding with Heart and Soul",
   "Transforming Ideas Into Icons", "Creating Tomorrow’s Icons Today", "Designing Your Brand’s Future"
 ];
 
 const bios = [
-  "We specialize in transforming ideas into unforgettable brands.", "Bringing vision to life with powerful branding solutions.",
-  "Your brand's success is our business.", "Innovative branding for the modern entrepreneur.", 
-  "Helping brands break through the noise.", "Turning creative ideas into market-leading brands.", 
-  "We build brands that make a difference.", "Empowering brands to thrive in a competitive world.", 
+  "We specialize in transforming ideas into unforgettable brands.",
+  "Bringing vision to life with powerful branding solutions.",
+  "Your brand's success is our business.", "Innovative branding for the modern entrepreneur.",
+  "Helping brands break through the noise.", "Turning creative ideas into market-leading brands.",
+  "We build brands that make a difference.", "Empowering brands to thrive in a competitive world.",
   "Designing brands that connect with your audience.", "Transforming your ideas into iconic brands.",
   "Fueling your brand’s success through innovation.", "Turning concepts into captivating brands.",
-  "We help brands tell their unique story.", "Designing memorable brands that leave a lasting impact.", 
+  "We help brands tell their unique story.", "Designing memorable brands that leave a lasting impact.",
   "Crafting brands that resonate with consumers.", "Transforming businesses with creative branding strategies.",
   "Delivering exceptional branding solutions that inspire.", "Bringing your vision to life through powerful branding.",
-  "We build authentic, meaningful brands.", "Creating brands that stand out in the marketplace.", 
+  "We build authentic, meaningful brands.", "Creating brands that stand out in the marketplace.",
   "Redefining branding through innovative design.", "Crafting compelling brand identities that drive growth.",
   "Innovating branding strategies for modern businesses.", "Empowering businesses to connect through branding.",
   "Designing brands that are built to last.", "We help you create a brand that tells your story.",
@@ -57,20 +57,15 @@ const bios = [
 
 // Random Tagline Generator
 document.getElementById("generate-tagline").addEventListener("click", () => {
-  const randomTagline = getRandomItem(taglines);
+  const randomTagline = taglines[Math.floor(Math.random() * taglines.length)];
   document.getElementById("tagline-display").textContent = randomTagline;
 });
 
 // Random Bio Generator
 document.getElementById("generate-bio").addEventListener("click", () => {
-  const randomBio = getRandomItem(bios);
+  const randomBio = bios[Math.floor(Math.random() * bios.length)];
   document.getElementById("bio-display").textContent = randomBio;
 });
-
-// Helper function for getting random item from an array
-function getRandomItem(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
 
 // Custom Tagline Generator
 function generateTagline() {
@@ -94,6 +89,7 @@ function generatePlaceholderLogo() {
   canvas.width = 200;
   canvas.height = 200;
   const ctx = canvas.getContext('2d');
+  
   ctx.fillStyle = "#007bff";
   ctx.fillRect(0, 0, 200, 200);
   ctx.fillStyle = "#fff";
@@ -104,8 +100,10 @@ function generatePlaceholderLogo() {
 
   const img = document.createElement('img');
   img.src = canvas.toDataURL('image/png');
+  
   document.getElementById('logoPreview').innerHTML = '';
   document.getElementById('logoPreview').appendChild(img);
+  
   allData.logo = canvas.toDataURL('image/png');
 }
 
@@ -127,9 +125,11 @@ document.getElementById('logoUpload').addEventListener('change', function(event)
 // Palette Generator
 function generatePalette() {
   const colors = chroma.scale(['#fafa6e', '#2A4858']).mode('lch').colors(5);
-  document.getElementById('palettePreview').innerHTML = colors.map(color => 
+  
+  document.getElementById('palettePreview').innerHTML = colors.map(color =>
     `<div class="color-box" style="background:${color}" title="${color}"></div>`
   ).join('');
+  
   allData.palette = colors;
 }
 
@@ -167,6 +167,9 @@ function generateSignature() {
 function generateBrandbook() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
+  
   doc.text('Brandbook', 10, 10);
+  
   if (allData.tagline) doc.text(`Tagline: ${allData.tagline}`, 10, 20);
-  if (allData.bio) doc.text(`Bio: ${allData.bio}`, 10,
+  if (allData.bio) doc.text(`Bio: ${allData.bio}`, 10, 30);
+  if (all
