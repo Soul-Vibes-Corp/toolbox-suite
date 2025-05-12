@@ -7,81 +7,89 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="assets/favicon.png">
   <link rel="apple-touch-icon" href="assets/logo-192.png">
-  <title>Instant Brand Kit Generator</title>
+  <title>Branding Toolkit & Instant Brand Kit Generator</title>
   <link rel="stylesheet" href="style.css">
 
-  <!-- jsPDF for PDF generation -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-  <!-- FileSaver for ZIP Export -->
+  <!-- Required Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.0/jszip.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-  <!-- Tesseract.js for OCR (Optional) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/2.1.1/tesseract.min.js"></script>
-  <!-- Chroma.js for Color Manipulation -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/2.1.1/tesseract.min.js"></script>
 </head>
 
 <body>
+
   <header class="header">
-    <h1>🎨 Instant Brand Kit Generator</h1>
+    <h1>🎨 Branding Toolkit & Instant Brand Kit Generator</h1>
     <p>Build your entire brand identity in minutes</p>
     <div class="actions">
       <button id="toggle-dark">🌙 Toggle Dark Mode</button>
     </div>
   </header>
 
-  <main id="main">
-    <section id="logo-section">
+  <main class="container">
+
+    <!-- Logo Section -->
+    <section class="tool">
       <h2>1️⃣ Logo Generator & Upload</h2>
       <input type="file" accept="image/*" id="logoUpload">
       <button onclick="generateLogo()">Generate Logo</button>
-      
-      <!-- Logo Description Form (Random Logo Generator) -->
+      <button onclick="generatePlaceholderLogo()">Generate Placeholder Logo</button>
+
       <div>
         <label for="logo-text">Logo Text:</label>
         <input type="text" id="logo-text" placeholder="Enter logo text">
-        
+
         <label for="logo-color">Logo Color:</label>
         <input type="color" id="logo-color" value="#000000">
-        
+
         <label for="logo-shape">Logo Shape:</label>
         <select id="logo-shape">
           <option value="circle">Circle</option>
           <option value="square">Square</option>
         </select>
-        
+
         <button id="generate-logo-button">Generate Random Logo</button>
       </div>
-      
-      <!-- Canvas to display the generated logo -->
+
       <canvas id="logoCanvas"></canvas>
+      <div id="logoPreview" class="preview"></div>
     </section>
 
-    <section id="brand-kit">
+    <!-- Brand Details -->
+    <section class="tool">
       <h2>🎯 Brand Details</h2>
-      
-      <!-- Brand Name -->
+
       <label for="brand-name">Brand Name:</label>
       <input type="text" id="brand-name" placeholder="Enter brand name">
 
-      <!-- Brand Slogan -->
-      <label for="brand-slogan">Tagline:</label>
-      <button id="generate-tagline">Generate Tagline</button>
+      <label for="taglineInput">Tagline:</label>
+      <input type="text" id="taglineInput" placeholder="Enter your brand idea...">
+      <button onclick="generateTagline()">Generate Tagline</button>
+      <button id="generate-tagline">Generate Tagline (Auto)</button>
+      <div id="taglinePreview" class="preview"></div>
       <div id="tagline-display"></div>
 
-      <!-- Brand Bio -->
-      <label for="brand-bio">Bio:</label>
-      <button id="generate-bio">Generate Bio</button>
+      <label for="bioInput">Bio:</label>
+      <input type="text" id="bioInput" placeholder="Enter your brand story...">
+      <button onclick="generateBio()">Generate Bio</button>
+      <button id="generate-bio">Generate Bio (Auto)</button>
+      <div id="bioPreview" class="preview"></div>
       <div id="bio-display"></div>
     </section>
 
-    <section id="color-section">
+    <!-- Color Palette -->
+    <section class="tool">
       <h2>2️⃣ Brand Colors</h2>
       <input type="color" id="colorPicker">
       <button onclick="generatePalette()">Generate Palette</button>
+      <div id="palettePreview" class="preview colors"></div>
       <div id="paletteDisplay"></div>
     </section>
 
-    <section id="font-section">
+    <!-- Font Selection -->
+    <section class="tool">
       <h2>3️⃣ Brand Fonts</h2>
       <label for="brand-font">Choose Font:</label>
       <select id="brand-font">
@@ -91,22 +99,47 @@
       </select>
     </section>
 
-    <section id="guideline-section">
-      <h2>4️⃣ Generate Brand Guidelines (PDF)</h2>
-      <button onclick="generateBrandbook()">Generate Brandbook PDF</button>
+    <!-- Business Card Maker -->
+    <section class="tool">
+      <h2>4️⃣ Business Card Maker</h2>
+      <input type="text" id="cardName" placeholder="Your Name">
+      <input type="text" id="cardTitle" placeholder="Your Title">
+      <input type="text" id="cardEmail" placeholder="Your Email">
+      <button onclick="generateBusinessCard()">Generate Business Card</button>
+      <div id="cardPreview" class="preview"></div>
     </section>
 
-    <section id="assets-section">
-      <h2>5️⃣ Branded Assets</h2>
-      <button onclick="generateBusinessCard()">Generate Business Card</button>
-      <button onclick="generateEmailSignature()">Generate Email Signature</button>
+    <!-- Email Signature Maker -->
+    <section class="tool">
+      <h2>5️⃣ Email Signature Maker</h2>
+      <input type="text" id="signatureName" placeholder="Your Name">
+      <input type="text" id="signatureTitle" placeholder="Your Title">
+      <input type="text" id="signatureWebsite" placeholder="Your Website">
+      <button onclick="generateSignature()">Generate Signature</button>
+      <button onclick="generateEmailSignature()">Generate Email Signature (Auto)</button>
+      <div id="signaturePreview" class="preview"></div>
+    </section>
+
+    <!-- Social Media Assets -->
+    <section class="tool">
+      <h2>6️⃣ Social Media Assets</h2>
       <button onclick="generateSocialMediaAssets()">Generate Social Media Assets</button>
     </section>
 
-    <section id="download-section">
-      <h2>6️⃣ Download Brand Kit</h2>
-      <button onclick="downloadKit()">Download All (ZIP)</button>
+    <!-- Brandbook Generator -->
+    <section class="tool">
+      <h2>7️⃣ Brandbook Generator (PDF)</h2>
+      <button onclick="generateBrandbook()">Generate Brandbook PDF</button>
+      <div id="brandbookPreview" class="preview"></div>
     </section>
+
+    <!-- Download All -->
+    <section class="tool">
+      <h2>8️⃣ Final Review & Download All</h2>
+      <button onclick="downloadAll()">Download ZIP</button>
+      <button onclick="downloadKit()">Download All (Kit ZIP)</button>
+    </section>
+
   </main>
 
   <footer>
