@@ -72,14 +72,12 @@ const bios = [
 document.getElementById("generate-tagline").addEventListener("click", () => {
   const randomTagline = taglines[Math.floor(Math.random() * taglines.length)];
   document.getElementById("tagline-display").textContent = randomTagline;
-  allData.tagline = randomTagline;  // Save the generated tagline to allData
 });
 
 // Random Bio Generator
 document.getElementById("generate-bio").addEventListener("click", () => {
   const randomBio = bios[Math.floor(Math.random() * bios.length)];
   document.getElementById("bio-display").textContent = randomBio;
-  allData.bio = randomBio;  // Save the generated bio to allData
 });
 
 // Custom Tagline Generator
@@ -97,24 +95,6 @@ function generateBio() {
   document.getElementById('bioPreview').innerText = bio;
   allData.bio = bio;
 }
-
-// Auto-Generate Tagline and Bio
-function autoGenerate() {
-  const randomTagline = taglines[Math.floor(Math.random() * taglines.length)];
-  const randomBio = bios[Math.floor(Math.random() * bios.length)];
-
-  document.getElementById("tagline-display").textContent = randomTagline;
-  document.getElementById("bio-display").textContent = randomBio;
-
-  // Save both to allData
-  allData.tagline = randomTagline;
-  allData.bio = randomBio;
-}
-
-// Random-Generate Button
-document.getElementById("random-generate-btn").addEventListener("click", () => {
-  autoGenerate();
-});
 
 // Placeholder Logo Generator
 function generatePlaceholderLogo() {
