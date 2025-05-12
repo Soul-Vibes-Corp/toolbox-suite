@@ -72,12 +72,14 @@ const bios = [
 document.getElementById("generate-tagline").addEventListener("click", () => {
   const randomTagline = taglines[Math.floor(Math.random() * taglines.length)];
   document.getElementById("tagline-display").textContent = randomTagline;
+  allData.tagline = randomTagline;  // Save the generated tagline to allData
 });
 
 // Random Bio Generator
 document.getElementById("generate-bio").addEventListener("click", () => {
   const randomBio = bios[Math.floor(Math.random() * bios.length)];
   document.getElementById("bio-display").textContent = randomBio;
+  allData.bio = randomBio;  // Save the generated bio to allData
 });
 
 // Custom Tagline Generator
@@ -95,6 +97,24 @@ function generateBio() {
   document.getElementById('bioPreview').innerText = bio;
   allData.bio = bio;
 }
+
+// Auto-Generate Tagline and Bio
+function autoGenerate() {
+  const randomTagline = taglines[Math.floor(Math.random() * taglines.length)];
+  const randomBio = bios[Math.floor(Math.random() * bios.length)];
+
+  document.getElementById("tagline-display").textContent = randomTagline;
+  document.getElementById("bio-display").textContent = randomBio;
+
+  // Save both to allData
+  allData.tagline = randomTagline;
+  allData.bio = randomBio;
+}
+
+// Random-Generate Button
+document.getElementById("random-generate-btn").addEventListener("click", () => {
+  autoGenerate();
+});
 
 // Placeholder Logo Generator
 function generatePlaceholderLogo() {
@@ -163,19 +183,6 @@ function generateSignature() {
   document.getElementById('signaturePreview').innerHTML = signatureHtml;
   allData.signature = signatureHtml;
 }
-import React from "react";
-import BusinessCardPreview from "@/components/BusinessCardPreview";
-import BrandArchetypeTool from "@/components/BrandArchetypeTool";
-
-export default function Home() {
-  return (
-    <div className="min-h-screen p-10 bg-gray-50 flex flex-col items-center space-y-16">
-      <BusinessCardPreview />
-      <BrandArchetypeTool />
-    </div>
-  );
-}
-
 
 // Brandbook PDF Generator
 function generateBrandbook() {
