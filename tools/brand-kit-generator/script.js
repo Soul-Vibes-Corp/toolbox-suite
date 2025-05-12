@@ -112,7 +112,6 @@ const bios = [
   "Turning your passion into a brand that connects."
 ];
 
-
 document.getElementById("generate-tagline").addEventListener("click", () => {
   const randomTagline = taglines[Math.floor(Math.random() * taglines.length)];
   document.getElementById("tagline-display").textContent = randomTagline;
@@ -181,29 +180,6 @@ document.getElementById("generate-logo-button").addEventListener("click", () => 
   generateRandomLogo();
 });
 
-
-// Logo Upload + Display (from previous code)
-function generateLogo() {
-  const fileInput = document.getElementById('logoUpload');
-  const canvas = document.getElementById('logoCanvas');
-  const ctx = canvas.getContext('2d');
-  const file = fileInput.files[0];
-  const reader = new FileReader();
-
-  reader.onload = function(e) {
-    const img = new Image();
-    img.onload = function() {
-      canvas.width = 300;
-      canvas.height = 300;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0, 300, 300);
-    }
-    img.src = e.target.result;
-  }
-
-  if (file) reader.readAsDataURL(file);
-}
-
 // Generate Color Palette (Simple demo)
 function generatePalette() {
   const baseColor = document.getElementById('colorPicker').value;
@@ -236,22 +212,40 @@ function generateBrandbook() {
   doc.save("Brandbook.pdf");
 }
 
-// Dummy business card generator
+// Business Card generator (for demo purposes, create a placeholder card)
 function generateBusinessCard() {
-  alert('Business Card generated (demo)');
+  const businessCardContent = `
+    <div style="border:1px solid #000;padding:20px;width:300px;">
+      <h3>Your Business</h3>
+      <p><strong>Name:</strong> John Doe</p>
+      <p><strong>Role:</strong> CEO</p>
+      <p><strong>Email:</strong> john.doe@example.com</p>
+      <p><strong>Phone:</strong> 123-456-7890</p>
+    </div>
+  `;
+  const popup = window.open("", "Business Card", "width=400,height=400");
+  popup.document.write(businessCardContent);
+  popup.document.close();
 }
 
-// Dummy email signature generator
+// Email Signature generator (simple demo with contact details)
 function generateEmailSignature() {
-  alert('Email Signature generated (demo)');
+  const emailSignature = `
+    <div style="font-family:Arial,sans-serif;">
+      <p><strong>John Doe</strong><br>CEO, Your Business<br>123-456-7890 | email@example.com</p>
+    </div>
+  `;
+  const popup = window.open("", "Email Signature", "width=400,height=400");
+  popup.document.write(emailSignature);
+  popup.document.close();
 }
 
-// Dummy social media asset generator
+// Social Media Asset Generator (demo, display message)
 function generateSocialMediaAssets() {
   alert('Social Media Assets generated (demo)');
 }
 
-// Dummy ZIP download (for demo purposes)
+// Dummy ZIP download (for demo purposes, this can be integrated into the backend or JSZip)
 function downloadKit() {
   alert('Brand Kit ZIP downloaded (demo)');
 }
