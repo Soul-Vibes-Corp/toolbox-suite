@@ -7,14 +7,22 @@
 
 body, html {
   font-family: 'Inter', sans-serif;
-  background-color: #1a1a1a;
+  background-color: #111;
   color: #e0e0e0;
   overflow-x: hidden;
   min-height: 100vh;
   perspective: 1000px;
   transition: background-color 0.3s ease;
+  background-image: 
+    linear-gradient(45deg, #1a1a1a 25%, transparent 25%), 
+    linear-gradient(-45deg, #1a1a1a 25%, transparent 25%), 
+    linear-gradient(45deg, transparent 75%, #1a1a1a 75%), 
+    linear-gradient(-45deg, transparent 75%, #1a1a1a 75%);
+  background-size: 60px 60px;
+  background-position: 0 0, 0 30px, 30px -30px, -30px 0px;
 }
 
+/* Optional animated floating effect for extra subtle 3D motion */
 body::before {
   content: "";
   position: fixed;
@@ -22,8 +30,8 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle, rgba(0, 255, 170, 0.15), transparent 70%), 
-              radial-gradient(circle at bottom right, rgba(255, 100, 200, 0.1), transparent 80%);
+  background: radial-gradient(circle, rgba(0, 255, 170, 0.1), transparent 70%), 
+              radial-gradient(circle at bottom right, rgba(255, 100, 200, 0.08), transparent 80%);
   z-index: -1;
   transform: translateZ(-200px) scale(1.1);
   animation: float 10s linear infinite;
@@ -35,6 +43,7 @@ body::before {
   100% { transform: translateY(0) translateZ(-200px); }
 }
 
+/* Header */
 header {
   background-color: rgba(18, 18, 18, 0.8);
   padding: 20px;
@@ -75,6 +84,7 @@ header button:hover {
   background-color: #c70000;
 }
 
+/* Main content */
 main {
   padding: 30px;
   display: grid;
@@ -131,6 +141,7 @@ main {
   box-shadow: 0px 6px 12px rgba(0, 255, 170, 0.4);
 }
 
+/* Footer */
 footer {
   text-align: center;
   padding: 20px;
@@ -163,6 +174,7 @@ body[data-theme='dark'] header button:hover {
   background-color: #c70000;
 }
 
+/* Hexagon Clipping */
 .clip-hexagon {
   clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0% 50%);
 }
