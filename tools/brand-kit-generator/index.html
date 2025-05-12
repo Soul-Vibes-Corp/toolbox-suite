@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -36,72 +37,65 @@
       <input type="file" accept="image/*" id="logoUpload">
       <button onclick="generateLogo()">Generate Logo</button>
       <button onclick="generatePlaceholderLogo()">Generate Placeholder Logo</button>
-
+      
       <div>
-        <label for="logo-text">Logo Text:</label>
-        <input type="text" id="logo-text" placeholder="Enter logo text">
-
-        <label for="logo-color">Logo Color:</label>
-        <input type="color" id="logo-color" value="#000000">
-
-        <label for="logo-shape">Logo Shape:</label>
-        <select id="logo-shape">
-          <option value="circle">Circle</option>
-          <option value="square">Square</option>
-        </select>
-
-        <button id="generate-logo-button">Generate Random Logo</button>
-        <!-- Auto Generate -->
-        <button id="auto-generate-logo">Auto Generate Logo</button>
+        <label for="logoText">Logo Text:</label>
+        <input type="text" id="logoText" placeholder="Enter Logo Text">
       </div>
 
-      <canvas id="logoCanvas"></canvas>
+      <div>
+        <label for="logoColor">Logo Color:</label>
+        <input type="color" id="logoColor" value="#007bff">
+      </div>
+
+      <div>
+        <label><input type="radio" name="logoShape" value="square" checked> Square</label>
+        <label><input type="radio" name="logoShape" value="circle"> Circle</label>
+      </div>
+
+      <button onclick="generateLogo()">Generate Logo</button>
       <div id="logoPreview" class="preview"></div>
     </section>
 
-    <!-- Brand Details -->
+    <!-- Brand Details Section -->
     <section class="tool">
       <h2>🎯 Brand Details</h2>
-
-      <label for="brand-name">Brand Name:</label>
-      <input type="text" id="brand-name" placeholder="Enter brand name">
+      <label for="brandName">Brand Name:</label>
+      <input type="text" id="brandName" placeholder="Enter brand name">
 
       <label for="taglineInput">Tagline:</label>
       <input type="text" id="taglineInput" placeholder="Enter your brand idea...">
       <button onclick="generateTagline()">Generate Tagline</button>
       <button id="generate-tagline">Generate Tagline (Auto)</button>
       <div id="taglinePreview" class="preview"></div>
-      <div id="tagline-display"></div>
-
+      
       <label for="bioInput">Bio:</label>
       <input type="text" id="bioInput" placeholder="Enter your brand story...">
       <button onclick="generateBio()">Generate Bio</button>
       <button id="generate-bio">Generate Bio (Auto)</button>
       <div id="bioPreview" class="preview"></div>
-      <div id="bio-display"></div>
     </section>
 
-    <!-- Color Palette -->
+    <!-- Color Palette Section -->
     <section class="tool">
       <h2>2️⃣ Brand Colors</h2>
       <input type="color" id="colorPicker">
       <button onclick="generatePalette()">Generate Palette</button>
       <div id="palettePreview" class="preview colors"></div>
-      <div id="paletteDisplay"></div>
     </section>
 
-    <!-- Font Selection -->
+    <!-- Font Selection Section -->
     <section class="tool">
       <h2>3️⃣ Brand Fonts</h2>
-      <label for="brand-font">Choose Font:</label>
-      <select id="brand-font">
+      <label for="brandFont">Choose Font:</label>
+      <select id="brandFont">
         <option value="Arial">Arial</option>
         <option value="Helvetica">Helvetica</option>
         <option value="Times New Roman">Times New Roman</option>
       </select>
     </section>
 
-    <!-- Business Card Maker -->
+    <!-- Business Card Maker Section -->
     <section class="tool">
       <h2>4️⃣ Business Card Maker</h2>
       <input type="text" id="cardName" placeholder="Your Name">
@@ -109,12 +103,10 @@
       <input type="text" id="cardEmail" placeholder="Your Email">
       <button onclick="generateBusinessCard()">Generate Business Card</button>
       <div id="cardPreview" class="preview"></div>
-
-      <!-- Auto Generate -->
       <button id="auto-generate-card">Auto Generate Business Card</button>
     </section>
 
-    <!-- Email Signature Maker -->
+    <!-- Email Signature Maker Section -->
     <section class="tool">
       <h2>5️⃣ Email Signature Maker</h2>
       <input type="text" id="signatureName" placeholder="Your Name">
@@ -125,20 +117,20 @@
       <div id="signaturePreview" class="preview"></div>
     </section>
 
-    <!-- Social Media Assets -->
+    <!-- Social Media Assets Section -->
     <section class="tool">
       <h2>6️⃣ Social Media Assets</h2>
       <button onclick="generateSocialMediaAssets()">Generate Social Media Assets</button>
     </section>
 
-    <!-- Brandbook Generator -->
+    <!-- Brandbook Generator Section -->
     <section class="tool">
       <h2>7️⃣ Brandbook Generator (PDF)</h2>
       <button onclick="generateBrandbook()">Generate Brandbook PDF</button>
       <div id="brandbookPreview" class="preview"></div>
     </section>
 
-    <!-- Download All -->
+    <!-- Download All Section -->
     <section class="tool">
       <h2>8️⃣ Final Review & Download All</h2>
       <button onclick="downloadAll()">Download ZIP</button>
@@ -152,5 +144,6 @@
   </footer>
 
   <script src="script.js"></script>
+
 </body>
 </html>
