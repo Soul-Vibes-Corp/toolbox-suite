@@ -1,33 +1,103 @@
+/* Global Styles */
 body {
-  font-family: sans-serif;
+  font-family: Arial, sans-serif;
+  background-color: white;
+  color: black;
+  transition: background-color 0.5s ease, color 0.5s ease;
   margin: 0;
   padding: 0;
-  background: #f7f7f7;
 }
-header {
-  background: #4F46E5;
+
+body.dark-mode {
+  background-color: #333;
   color: white;
-  padding: 1rem;
+}
+
+/* Header */
+header {
+  background: #4F46E5; /* Updated to match the previous blue tone */
+  color: white;
+  padding: 20px;
   text-align: center;
 }
-main {
-  padding: 1rem;
+
+/* Main Content */
+#main {
+  padding: 20px;
 }
+
 section {
   background: white;
   margin-bottom: 1rem;
   padding: 1rem;
   border-radius: 8px;
-}
-button {
-  background: #4F46E5;
-  color: white;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px;
-  margin: 0.5rem 0;
-}
-button:hover {
-  background: #3730a3;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
+#logo-preview {
+  margin-top: 20px;
+}
+
+#brand-details {
+  margin-top: 20px;
+}
+
+#tagline-display, #bio-display {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+/* Buttons */
+button {
+  background-color: #4F46E5; /* Reverted to blue background */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: #3730a3;
+}
+
+button:focus {
+  outline: none;
+}
+
+/* Inputs */
+input[type="text"], input[type="color"], select {
+  padding: 10px;
+  width: 100%;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+input[type="text"]:focus, input[type="color"]:focus, select:focus {
+  border-color: #4F46E5; /* Blue border when focused */
+  outline: none;
+}
+
+/* Footer */
+footer {
+  background-color: #333;
+  color: white;
+  padding: 10px;
+  text-align: center;
+}
+
+/* Dark Mode Toggle */
+#toggle-dark {
+  margin-top: 10px;
+  cursor: pointer;
+  padding: 10px;
+  background-color: #ff5733; /* Bright color for toggle button */
+  color: white;
+  border-radius: 4px;
+}
+
+#toggle-dark:hover {
+  background-color: #c0392b;
+}
