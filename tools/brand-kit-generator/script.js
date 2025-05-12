@@ -180,6 +180,48 @@ function generateBrandbook() {
   doc.save('Brandbook.pdf');
 }
 
+// Logo Generator with parameters
+function generateLogo() {
+  const logoText = document.getElementById('logoText').value;
+  const logoColor = document.getElementById('logoColor').value;
+  const logoShape = document.querySelector('input[name="logoShape"]:checked').value;
+
+  const canvas = document.createElement('canvas');
+  canvas.width = 200;
+  canvas.height = 200;
+  const ctx = canvas.getContext('2d');
+
+  // Set background color and text color
+  ctx.fillStyle = logoColor;
+  ctx.fillRect(0, 0, 200, 200);
+  ctx.fillStyle = "#fff"; // text color
+
+  // Set the shape
+  if (logoShape === "circle") {
+    ctx.beginPath();
+    ctx.arc(100, 100, 90, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.clip();
+  }
+
+  // Draw the logo text
+  ctx.font = "bold 40px Arial";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(logoText, 100, 100);
+
+  // Preview the logo
+  const img = document.createElement('img');
+  img.src = canvas.toDataURL('image/png');
+  document.getElementById('logoPreview').innerHTML = '';
+  document.getElementById('logoPreview').appendChild(img);
+  allData.logo = canvas.toDataURL('image/png');
+  
+  // Display the brand color palette
+  generatePalette();
+}
+
+
 // Download Toolkit ZIP
 function downloadAll() {
   const zip = new JSZip();
