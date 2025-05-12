@@ -1,3 +1,4 @@
+// Global Data Store
 let allData = {};
 
 // Dark/Light Mode Toggle
@@ -5,24 +6,26 @@ document.getElementById("toggle-dark").addEventListener("click", () => {
   document.body.classList.toggle("dark-mode");
 });
 
-// Tagline and Bio Presets
+// Tagline & Bio Presets
 const taglines = [
-  "Empowering Brands Worldwide", "Innovation Starts Here", "Your Success, Our Mission", 
-  "Branding That Speaks", "Creating Icons, Not Just Brands", "Leading the Future of Branding", 
-  "Designing Tomorrow’s Vision", "Where Ideas Become Reality", "Your Brand, Our Passion", 
-  "Crafting Stories, Building Brands", "Transforming Ideas Into Impact", "Making Brands Matter", 
+  "Empowering Brands Worldwide", "Innovation Starts Here", "Your Success, Our Mission",
+  "Branding That Speaks", "Creating Icons, Not Just Brands", "Leading the Future of Branding",
+  "Designing Tomorrow’s Vision", "Where Ideas Become Reality", "Your Brand, Our Passion",
+  "Crafting Stories, Building Brands", "Transforming Ideas Into Impact", "Making Brands Matter",
   "Empowering Bold Ambitions", "Shaping the Future of Business", "Inspiring Growth Through Branding",
   "Building the Brands of Tomorrow", "Redefining Excellence in Branding", "Designing Brands with Purpose",
-  "Your Brand, Our Blueprint", "Driven by Innovation, Powered by Design", "Passionate About Your Brand’s Future",
-  "Your Vision, Our Brand Expertise", "Mastering the Art of Branding", "Every Brand Has a Story", "We Speak Brand Language",
-  "Innovative Branding for Every Industry", "Stronger Brands, Stronger Business", "Future-Proof Your Brand", 
-  "Crafting Powerful, Purposeful Brands", "Branding with Impact", "Building Legacies Through Branding",
-  "Where Creativity Meets Strategy", "Designing Iconic Brand Identities", "Bringing Brands to Life",
-  "Making a Lasting Impression", "Innovative Designs for Future Brands", "From Vision to Victory", "Elevating Brands to New Heights",
-  "Turning Ideas Into Iconic Brands", "Creating Unforgettable Impressions", "Branding That Works", "Revolutionizing Brand Identity",
-  "Redefining What a Brand Can Be", "Crafting Brands with a Purpose", "Turning Dreams Into Brands",
-  "Building Stronger Connections Through Branding", "Next-Level Branding Solutions", "Branding with Heart and Soul",
-  "Transforming Ideas Into Icons", "Creating Tomorrow’s Icons Today", "Designing Your Brand’s Future"
+  "Your Brand, Our Blueprint", "Driven by Innovation, Powered by Design",
+  "Passionate About Your Brand’s Future", "Your Vision, Our Brand Expertise", "Mastering the Art of Branding",
+  "Every Brand Has a Story", "We Speak Brand Language", "Innovative Branding for Every Industry",
+  "Stronger Brands, Stronger Business", "Future-Proof Your Brand", "Crafting Powerful, Purposeful Brands",
+  "Branding with Impact", "Building Legacies Through Branding", "Where Creativity Meets Strategy",
+  "Designing Iconic Brand Identities", "Bringing Brands to Life", "Making a Lasting Impression",
+  "Innovative Designs for Future Brands", "From Vision to Victory", "Elevating Brands to New Heights",
+  "Turning Ideas Into Iconic Brands", "Creating Unforgettable Impressions", "Branding That Works",
+  "Revolutionizing Brand Identity", "Redefining What a Brand Can Be", "Crafting Brands with a Purpose",
+  "Turning Dreams Into Brands", "Building Stronger Connections Through Branding", "Next-Level Branding Solutions",
+  "Branding with Heart and Soul", "Transforming Ideas Into Icons", "Creating Tomorrow’s Icons Today",
+  "Designing Your Brand’s Future"
 ];
 
 const bios = [
@@ -55,31 +58,30 @@ const bios = [
   "Turning your passion into a brand that connects."
 ];
 
-// Random Tagline Generator
+// Utility Functions
+const getRandomItem = arr => arr[Math.floor(Math.random() * arr.length)];
+const updateElementText = (id, text) => document.getElementById(id).textContent = text;
+
+// Random Generators
 document.getElementById("generate-tagline").addEventListener("click", () => {
-  const randomTagline = taglines[Math.floor(Math.random() * taglines.length)];
-  document.getElementById("tagline-display").textContent = randomTagline;
+  updateElementText("tagline-display", getRandomItem(taglines));
 });
-
-// Random Bio Generator
 document.getElementById("generate-bio").addEventListener("click", () => {
-  const randomBio = bios[Math.floor(Math.random() * bios.length)];
-  document.getElementById("bio-display").textContent = randomBio;
+  updateElementText("bio-display", getRandomItem(bios));
 });
 
-// Custom Tagline Generator
+// Custom Generators
 function generateTagline() {
   const input = document.getElementById('taglineInput').value;
   const tagline = `Empowering your journey in ${input}.`;
-  document.getElementById('taglinePreview').innerText = tagline;
+  updateElementText('taglinePreview', tagline);
   allData.tagline = tagline;
 }
 
-// Custom Bio Generator
 function generateBio() {
   const input = document.getElementById('bioInput').value;
   const bio = `We started because we believe in ${input}. Our mission is to change the world one step at a time.`;
-  document.getElementById('bioPreview').innerText = bio;
+  updateElementText('bioPreview', bio);
   allData.bio = bio;
 }
 
@@ -89,9 +91,10 @@ function generatePlaceholderLogo() {
   canvas.width = 200;
   canvas.height = 200;
   const ctx = canvas.getContext('2d');
-  
+
   ctx.fillStyle = "#007bff";
-  ctx.fillRect(0, 0, 200, 200);
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
   ctx.fillStyle = "#fff";
   ctx.font = "bold 40px Arial";
   ctx.textAlign = "center";
@@ -100,23 +103,27 @@ function generatePlaceholderLogo() {
 
   const img = document.createElement('img');
   img.src = canvas.toDataURL('image/png');
-  
-  document.getElementById('logoPreview').innerHTML = '';
-  document.getElementById('logoPreview').appendChild(img);
-  
-  allData.logo = canvas.toDataURL('image/png');
+
+  const preview = document.getElementById('logoPreview');
+  preview.innerHTML = '';
+  preview.appendChild(img);
+  allData.logo = img.src;
 }
 
 // Logo Upload Handler
-document.getElementById('logoUpload').addEventListener('change', function(event) {
+document.getElementById('logoUpload').addEventListener('change', event => {
   const file = event.target.files[0];
+  if (!file) return;
+
   const reader = new FileReader();
-  reader.onload = function(e) {
+  reader.onload = e => {
     const img = document.createElement('img');
     img.src = e.target.result;
     img.style.maxWidth = '200px';
-    document.getElementById('logoPreview').innerHTML = '';
-    document.getElementById('logoPreview').appendChild(img);
+
+    const preview = document.getElementById('logoPreview');
+    preview.innerHTML = '';
+    preview.appendChild(img);
     allData.logo = e.target.result;
   };
   reader.readAsDataURL(file);
@@ -125,40 +132,61 @@ document.getElementById('logoUpload').addEventListener('change', function(event)
 // Palette Generator
 function generatePalette() {
   const colors = chroma.scale(['#fafa6e', '#2A4858']).mode('lch').colors(5);
-  
-  document.getElementById('palettePreview').innerHTML = colors.map(color =>
+  const preview = document.getElementById('palettePreview');
+  preview.innerHTML = colors.map(color =>
     `<div class="color-box" style="background:${color}" title="${color}"></div>`
   ).join('');
-  
   allData.palette = colors;
 }
+
+// Fonts List
+const fonts = [
+  "Arial", "Verdana", "Times New Roman", "Courier New", "Georgia", "Tahoma", "Trebuchet MS", "Palatino", "Impact", "Lucida Sans", 
+  "Comic Sans MS", "Consolas", "Arial Black", "Helvetica", "Courier", "Garamond", "Lobster", "Roboto", "Open Sans", "Montserrat",
+  "Oswald", "Lora", "Raleway", "Poppins", "Merriweather", "Slabo", "Nunito", "Droid Sans", "Lato", "Source Sans Pro", "PT Sans",
+  "Playfair Display", "Bitter", "Dancing Script", "Anton", "Ubuntu", "Quicksand", "Fira Sans", "Josefin Sans", "Cabin", "Karla",
+  "Arvo", "Muli", "Work Sans", "Bungee", "Rock Salt", "Indie Flower", "Bree Serif", "Amatic SC", "Pacifico", "Satisfy", 
+  "Mochiy Pop P One", "Righteous", "Press Start 2P"
+];
 
 // Business Card Generator
 function generateBusinessCard() {
   const name = document.getElementById('cardName').value;
   const title = document.getElementById('cardTitle').value;
   const email = document.getElementById('cardEmail').value;
-  const selectedFont = document.getElementById('fontSelector').value;
+  const font = document.getElementById('fontSelector').value;
 
-  const cardHtml = `<div style="border:1px solid #000; padding:10px; width:300px; font-family:${selectedFont};">
-    <h3>${name}</h3><p>${title}</p><p>${email}</p></div>`;
-
+  const cardHtml = `
+    <div style="border:1px solid #000; padding:10px; width:300px; font-family:${font};">
+      <h3>${name}</h3><p>${title}</p><p>${email}</p>
+    </div>`;
   document.getElementById('cardPreview').innerHTML = cardHtml;
   allData.businessCard = cardHtml;
 }
 
-// Signature Generator
-function generateSignature() {
+// Auto Business Card Generator (Sample)
+function autoGenerateCard() {
+  const font = document.getElementById('fontSelector').value;
+  const color = document.getElementById('logoColor').value;
+
+  const cardHtml = `
+    <div style="border:1px solid ${color}; padding:10px; width:300px; font-family:${font}; background-color:${color};">
+      <h3>Your Name</h3><p>Your Title</p><p>your@email.com</p>
+    </div>`;
+  document.getElementById('cardPreview').innerHTML = cardHtml;
+}
+
+// Email Signature Generator
+function generateEmailSignature() {
   const name = document.getElementById('signatureName').value;
   const title = document.getElementById('signatureTitle').value;
   const website = document.getElementById('signatureWebsite').value;
-  const selectedFont = document.getElementById('fontSelector').value;
-  const selectedColor = document.getElementById('logoColor').value;
+  const font = document.getElementById('fontSelector').value;
 
-  const signatureHtml = `<div style="font-family:${selectedFont}; color:${selectedColor};">
-    <strong>${name}</strong><br>${title}<br><a href="${website}" target="_blank">${website}</a>
-  </div>`;
-
+  const signatureHtml = `
+    <div style="font-family:${font};">
+      <strong>${name}</strong><br>${title}<br><a href="${website}" target="_blank">${website}</a>
+    </div>`;
   document.getElementById('signaturePreview').innerHTML = signatureHtml;
   allData.signature = signatureHtml;
 }
@@ -167,9 +195,17 @@ function generateSignature() {
 function generateBrandbook() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
-  
+
   doc.text('Brandbook', 10, 10);
-  
   if (allData.tagline) doc.text(`Tagline: ${allData.tagline}`, 10, 20);
   if (allData.bio) doc.text(`Bio: ${allData.bio}`, 10, 30);
-  if (all
+
+  if (allData.palette) {
+    allData.palette.forEach((color, i) => {
+      doc.setFillColor(color);
+      doc.rect(10 + (i * 30), 40, 20, 20, 'F');
+    });
+  }
+
+  doc.save('Brandbook.pdf');
+}
