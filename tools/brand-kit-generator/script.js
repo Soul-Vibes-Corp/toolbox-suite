@@ -180,6 +180,79 @@ function generateBrandbook() {
   doc.save('Brandbook.pdf');
 }
 
+// Palette Generator with brand colors
+function generatePalette() {
+  const colors = chroma.scale(['#fafa6e', '#2A4858']).mode('lch').colors(5);
+  document.getElementById('palettePreview').innerHTML = colors.map(color =>
+    `<div class="color-box" style="background:${color}" title="${color}"></div>`).join('');
+  allData.palette = colors;
+}
+const fonts = [
+  "Arial", "Verdana", "Times New Roman", "Courier New", "Georgia", "Tahoma", "Trebuchet MS", "Palatino", "Impact", "Lucida Sans", 
+  "Comic Sans MS", "Consolas", "Arial Black", "Helvetica", "Courier", "Verdana", "Georgia", "Garamond", "Lobster", "Roboto", 
+  "Open Sans", "Montserrat", "Oswald", "Lora", "Raleway", "Poppins", "Merriweather", "Slabo", "Nunito", "Droid Sans", "Lato", 
+  "Source Sans Pro", "PT Sans", "Playfair Display", "Bitter", "Dancing Script", "Anton", "Ubuntu", "Quicksand", "Fira Sans", 
+  "Josefin Sans", "Cabin", "Karla", "Arvo", "Muli", "Work Sans", "Bungee", "Rock Salt", "Indie Flower", "Bree Serif", "Amatic SC", 
+  "Pacifico", "Satisfy", "Mochiy Pop P One", "Righteous", "Press Start 2P"
+];
+
+// To use this font list in your logo generator or business card generator, reference the selected font.
+function generateBusinessCard() {
+  const name = document.getElementById('cardName').value;
+  const title = document.getElementById('cardTitle').value;
+  const email = document.getElementById('cardEmail').value;
+  const selectedFont = document.getElementById('fontSelector').value;
+
+  const cardHtml = `<div style="border:1px solid #000; padding:10px; width:300px; font-family:${selectedFont};">
+    <h3>${name}</h3><p>${title}</p><p>${email}</p></div>`;
+
+  document.getElementById('cardPreview').innerHTML = cardHtml;
+  allData.businessCard = cardHtml;
+}
+function autoGenerateCard() {
+  const selectedFont = document.getElementById('fontSelector').value;
+  const selectedColor = document.getElementById('logoColor').value;
+  const cardHtml = `<div style="border:1px solid ${selectedColor}; padding:10px; width:300px; font-family:${selectedFont}; background-color:${selectedColor};">
+    <h3>Your Name</h3><p>Your Title</p><p>your@email.com</p></div>`;
+  document.getElementById('cardPreview').innerHTML = cardHtml;
+}
+
+function generateEmailSignature() {
+  const name = document.getElementById('signatureName').value;
+  const title = document.getElementById('signatureTitle').value;
+  const website = document.getElementById('signatureWebsite').value;
+  const selectedFont = document.getElementById('fontSelector').value;
+  const selectedColor = document.getElementById('logoColor').value;
+
+  const signatureHtml = `<div style="font-family:${selectedFont}; color:${selectedColor};">
+    <strong>${name}</strong><br>${title}<br><a href="${website}" target="_blank">${website}</a>
+  </div>`;
+
+  document.getElementById('signaturePreview').innerHTML = signatureHtml;
+  allData.signature = signatureHtml;
+}
+
+function generateSocialMediaAssets() {
+  // Assuming you have dimensions for profile pictures, banners, and posts.
+  // Generate a sample post image
+  const canvas = document.createElement('canvas');
+  canvas.width = 1080;
+  canvas.height = 1080;
+  const ctx = canvas.getContext('2d');
+  
+  ctx.fillStyle = allData.palette[0]; // Use the first brand color for background
+  ctx.fillRect(0, 0, 1080, 1080);
+  ctx.fillStyle = "#fff";
+  ctx.font = "bold 50px Arial";
+  ctx.textAlign = "center";
+  ctx.fillText("Your Brand", 540, 540);
+
+  const img = document.createElement('img');
+  img.src = canvas.toDataURL('image/png');
+  document.getElementById('socialMediaPreview').appendChild(img);
+}
+
+
 // Logo Generator with parameters
 function generateLogo() {
   const logoText = document.getElementById('logoText').value;
