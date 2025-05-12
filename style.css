@@ -178,3 +178,54 @@ body[data-theme='dark'] header button:hover {
 .clip-hexagon {
   clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0% 50%);
 }
+/* Ensure footer stays at bottom */
+html, body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+/* Style dark mode toggle (assuming it's a button or input[type=checkbox]) */
+header .dark-mode-toggle {
+  width: auto;
+  height: auto;
+  padding: 8px 15px;
+  border-radius: 8px;
+  background-color: #333;
+  color: #00ffaa;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+/* Make it square + move to right on phones */
+@media (max-width: 600px) {
+  header {
+    flex-wrap: wrap;
+  }
+
+  header .actions {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+  }
+
+  header .dark-mode-toggle {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
