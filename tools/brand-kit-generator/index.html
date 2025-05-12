@@ -34,6 +34,25 @@
       <h2>1️⃣ Logo Generator & Upload</h2>
       <input type="file" accept="image/*" id="logoUpload">
       <button onclick="generateLogo()">Generate Logo</button>
+      
+      <!-- Logo Description Form (Random Logo Generator) -->
+      <div>
+        <label for="logo-text">Logo Text:</label>
+        <input type="text" id="logo-text" placeholder="Enter logo text">
+        
+        <label for="logo-color">Logo Color:</label>
+        <input type="color" id="logo-color" value="#000000">
+        
+        <label for="logo-shape">Logo Shape:</label>
+        <select id="logo-shape">
+          <option value="circle">Circle</option>
+          <option value="square">Square</option>
+        </select>
+        
+        <button id="generate-logo-button">Generate Random Logo</button>
+      </div>
+      
+      <!-- Canvas to display the generated logo -->
       <canvas id="logoCanvas"></canvas>
     </section>
 
