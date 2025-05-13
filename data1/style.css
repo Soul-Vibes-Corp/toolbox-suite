@@ -7,14 +7,22 @@
 
 body, html {
   font-family: 'Inter', sans-serif;
-  background-color: #1a1a1a;
+  background-color: #111;
   color: #e0e0e0;
   overflow-x: hidden;
   min-height: 100vh;
   perspective: 1000px;
   transition: background-color 0.3s ease;
+  background-image: 
+    linear-gradient(45deg, #1a1a1a 25%, transparent 25%), 
+    linear-gradient(-45deg, #1a1a1a 25%, transparent 25%), 
+    linear-gradient(45deg, transparent 75%, #1a1a1a 75%), 
+    linear-gradient(-45deg, transparent 75%, #1a1a1a 75%);
+  background-size: 60px 60px;
+  background-position: 0 0, 0 30px, 30px -30px, -30px 0px;
 }
 
+/* Optional animated floating effect for extra subtle 3D motion */
 body::before {
   content: "";
   position: fixed;
@@ -22,8 +30,8 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle, rgba(0, 255, 170, 0.15), transparent 70%), 
-              radial-gradient(circle at bottom right, rgba(255, 100, 200, 0.1), transparent 80%);
+  background: radial-gradient(circle, rgba(0, 255, 170, 0.1), transparent 70%), 
+              radial-gradient(circle at bottom right, rgba(255, 100, 200, 0.08), transparent 80%);
   z-index: -1;
   transform: translateZ(-200px) scale(1.1);
   animation: float 10s linear infinite;
@@ -35,6 +43,7 @@ body::before {
   100% { transform: translateY(0) translateZ(-200px); }
 }
 
+/* Header */
 header {
   background-color: rgba(18, 18, 18, 0.8);
   padding: 20px;
@@ -75,11 +84,13 @@ header button:hover {
   background-color: #c70000;
 }
 
+/* Main content */
 main {
   padding: 30px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 20px;
+  flex: 1;
 }
 
 .category {
@@ -131,6 +142,7 @@ main {
   box-shadow: 0px 6px 12px rgba(0, 255, 170, 0.4);
 }
 
+/* Footer */
 footer {
   text-align: center;
   padding: 20px;
@@ -163,8 +175,79 @@ body[data-theme='dark'] header button:hover {
   background-color: #c70000;
 }
 
+/* Hexagon Clipping */
 .clip-hexagon {
   clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0% 50%);
+}
+
+/* Ensure footer stays at bottom */
+html, body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+/* Style dark mode toggle */
+header .dark-mode-toggle {
+  width: auto;
+  height: auto;
+  padding: 8px 15px;
+  border-radius: 8px;
+  background-color: #333;
+  color: #00ffaa;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+/* Responsive: Make toggle square & move it right */
+@media (max-width: 600px) {
+  header {
+    flex-wrap: wrap;
+  }
+
+  header .actions {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+  }
+
+  header .dark-mode-toggle {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+/* Center grid items */
+.suite-grid {
+  justify-content: center;
+}
+
+/* Checkered texture for suite buttons */
+.suite-button {
+  background-color: #1f3b57;
+  background-image: 
+    linear-gradient(45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.05) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.05) 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+  border: 1px solid #00ffaa40;
 }
 
 .search-container {
@@ -200,11 +283,4 @@ body[data-theme='dark'] header button:hover {
 
 #search-results {
   margin-top: 2rem;
-}
-
-
-@media (max-width: 768px) {
-  #search-input.expanded {
-    width: 150px;
-  }
 }
