@@ -135,18 +135,6 @@
       .catch(err => console.error('Service Worker registration failed:', err));
   }
 </script>
-<!-- Add in <head> or just before </body> -->
-<script src="../../assets/js/tools-data.js"></script>
-<script src="../../assets/js/search-tools.js"></script>
-
-<!-- Search Overlay -->
-<div id="search-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#0d0d0d; color:white; z-index:9999; overflow:auto; padding:2rem;">
-  <div style="display:flex; justify-content:space-between; align-items:center;">
-    <input type="text" id="search-input" placeholder="Search tools..." style="flex:1; padding:1rem; font-size:1.2rem; border:none; border-radius:8px;">
-    <button id="close-search" style="margin-left:1rem; font-size:1.5rem;">❌</button>
-  </div>
-  <div id="search-results" style="margin-top:2rem; display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:1rem;"></div>
-</div>
 
 <script>
   const searchToggle = document.getElementById('search-toggle');
@@ -154,7 +142,7 @@
   const searchResults = document.getElementById('search-results');
   const suiteGrid = document.querySelector('.suite-grid');
 
- const tools = [
+const tools = [
   // 🛠️ Freelance Marketing, Branding & Employment
   { name: "🎨 Instant Brand Kit Creator", tags: ["branding", "design", "brand"], link: "../tools/brand-kit-generator/index.html" },
   { name: "📅 Marketing Content Calendar Generator", tags: ["marketing", "calendar", "content"], link: "../tools/content-calendar-generator/index.html" },
@@ -213,6 +201,7 @@
 ];
 
 
+
   searchToggle.addEventListener('click', () => {
     searchInput.classList.toggle('expanded');
     if (searchInput.classList.contains('expanded')) {
@@ -232,45 +221,25 @@
       return;
     }
 
-    // Dynamically render tools into corresponding HTML containers
-function renderToolbox(toolData, containerId) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-
-  container.innerHTML = toolData.map(tool => {
-    return <a href="${tool.url}" class="tool-card">${tool.name}</a>;
-  }).join('');
-}
-
-// Load all tools into their respective toolbox containers
-document.addEventListener('DOMContentLoaded', () => {
-  renderToolbox(data, 'toolbox1');
-  renderToolbox(data1, 'toolbox2');
-  renderToolbox(data2, 'toolbox3');
-  renderToolbox(data3, 'toolbox4');
-  renderToolbox(data4, 'toolbox5');
-  renderToolbox(data5, 'toolbox6');
-});
-
     const filteredTools = tools.filter(tool =>
       tool.name.toLowerCase().includes(query) ||
       tool.tags.some(tag => tag.includes(query))
     );
 
-    searchResults.innerHTML = '';
-    filteredTools.forEach(tool => {
-      const toolElement = document.createElement('a');
-      toolElement.href = '#'; // Update with actual link if available
-      toolElement.className = 'suite-button';
-      toolElement.textContent = tool.name;
-      searchResults.appendChild(toolElement);
-    });
+ searchResults.innerHTML = '';
+  filteredTools.forEach(tool => {
+   const toolElement = document.createElement('a');
+   toolElement.href = tool.link;
+   toolElement.className = 'suite-button';
+   toolElement.textContent = tool.name;
+  searchResults.appendChild(toolElement);
+});
+
 
     suiteGrid.style.display = 'none';
     searchResults.style.display = 'grid';
   });
 </script>
-
   
 </body>
 </html>
