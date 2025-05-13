@@ -219,6 +219,10 @@ header .dark-mode-toggle {
     margin-top: 10px;
   }
 
+.suite-grid {
+  justify-content: center;
+}
+  
   header .dark-mode-toggle {
     width: 40px;
     height: 40px;
