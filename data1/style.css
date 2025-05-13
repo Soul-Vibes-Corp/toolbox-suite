@@ -166,3 +166,40 @@ body[data-theme='dark'] header button:hover {
 .clip-hexagon {
   clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0% 50%);
 }
+
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+#search-toggle {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #fff;
+}
+
+#search-input {
+  width: 0;
+  opacity: 0;
+  transition: width 0.3s ease, opacity 0.3s ease;
+  padding: 0.5rem;
+  margin-left: 0.5rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #333;
+  color: #fff;
+}
+
+#search-input.expanded {
+  width: 200px;
+  opacity: 1;
+}
+
+#search-results {
+  margin-top: 2rem;
+}
+
+
