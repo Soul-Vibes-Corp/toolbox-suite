@@ -326,3 +326,30 @@ button:hover {
   background: rgba(0, 0, 0, 0.05);
   border-radius: 4px;
 }
+
+/* Header icon buttons: Search + Dark Mode styled like small social icons */
+.header-actions button {
+  width: 36px;
+  height: 36px;
+  background-color: #222;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  color: #00ffaa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.header-actions button:hover {
+  background-color: #333;
+  transform: scale(1.1);
+}
+
+/* Position them to the right in the header */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: auto;
+}
