@@ -239,6 +239,18 @@ const tools = [
     searchResults.style.display = 'grid';
   });
 </script>
-  
+
+  <script>
+  const searchToggle = document.getElementById('search-toggle');
+  const searchInput = document.getElementById('search-input');
+
+  searchToggle.addEventListener('click', () => {
+    searchInput.classList.toggle('expanded');
+    if (searchInput.classList.contains('expanded')) {
+      searchInput.focus();
+    }
+  });
+</script>
+
 </body>
 </html>
