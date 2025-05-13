@@ -17,8 +17,8 @@
   <h1>🧰 Toolbox Suite</h1>
   <div class="actions">
     <label for="search" class="visually-hidden">Search tools</label>
-    <input type="text" id="search" placeholder="Search tools..." aria-label="Search tools">
-    <span id="result-count" aria-live="polite"></span>
+    <input type="text" id="tool-search" placeholder="Search tools..." />
+<div id="search-results"></div>
     <button id="toggle-dark" aria-pressed="false">🌙 Toggle Dark Mode</button>
   </div>
 </header>
@@ -52,6 +52,9 @@
       .catch(err => console.error('Service Worker registration failed:', err));
   }
 </script>
+<!-- Add in <head> or just before </body> -->
+<script src="../../assets/js/tools-data.js"></script>
+<script src="../../assets/js/search-tools.js"></script>
 
 </body>
 </html>
