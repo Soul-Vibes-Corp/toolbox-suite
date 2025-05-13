@@ -284,3 +284,23 @@ header .dark-mode-toggle {
 #search-results {
   margin-top: 2rem;
 }
+
+.header-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap; /* Optional: wraps on smaller screens */
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.visually-hidden {
+  position: absolute;
+  left: -9999px;
+}
+
