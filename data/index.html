@@ -10,22 +10,43 @@
   <title>Toolbox Suite</title>
   <link rel="stylesheet" href="style.css" />
   <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+    }
+
+    header.header {
+      padding: 1.5rem;
+      background-color: #f5f5f5;
+      text-align: center;
+    }
+
+    .actions {
+      margin-top: 1rem;
+    }
+
     main {
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 2rem;
+      margin-top: 2rem; /* ADD space between header and main */
     }
 
-    .suite-grid {
+    h1#marketing-branding-heading {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .tool-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(3, 1fr); /* Force 3 columns */
       gap: 1rem;
       width: 100%;
-      max-width: 800px;
+      max-width: 1000px;
     }
 
-    .suite-button {
+    .tool-card {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -34,12 +55,13 @@
       text-decoration: none;
       padding: 1.5rem;
       border-radius: 8px;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-weight: bold;
       transition: background-color 0.3s ease;
+      text-align: center;
     }
 
-    .suite-button:hover {
+    .tool-card:hover {
       background-color: #0056b3;
     }
 
@@ -64,7 +86,6 @@
   </header>
 
   <main>
-    <!-- Main Section Header -->
     <h1 id="marketing-branding-heading">🛠️ Freelance Marketing, Branding & Employment</h1>
 
     <div class="tool-grid">
