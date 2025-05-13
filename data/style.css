@@ -22,7 +22,7 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle, rgba(0, 255, 170, 0.15), transparent 70%), 
+  background: radial-gradient(circle, rgba(0, 255, 170, 0.15), transparent 70%),
               radial-gradient(circle at bottom right, rgba(255, 100, 200, 0.1), transparent 80%);
   z-index: -1;
   transform: translateZ(-200px) scale(1.1);
@@ -30,8 +30,8 @@ body::before {
 }
 
 @keyframes float {
-  0% { transform: translateY(0) translateZ(-200px); }
-  50% { transform: translateY(-30px) translateZ(-200px); }
+  0%   { transform: translateY(0) translateZ(-200px); }
+  50%  { transform: translateY(-30px) translateZ(-200px); }
   100% { transform: translateY(0) translateZ(-200px); }
 }
 
@@ -75,8 +75,17 @@ header button:hover {
   background-color: #c70000;
 }
 
+/* Centering main content */
 main {
-  padding: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 20px;
+}
+
+.main-content-wrapper {
+  width: 100%;
+  max-width: 1200px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 20px;
@@ -165,20 +174,4 @@ body[data-theme='dark'] header button:hover {
 
 .clip-hexagon {
   clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0% 50%);
-}
-
-/* Centering main content */
-main {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 40px 20px;
-}
-
-.main-content-wrapper {
-  width: 100%;
-  max-width: 1200px; /* Keeps it looking good on large screens */
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 20px;
 }
