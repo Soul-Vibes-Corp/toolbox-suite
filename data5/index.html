@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#000000">
-  <link rel="manifest" href="/manifest.json">
-  <link rel="icon" href="/assets/favicon.png" type="image/png">
-  <link rel="apple-touch-icon" href="/assets/logo-192.png">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/logo-192.png">
   <title>Toolbox Suite</title>
-  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -24,7 +24,7 @@
 </header>
 
 <main>
-
+  
 <!-- Everyday Utility Tools -->
 <section class="category" aria-labelledby="utility-tools-heading" data-category="Everyday Utility Tools">
   <h2 id="utility-tools-heading">🛠️ Everyday Utility Tools</h2>
@@ -46,16 +46,17 @@
     <a href="/tools/drum-pad/index.html" class="tool-card">🥁 Drum Pad</a>
   </div>
 </section>
+
 </main>
 
 <footer>
   <p>© 2025 Toolbox Suite — Fast, Private, Free | No signup 🚀</p>
 </footer>
 
-<script src="/script.js"></script>
+<script src="script.js"></script>
 <script>
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js')
+    navigator.serviceWorker.register('service-worker.js')
       .then(() => console.log('✅ Service Worker Registered'))
       .catch(err => console.error('Service Worker registration failed:', err));
   }
