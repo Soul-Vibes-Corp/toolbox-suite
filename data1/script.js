@@ -188,6 +188,42 @@ const tools = [
   });
 </script>
 
+document.addEventListener("DOMContentLoaded", () => {
+  const searchInput = document.getElementById("tool-search");
+  const resultsContainer = document.getElementById("search-results");
+
+  function renderTools(filteredTools) {
+    resultsContainer.innerHTML = ""; // Clear previous
+    filteredTools.forEach(tool => {
+      const div = document.createElement("div");
+      div.className = "tool-item";
+      div.innerHTML = `<a href="${tool.link}">${tool.name}</a>`;
+      resultsContainer.appendChild(div);
+    });
+  }
+
+  function filterTools(keyword) {
+    const lower = keyword.toLowerCase();
+    return tools.filter(tool =>
+      tool.name.toLowerCase().includes(lower) ||
+      tool.tags.some(tag => tag.toLowerCase().includes(lower))
+    );
+  }
+
+  searchInput?.addEventListener("input", () => {
+    const value = searchInput.value.trim();
+    if (value) {
+      const filtered = filterTools(value);
+      renderTools(filtered);
+    } else {
+      resultsContainer.innerHTML = "";
+    }
+  });
+
+  // Optional: preload some tools on load
+  renderTools(tools.slice(0, 5));
+});
+
   
   // ---- Keyboard Navigation ----
   searchInput.addEventListener('keydown', (e) => {
