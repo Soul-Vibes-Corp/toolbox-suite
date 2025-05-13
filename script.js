@@ -73,6 +73,155 @@ export default function Home() {
     </div>
   );
 }
+
+<script src="script.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(() => console.log('✅ Service Worker Registered'))
+      .catch(err => console.error('Service Worker registration failed:', err));
+  }
+</script>
+
+<script>
+  const searchToggle = document.getElementById('search-toggle');
+  const searchInput = document.getElementById('search-input');
+  const searchResults = document.getElementById('search-results');
+  const suiteGrid = document.querySelector('.suite-grid');
+
+const tools = [
+  // 🛠️ Frelance Marketing, Branding & Employment
+  { name: "🎨 Instant Brand Kit Creator", tags: ["branding", "design", "brand"] },
+  { name: "📅 Marketing Content Calendar Generator", tags: ["marketing", "calendar", "content"] },
+  { name: "📚 Lead Magnet Creator", tags: ["lead", "magnet", "conversion"] },
+  { name: "📊 Social Media Analytics Snapshot", tags: ["social", "analytics", "media"] },
+  { name: "🔍 Smart Business Name & Domain Finder", tags: ["business", "domain", "name"] },
+  { name: "🏢 Find Gigs", tags: ["jobs", "gigs", "freelance"] },
+  { name: "🔐 Job Search Tools", tags: ["job", "search", "career"] },
+  { name: "📄 Resume Builder", tags: ["resume", "cv", "builder"] },
+  { name: "🗣️ Interview Prep Tools", tags: ["interview", "preparation", "job"] },
+  { name: "🏢 Work Schedule Management", tags: ["schedule", "work", "management"] },
+  { name: "📄 Salary Calculator", tags: ["salary", "finance", "calculator"] },
+  { name: "⏱️ Time Tracking Tool", tags: ["time", "tracking", "productivity"] },
+
+  // 📈 Business Strategy & Financial Planning
+  { name: "📝 One-Page Business Plan Generator", tags: ["business", "plan", "strategy"] },
+  { name: "⚖️ Instant SWOT Analysis Generator", tags: ["swot", "analysis", "strategy"] },
+  { name: "💲 Profit & Investment Calculator", tags: ["profit", "investment", "finance"] },
+  { name: "📊 Smart KPI Dashboard", tags: ["kpi", "dashboard", "metrics"] },
+  { name: "🔧 Smart Cost-Cutting Analyzer", tags: ["cost", "cutting", "savings"] },
+  { name: "🖲️ Expense Tracking", tags: ["expense", "tracking", "finance"] },
+
+  // 📊 Sales & Client Management
+  { name: "📑 Smart Proposal Generator", tags: ["proposal", "sales", "client"] },
+  { name: "🧾 Invoice + Bill Payment Services", tags: ["invoice", "payment", "billing"] },
+  { name: "📝 Client Contract Generator", tags: ["contract", "client", "agreement"] },
+  { name: "🖋️ Automated NDA Signer Tool", tags: ["nda", "signer", "legal"] },
+  { name: "📅 Meeting Agenda + Summary Maker", tags: ["meeting", "agenda", "summary"] },
+  { name: "🧾 Invoice Generator", tags: ["invoice", "generator", "billing"] },
+
+  // 🧑‍💼 Operations & Team Management
+  { name: "📋 Employee Onboarding Kit Generator", tags: ["employee", "onboarding", "hr"] },
+  { name: "🗂️ Team Taskboard Generator", tags: ["team", "taskboard", "management"] },
+  { name: "📏 Proffessional Networking", tags: ["networking", "professional", "connections"] },
+
+  // 🤝 Customer & Audience Building
+  { name: "👥 Customer Avatar Builder", tags: ["customer", "avatar", "persona"] },
+  { name: "📧 Smart Email Sequence Generator", tags: ["email", "sequence", "marketing"] },
+
+  // 🛠️ Everyday Utility Tools
+  { name: "📎 PDF Merger Tool", tags: ["pdf", "merge", "documents"] },
+  { name: "🖼️ Image Compressor", tags: ["image", "compressor", "optimize"] },
+  { name: "🔗 QR Code Generator", tags: ["qr", "code", "generator"] },
+  { name: "📄 Document Scanner", tags: ["document", "scanner", "pdf"] },
+  { name: "💬 Quote Box", tags: ["quote", "box", "inspiration"] },
+  { name: "💱 Currency Converter", tags: ["currency", "converter", "exchange"] },
+  { name: "🏋️‍♂️ Fitness Tracker", tags: ["fitness", "tracker", "health"] },
+  { name: "🖌️ Image Editor", tags: ["image", "editor", "design"] },
+  { name: "🗄️ JSON Formatter", tags: ["json", "formatter", "code"] },
+  { name: "🧘 Meditation Timer", tags: ["meditation", "timer", "relaxation"] },
+  { name: "🔐 Password Generator", tags: ["password", "generator", "security"] },
+  { name: "🗣️ Text to Speech", tags: ["text", "speech", "audio"] },
+  { name: "📏 Unit Converter", tags: ["unit", "converter", "measurement"] },
+  { name: "🥁 Drum Pad", tags: ["drum", "pad", "music"] }
+  // ✅ All tools now included
+];
+
+
+  searchToggle.addEventListener('click', () => {
+    searchInput.classList.toggle('expanded');
+    if (searchInput.classList.contains('expanded')) {
+      searchInput.focus();
+    } else {
+      searchInput.value = '';
+      searchResults.style.display = 'none';
+      suiteGrid.style.display = 'grid';
+    }
+  });
+
+  searchInput.addEventListener('input', () => {
+    const query = searchInput.value.toLowerCase();
+    if (query === '') {
+      searchResults.style.display = 'none';
+      suiteGrid.style.display = 'grid';
+      return;
+    }
+
+    const filteredTools = tools.filter(tool =>
+      tool.name.toLowerCase().includes(query) ||
+      tool.tags.some(tag => tag.includes(query))
+    );
+
+    searchResults.innerHTML = '';
+    filteredTools.forEach(tool => {
+      const toolElement = document.createElement('a');
+      toolElement.href = '#'; // Update with actual link if available
+      toolElement.className = 'suite-button';
+      toolElement.textContent = tool.name;
+      searchResults.appendChild(toolElement);
+    });
+
+    suiteGrid.style.display = 'none';
+    searchResults.style.display = 'grid';
+  });
+</script>
+
+document.addEventListener("DOMContentLoaded", () => {
+  const searchInput = document.getElementById("tool-search");
+  const resultsContainer = document.getElementById("search-results");
+
+  function renderTools(filteredTools) {
+    resultsContainer.innerHTML = ""; // Clear previous
+    filteredTools.forEach(tool => {
+      const div = document.createElement("div");
+      div.className = "tool-item";
+      div.innerHTML = `<a href="${tool.link}">${tool.name}</a>`;
+      resultsContainer.appendChild(div);
+    });
+  }
+
+  function filterTools(keyword) {
+    const lower = keyword.toLowerCase();
+    return tools.filter(tool =>
+      tool.name.toLowerCase().includes(lower) ||
+      tool.tags.some(tag => tag.toLowerCase().includes(lower))
+    );
+  }
+
+  searchInput?.addEventListener("input", () => {
+    const value = searchInput.value.trim();
+    if (value) {
+      const filtered = filterTools(value);
+      renderTools(filtered);
+    } else {
+      resultsContainer.innerHTML = "";
+    }
+  });
+
+  // Optional: preload some tools on load
+  renderTools(tools.slice(0, 5));
+});
+
   
   // ---- Keyboard Navigation ----
   searchInput.addEventListener('keydown', (e) => {
