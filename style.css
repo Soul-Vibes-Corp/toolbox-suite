@@ -285,3 +285,44 @@ header .dark-mode-toggle {
   margin-top: 2rem;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* tighter spacing */
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  background: #f0f0f0;
+  border-radius: 4px;
+  padding: 2px 4px;
+}
+
+#search-input {
+  border: none;
+  background: transparent;
+  padding: 4px 6px;
+  font-size: 0.9rem;
+  width: 140px;
+  transition: width 0.3s ease;
+}
+
+#search-input:focus {
+  outline: none;
+  width: 160px;
+}
+
+button {
+  border: none;
+  background: transparent;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 6px;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
