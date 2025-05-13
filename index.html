@@ -9,6 +9,15 @@
   <link rel="apple-touch-icon" href="assets/logo-192.png">
   <title>Toolbox Suite Launcher</title>
   <link rel="stylesheet" href="style.css">
+
+<div class="search-container">
+  <button id="search-toggle" aria-label="Search">
+    🔍
+  </button>
+  <input type="text" id="search-input" placeholder="Search tools..." aria-label="Search tools" />
+</div>
+
+  
   <style>
     main {
       display: flex;
@@ -17,6 +26,9 @@
       padding: 2rem;
     }
 
+<div id="search-results" class="suite-grid" style="display: none;"></div>
+
+    
     .suite-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
