@@ -203,3 +203,8 @@ body[data-theme='dark'] header button:hover {
 }
 
 
+@media (max-width: 768px) {
+  #search-input.expanded {
+    width: 150px;
+  }
+}
