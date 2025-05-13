@@ -90,6 +90,7 @@ main {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 20px;
+  flex: 1;
 }
 
 .category {
@@ -178,6 +179,7 @@ body[data-theme='dark'] header button:hover {
 .clip-hexagon {
   clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0% 50%);
 }
+
 /* Ensure footer stays at bottom */
 html, body {
   height: 100%;
@@ -192,7 +194,7 @@ main {
   flex: 1;
 }
 
-/* Style dark mode toggle (assuming it's a button or input[type=checkbox]) */
+/* Style dark mode toggle */
 header .dark-mode-toggle {
   width: auto;
   height: auto;
@@ -206,7 +208,7 @@ header .dark-mode-toggle {
   transition: background 0.3s;
 }
 
-/* Make it square + move to right on phones */
+/* Responsive: Make toggle square & move it right */
 @media (max-width: 600px) {
   header {
     flex-wrap: wrap;
@@ -219,7 +221,6 @@ header .dark-mode-toggle {
     margin-top: 10px;
   }
 
-  
   header .dark-mode-toggle {
     width: 40px;
     height: 40px;
@@ -229,4 +230,22 @@ header .dark-mode-toggle {
     justify-content: center;
     align-items: center;
   }
+}
+
+/* Center grid items */
+.suite-grid {
+  justify-content: center;
+}
+
+/* Checkered texture for suite buttons */
+.suite-button {
+  background-color: #1f3b57;
+  background-image: 
+    linear-gradient(45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.05) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.05) 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+  border: 1px solid #00ffaa40;
 }
