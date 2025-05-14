@@ -182,6 +182,29 @@ body[data-theme='dark'] header button:hover {
   }
 }
 
+.toolbox-header {
+  background: #fff;
+  padding: 10px 20px;
+}
+
+.header-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+}
+
+.logo {
+  height: 40px;
+  margin-right: 10px;
+}
+
+.title-text {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+
 #search-input {
   width: 0;
   opacity: 0;
