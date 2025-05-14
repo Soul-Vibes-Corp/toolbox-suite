@@ -72,6 +72,24 @@ function getWatchLaterList() {
 playVideo('https://www.example.com/movie.mp4');
 setTimeout(showAd, 3000); // Show ad after 3 seconds
 
+
+
+// script.js
+document.addEventListener('DOMContentLoaded', () => {
+    const sessionUser = getSessionUser();
+    const userStatus = document.getElementById('user-status');
+    const loginLink = document.getElementById('login-link');
+    const registerLink = document.getElementById('register-link');
+    const logoutBtn = document.getElementById('logout-btn');
+
+    if (sessionUser) {
+        userStatus.textContent = `Welcome, ${sessionUser.username}`;
+        loginLink.style.display = 'none';
+        registerLink.style.display = 'none';
+        logoutBtn.style.display = 'inline-block';
+    }
+});
+
 // Example usage:
 // addToWatchLater({ title: 'Sample Movie', url: 'https://www.example.com/movie.mp4' });
 // console.log(getWatchLaterList());
