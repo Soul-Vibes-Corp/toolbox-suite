@@ -12,6 +12,12 @@
 <header>
     <h1>Movie Streamer</h1>
     <input type="text" id="search" placeholder="Search for movies...">
+     <div class="nav-links">
+        <span id="user-status"></span>
+        <a href="auth/login.html" id="login-link">Login</a>
+        <a href="auth/register.html" id="register-link">Register</a>
+        <button onclick="logout()" id="logout-btn" style="display: none;">Logout</button>
+    </div>
     <div id="watch-later-link">Watch Later</div>
 </header>
 
