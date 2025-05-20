@@ -371,6 +371,104 @@ const tools = [
   });
 </script>
 
-  
+  <!-- Firebase App & Auth (optional, only needed if using Firebase auth) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js"></script>
+<script>
+  // Firebase Config (adjust this to your actual config)
+  const firebaseConfig = {
+  apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
+  authDomain: "chat-code-forum.firebaseapp.com",
+  projectId: "chat-code-forum",
+  storageBucket: "chat-code-forum.firebasestorage.app",
+  messagingSenderId: "496765673859",
+  appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
+  measurementId: "G-XJKWXHF8WN"
+};
+
+firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+</script>
+
+<!-- Main Tracking + UI Script -->
+<script>
+  // Theme toggle
+  const themeToggle = document.getElementById('toggle-dark');
+  const isDark = localStorage.getItem('theme') === 'dark';
+  if (isDark) document.body.classList.add('dark');
+
+  themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark');
+    const theme = document.body.classList.contains('dark') ? 'dark' : 'light';
+    localStorage.setItem('theme', theme);
+    themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+  });
+
+  // Login/Logout (if using Firebase)
+  const logoutBtn = document.getElementById('logout-button');
+  logoutBtn.addEventListener('click', () => {
+    localStorage.removeItem('user');
+    if (auth.currentUser) auth.signOut();
+    alert('Logged out!');
+    location.reload();
+  });
+
+  // Simple visitor tracking
+  const trackVisit = (toolName) => {
+    const history = JSON.parse(localStorage.getItem('toolHistory') || '[]');
+    const now = new Date().toISOString();
+    history.unshift({ tool: toolName, time: now });
+    localStorage.setItem('toolHistory', JSON.stringify(history.slice(0, 25))); // keep last 25
+  };
+
+  // Count launches per tool
+  const countLaunch = (toolName) => {
+    const key = `launchCount_${toolName}`;
+    const current = parseInt(localStorage.getItem(key) || '0');
+    localStorage.setItem(key, current + 1);
+  };
+
+  // Apply launch tracking to buttons
+  document.querySelectorAll('.suite-button').forEach(button => {
+    const name = button.textContent.trim();
+    button.addEventListener('click', () => {
+      trackVisit(name);
+      countLaunch(name);
+    });
+  });
+
+  // Enhanced search
+  const allTools = [...tools]; // From inline script
+  searchInput.addEventListener('input', e => {
+    const val = e.target.value.toLowerCase();
+    if (!val) {
+      searchResults.style.display = 'none';
+      suiteGrid.style.display = 'grid';
+      return;
+    }
+
+    const matches = allTools.filter(tool =>
+      tool.name.toLowerCase().includes(val) ||
+      tool.tags.some(tag => tag.includes(val))
+    );
+
+    searchResults.innerHTML = matches.map(tool =>
+      `<a href="${tool.link}" class="suite-button">${tool.name}</a>`
+    ).join('');
+
+    searchResults.style.display = 'grid';
+    suiteGrid.style.display = 'none';
+  });
+
+  // Optional: auto login stub if using Firebase
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      console.log('✅ Logged in as:', user.email);
+      localStorage.setItem('user', user.email);
+    } else {
+      localStorage.removeItem('user');
+    }
+  });
+</script>
 </body>
 </html>
