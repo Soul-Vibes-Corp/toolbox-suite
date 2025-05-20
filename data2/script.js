@@ -5,7 +5,26 @@ document.addEventListener('DOMContentLoaded', () => {
   const toggleDarkBtn = document.getElementById('toggle-dark');
   const toolCards = Array.from(document.querySelectorAll('.tool-card'));
   const categories = Array.from(document.querySelectorAll('.category'));
+  const menuToggle = document.getElementById('menuToggle');
+  const menu = document.getElementById('menu');
 
+   menuToggle.addEventListener('click', () => {
+    menu.classList.toggle('show');
+
+  // Update aria-expanded attribute
+    const expanded = menuToggle.getAttribute('aria-expanded') === 'true';
+    menuToggle.setAttribute('aria-expanded', String(!expanded));
+  });
+
+  // Close menu when clicking outside
+  document.addEventListener('click', (event) => {
+    if (!menu.contains(event.target) && event.target !== menuToggle) {
+      menu.classList.remove('show');
+      menuToggle.setAttribute('aria-expanded', 'false');
+    }
+
+    });
+});
   let currentFocus = -1; // For keyboard navigation
 
   // ---- Dark Mode ----
@@ -30,10 +49,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Toggle dark mode on button click
-  toggleDarkBtn.addEventListener('click', () => {
-    const enable = !document.body.classList.contains(DARK_CLASS);
-    setDarkMode(enable);
-  });
+  document.getElementById('toggle-dark').addEventListener('click', function() {
+  const body = document.body;
+  body.classList.toggle('dark-mode');
+  const pressed = this.getAttribute('aria-pressed') === 'true';
+  this.setAttribute('aria-pressed', String(!pressed));
+  this.textContent = pressed ? '🌙 Toggle Dark Mode' : '☀️ Toggle Light Mode';
+});
 
   // ---- Search Functionality ----
   const filterTools = () => {
