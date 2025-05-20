@@ -31,6 +31,24 @@
       margin-bottom: 20px;
     }
 
+    .back-button {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  background: transparent;
+  color: #0ff;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+  border: none;
+}
+
+.back-button:hover {
+  color: #0fa;
+}
+
+    
     .register-container form {
       display: flex;
       flex-direction: column;
@@ -92,6 +110,9 @@
   </style>
 </head>
 <body>
+  <a href="index.html" class="back-button">← Back to Login</a>
+  <div class="register-container">
+
   <div class="register-container">
     <h2>🧰 Join Toolbox Suite</h2>
     <form id="registerForm">
