@@ -17,10 +17,10 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background-image: 
-        linear-gradient(45deg, #1a1a1a 25%, transparent 25%), 
-        linear-gradient(-45deg, #1a1a1a 25%, transparent 25%), 
-        linear-gradient(45deg, transparent 75%, #1a1a1a 75%), 
+      background-image:
+        linear-gradient(45deg, #1a1a1a 25%, transparent 25%),
+        linear-gradient(-45deg, #1a1a1a 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #1a1a1a 75%),
         linear-gradient(-45deg, transparent 75%, #1a1a1a 75%);
       background-size: 60px 60px;
       background-position: 0 0, 0 30px, 30px -30px, -30px 0px;
@@ -33,17 +33,16 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: radial-gradient(circle, rgba(0, 255, 170, 0.1), transparent 70%), 
+      background: radial-gradient(circle, rgba(0, 255, 170, 0.1), transparent 70%),
                   radial-gradient(circle at bottom right, rgba(255, 100, 200, 0.08), transparent 80%);
       z-index: -1;
-      transform: translateZ(-200px) scale(1.1);
       animation: float 10s linear infinite;
     }
 
     @keyframes float {
-      0% { transform: translateY(0) translateZ(-200px); }
-      50% { transform: translateY(-30px) translateZ(-200px); }
-      100% { transform: translateY(0) translateZ(-200px); }
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-30px); }
+      100% { transform: translateY(0); }
     }
 
     .register-container {
@@ -61,18 +60,13 @@
       margin-bottom: 1.5rem;
     }
 
-    input, textarea, select {
+    input, textarea {
       width: 100%;
       padding: 0.75rem;
       margin-bottom: 1rem;
       border: 1px solid #ccc;
       border-radius: 8px;
       font-size: 1rem;
-    }
-
-    textarea {
-      resize: vertical;
-      height: 80px;
     }
 
     button {
@@ -94,43 +88,41 @@
       color: red;
       font-size: 0.9rem;
     }
+
+    .redirect-link {
+      margin-top: 15px;
+      display: block;
+      color: #007bff;
+    }
+
+    .redirect-link:hover {
+      text-decoration: underline;
+    }
   </style>
 
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-
-<script>
- const firebaseConfig = {
-  apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
-  authDomain: "chat-code-forum.firebaseapp.com",
-  projectId: "chat-code-forum",
-  storageBucket: "chat-code-forum.firebasestorage.app",
-  messagingSenderId: "496765673859",
-  appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
-  measurementId: "G-XJKWXHF8WN"
-};
-
-
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-</script>
-
-  
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
+      authDomain: "chat-code-forum.firebaseapp.com",
+      projectId: "chat-code-forum",
+      storageBucket: "chat-code-forum.appspot.com",
+      messagingSenderId: "496765673859",
+      appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
+      measurementId: "G-XJKWXHF8WN"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+  </script>
 </head>
 <body>
   <div class="register-container">
     <h1>📝 Register for Toolbox Suite</h1>
-
- <div id="auth-tabs">
-      <button onclick="showForm('register')">Register</button>
-      <button onclick="showForm('login')">Login</button>
-      <button onclick="showForm('profile')" id="profile-tab" style="display:none;">Profile</button>
-    </div>
-    
-     <form id="register-form" style="display: block;">
+    <form id="register-form">
       <input type="text" id="fullname" placeholder="Full Name" required />
       <input type="text" id="username" placeholder="Username" required />
       <input type="email" id="reg-email" placeholder="Email Address" required />
@@ -141,41 +133,23 @@
       <input type="url" id="portfolio" placeholder="Portfolio URL" />
       <textarea id="bio" placeholder="Short Bio (optional)"></textarea>
       <button type="submit">Create Account</button>
+      <p class="redirect-link"><a href="index.html">Already have an account? Login</a></p>
+      <p id="error-msg" class="error"></p>
     </form>
-
- <!-- Login Form -->
-    <form id="login-form" style="display: none;">
-      <input type="email" id="login-email" placeholder="Email Address" required />
-      <input type="password" id="login-password" placeholder="Password" required />
-      <button type="submit">Login</button>
-    </form>
-    
-  <!-- Profile Update Form -->
-    <form id="profile-form" style="display: none;">
-      <input type="text" id="profile-fullname" placeholder="Full Name" />
-      <input type="text" id="profile-username" placeholder="Username" />
-      <input type="text" id="profile-occupation" placeholder="Occupation" />
-      <input type="text" id="profile-skills" placeholder="Skills" />
-      <input type="url" id="profile-portfolio" placeholder="Portfolio URL" />
-      <textarea id="profile-bio" placeholder="Bio"></textarea>
-      <button type="submit">Update Profile</button>
-      <button type="button" onclick="logout()">Logout</button>
-    </form>
-
-    <p id="error-msg" class="error"></p>
   </div>
 
   <script>
     const form = document.getElementById('register-form');
     const errorMsg = document.getElementById('error-msg');
 
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      errorMsg.textContent = "";
 
       const fullname = document.getElementById('fullname').value.trim();
       const username = document.getElementById('username').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
+      const email = document.getElementById('reg-email').value.trim();
+      const password = document.getElementById('reg-password').value;
       const confirmPassword = document.getElementById('confirm-password').value;
 
       if (password !== confirmPassword) {
@@ -183,21 +157,27 @@
         return;
       }
 
-      // Save profile to localStorage or send to backend/Firebase
-      const userProfile = {
-        fullname,
-        username,
-        email,
-        password, // Encrypt before storing in real apps
-        occupation: document.getElementById('occupation').value.trim(),
-        skills: document.getElementById('skills').value.trim(),
-        portfolio: document.getElementById('portfolio').value.trim(),
-        bio: document.getElementById('bio').value.trim(),
-      };
+      try {
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        const user = userCredential.user;
 
-      localStorage.setItem('userProfile', JSON.stringify(userProfile));
-      alert("✅ Registration successful!");
-      window.location.href = "dashboard.html";
+        // Save additional user info to Firestore
+        await db.collection("users").doc(user.uid).set({
+          fullname,
+          username,
+          email,
+          occupation: document.getElementById('occupation').value.trim(),
+          skills: document.getElementById('skills').value.trim(),
+          portfolio: document.getElementById('portfolio').value.trim(),
+          bio: document.getElementById('bio').value.trim(),
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        alert("✅ Account created successfully!");
+        window.location.href = "dashboard.html";
+      } catch (error) {
+        errorMsg.textContent = error.message;
+      }
     });
   </script>
 </body>
