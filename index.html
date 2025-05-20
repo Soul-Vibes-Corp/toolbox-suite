@@ -95,23 +95,72 @@
       font-size: 0.9rem;
     }
   </style>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_APP.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_BUCKET",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+</script>
+
+  
 </head>
 <body>
   <div class="register-container">
     <h1>📝 Register for Toolbox Suite</h1>
-    <form id="register-form">
+
+ <div id="auth-tabs">
+      <button onclick="showForm('register')">Register</button>
+      <button onclick="showForm('login')">Login</button>
+      <button onclick="showForm('profile')" id="profile-tab" style="display:none;">Profile</button>
+    </div>
+    
+     <form id="register-form" style="display: block;">
       <input type="text" id="fullname" placeholder="Full Name" required />
       <input type="text" id="username" placeholder="Username" required />
-      <input type="email" id="email" placeholder="Email Address" required />
-      <input type="password" id="password" placeholder="Password" required />
+      <input type="email" id="reg-email" placeholder="Email Address" required />
+      <input type="password" id="reg-password" placeholder="Password" required />
       <input type="password" id="confirm-password" placeholder="Confirm Password" required />
-      <input type="text" id="occupation" placeholder="Occupation (e.g., Audio Engineer)" />
-      <input type="text" id="skills" placeholder="Key Skills (comma separated)" />
-      <input type="url" id="portfolio" placeholder="Portfolio/Website URL" />
+      <input type="text" id="occupation" placeholder="Occupation" />
+      <input type="text" id="skills" placeholder="Key Skills" />
+      <input type="url" id="portfolio" placeholder="Portfolio URL" />
       <textarea id="bio" placeholder="Short Bio (optional)"></textarea>
       <button type="submit">Create Account</button>
-      <p id="error-msg" class="error"></p>
     </form>
+
+ <!-- Login Form -->
+    <form id="login-form" style="display: none;">
+      <input type="email" id="login-email" placeholder="Email Address" required />
+      <input type="password" id="login-password" placeholder="Password" required />
+      <button type="submit">Login</button>
+    </form>
+    
+  <!-- Profile Update Form -->
+    <form id="profile-form" style="display: none;">
+      <input type="text" id="profile-fullname" placeholder="Full Name" />
+      <input type="text" id="profile-username" placeholder="Username" />
+      <input type="text" id="profile-occupation" placeholder="Occupation" />
+      <input type="text" id="profile-skills" placeholder="Skills" />
+      <input type="url" id="profile-portfolio" placeholder="Portfolio URL" />
+      <textarea id="profile-bio" placeholder="Bio"></textarea>
+      <button type="submit">Update Profile</button>
+      <button type="button" onclick="logout()">Logout</button>
+    </form>
+
+    <p id="error-msg" class="error"></p>
   </div>
 
   <script>
