@@ -219,7 +219,7 @@ body[data-theme='dark'] header button:hover {
     flex-direction: column;
     position: absolute;
     top: 100%;
-    right: 10px;
+    right: 20px;       /* Adjusted to 20px to match your original */
     background: rgba(18, 18, 18, 0.95);
     padding: 15px;
     border-radius: 12px;
@@ -233,5 +233,18 @@ body[data-theme='dark'] header button:hover {
 
   .hamburger {
     display: block;
+  }
+
+  /* Menu links styling */
+  .menu .actions a {
+    padding: 10px;
+    text-decoration: none;
+    color: #00ffaa;
+    font-weight: bold;
+    transition: color 0.3s;
+  }
+
+  .menu .actions a:hover {
+    color: #ff00cc;
   }
 }
