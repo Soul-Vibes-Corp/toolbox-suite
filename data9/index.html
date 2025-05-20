@@ -304,6 +304,32 @@
       logToFirestore(name); // 🔥 Add this
     });
   });
+
+function saveUserSettings(settingsObject) {
+  const user = firebase.auth().currentUser;
+  if (!user) return;
+
+  firebase.firestore().collection("userSettings").doc(user.uid).set(settingsObject);
+}
+
+// Example:
+saveUserSettings({
+  theme: "dark",
+  compressorSettings: {
+    threshold: -12,
+    ratio: 4,
+  },
+  reverbPreset: "Valhalla Space",
+});
+
+firebase.firestore().collection("userSettings").doc(user.uid).get().then(doc => {
+  if (doc.exists) {
+    const settings = doc.data();
+    // Apply settings to app UI
+  }
+});
+
+  
 </script>
 
 </body>
