@@ -39,6 +39,8 @@
     .link a {
       color: #0ff;
       text-decoration: none;
+      display: inline-block;
+      margin: 0.5rem;
     }
     .link a:hover {
       color: #0fa;
@@ -60,6 +62,10 @@
   <div class="link">
     <a href="profile.html">👤 Manage Profile</a>
   </div>
+
+  <div class="link">
+    <a href="dashboard.html">🔙 Back to Dashboard</a>
+  </div>
 </div>
 
 <script>
@@ -75,31 +81,29 @@
     }
   });
 
-function saveUserSettings(settingsObject) {
-  const user = firebase.auth().currentUser;
-  if (!user) return;
+  function saveUserSettings(settingsObject) {
+    const user = firebase.auth().currentUser;
+    if (!user) return;
 
-  firebase.firestore().collection("userSettings").doc(user.uid).set(settingsObject);
-}
-
-// Example:
-saveUserSettings({
-  theme: "dark",
-  compressorSettings: {
-    threshold: -12,
-    ratio: 4,
-  },
-  reverbPreset: "Valhalla Space",
-});
-
-firebase.firestore().collection("userSettings").doc(user.uid).get().then(doc => {
-  if (doc.exists) {
-    const settings = doc.data();
-    // Apply settings to app UI
+    firebase.firestore().collection("userSettings").doc(user.uid).set(settingsObject);
   }
-});
 
-  
+  // Example:
+  saveUserSettings({
+    theme: "dark",
+    compressorSettings: {
+      threshold: -12,
+      ratio: 4,
+    },
+    reverbPreset: "Valhalla Space",
+  });
+
+  firebase.firestore().collection("userSettings").doc(user.uid).get().then(doc => {
+    if (doc.exists) {
+      const settings = doc.data();
+      // Apply settings to app UI
+    }
+  });
 </script>
 
 </body>
