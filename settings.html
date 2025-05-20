@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Settings | Toolbox Suite</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background-color: var(--bg, #121212);
+      color: var(--fg, #eee);
+      font-family: "Segoe UI", sans-serif;
+      padding: 2rem;
+    }
+    .settings-container {
+      max-width: 600px;
+      margin: auto;
+      background: #1f1f1f;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+    }
+    h2 {
+      color: #0ff;
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin: 1rem 0 0.5rem;
+    }
+    input[type="checkbox"] {
+      transform: scale(1.2);
+      margin-right: 0.5rem;
+    }
+    .link {
+      text-align: center;
+      margin-top: 2rem;
+    }
+    .link a {
+      color: #0ff;
+    }
+  </style>
+</head>
+<body>
+
+<div class="settings-container">
+  <h2>⚙️ Settings</h2>
+
+  <label>
+    <input type="checkbox" id="theme-toggle" />
+    Enable Light Mode
+  </label>
+
+  <!-- More future settings can be added here -->
+
+  <div class="link">
+    <a href="profile.html">👤 Manage Profile</a>
+  </div>
+</div>
+
+<script>
+  const toggle = document.getElementById("theme-toggle");
+
+  toggle.addEventListener("change", () => {
+    if (toggle.checked) {
+      document.body.style.setProperty('--bg', '#fff');
+      document.body.style.setProperty('--fg', '#111');
+    } else {
+      document.body.style.setProperty('--bg', '#121212');
+      document.body.style.setProperty('--fg', '#eee');
+    }
+  });
+</script>
+
+</body>
+</html>
