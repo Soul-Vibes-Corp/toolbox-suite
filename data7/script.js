@@ -98,3 +98,7 @@ export default function Home() {
     card.setAttribute('tabindex', '0');
   });
 });
+
+document.getElementById('menuToggle').addEventListener('click', () => {
+  document.getElementById('menu').classList.toggle('show');
+});
