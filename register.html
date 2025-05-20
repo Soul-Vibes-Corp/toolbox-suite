@@ -162,22 +162,43 @@
     firebase.initializeApp(firebaseConfig);
   </script>
 
-  <script>
-    document.getElementById("registerForm").addEventListener("submit", function (e) {
-      e.preventDefault();
-      const formData = {
-        name: this.name.value,
-        email: this.email.value,
-        password: this.password.value,
-        field: this.field.value,
-        goals: this.goals.value,
-        experience: this.experience.value
-      };
+<script>
+  document.getElementById("registerForm").addEventListener("submit", function (e) {
+    e.preventDefault();
 
-      localStorage.setItem("toolboxUser", JSON.stringify(formData));
-      alert("Registration successful! Redirecting to dashboard...");
-      window.location.href = "dashboard.html";
-    });
-  </script>
+    const name = this.name.value.trim();
+    const email = this.email.value.trim();
+    const password = this.password.value;
+    const field = this.field.value;
+    const goals = this.goals.value;
+    const experience = this.experience.value;
+
+    // Create user in Firebase Authentication
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+
+        // Save extra profile info in Firestore
+        return firebase.firestore().collection("users").doc(user.uid).set({
+          uid: user.uid,
+          name,
+          email,
+          field,
+          goals,
+          experience,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      })
+      .then(() => {
+        alert("Registration successful! Redirecting to dashboard...");
+        window.location.href = "dashboard.html";
+      })
+      .catch((error) => {
+        alert("❌ " + error.message);
+        console.error("Registration error:", error);
+      });
+  });
+</script>
+
 </body>
 </html>
