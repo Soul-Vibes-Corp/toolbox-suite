@@ -468,6 +468,15 @@ const tools = [
     suiteGrid.style.display = 'none';
   });
 
+firebase.auth().onAuthStateChanged(user => {
+  if (!user) {
+    // Not logged in, redirect to login page
+    window.location.href = "login.html";
+  }
+  // Otherwise, user is logged in, show dashboard content
+});
+
+  
   // Optional: auto login stub if using Firebase
   auth.onAuthStateChanged(user => {
     if (user) {
