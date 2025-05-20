@@ -6,32 +6,50 @@
   <title>Tool Usage History</title>
   <style>
     body {
-      font-family: sans-serif;
-      background: #111;
+      font-family: 'Segoe UI', sans-serif;
+      background: #0d0d0d;
       color: #f1f1f1;
       padding: 2rem;
+      margin: 0;
     }
+
     h1 {
       text-align: center;
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
     }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 2rem;
+      margin-top: 1rem;
     }
+
     th, td {
       padding: 1rem;
       border: 1px solid #333;
       text-align: left;
+      font-size: 0.9rem;
     }
+
     th {
       background-color: #222;
     }
+
     tbody tr:nth-child(even) {
       background-color: #1a1a1a;
     }
+
     a {
       color: #4fc3f7;
+      text-decoration: none;
+    }
+
+    @media (max-width: 600px) {
+      table, th, td {
+        font-size: 0.8rem;
+        padding: 0.6rem;
+      }
     }
   </style>
 </head>
@@ -42,34 +60,57 @@
     <thead>
       <tr>
         <th>Tool</th>
-        <th>Last Used</th>
-        <th>Launch Count</th>
+        <th>Action</th>
+        <th>Timestamp</th>
       </tr>
     </thead>
     <tbody id="usage-table"></tbody>
   </table>
 
+  <!-- Firebase App (core) SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth-compat.js"></script>
+
   <script>
-    const history = JSON.parse(localStorage.getItem('toolHistory') || '[]');
-    const counts = {};
-    history.forEach(entry => {
-      counts[entry.tool] = (counts[entry.tool] || 0) + 1;
-    });
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "SENDER_ID",
+      appId: "APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
 
-    const uniqueTools = [...new Set(history.map(e => e.tool))];
-    const table = document.getElementById('usage-table');
+    const usageTable = document.getElementById('usage-table');
 
-    uniqueTools.forEach(tool => {
-      const lastUsed = history.find(e => e.tool === tool)?.time || 'N/A';
-      const count = counts[tool] || 0;
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        alert("Please log in to view your history.");
+        window.location.href = "login.html";
+        return;
+      }
 
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td>${tool}</td>
-        <td>${new Date(lastUsed).toLocaleString()}</td>
-        <td>${count}</td>
-      `;
-      table.appendChild(row);
+      db.collection("userHistory")
+        .where("uid", "==", user.uid)
+        .orderBy("timestamp", "desc")
+        .onSnapshot(snapshot => {
+          usageTable.innerHTML = "";
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${data.tool}</td>
+              <td>${data.action}</td>
+              <td>${new Date(data.timestamp?.toDate()).toLocaleString()}</td>
+            `;
+            usageTable.appendChild(row);
+          });
+        });
     });
   </script>
 </body>
