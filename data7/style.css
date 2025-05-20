@@ -394,3 +394,22 @@ body {
     width: 100%;
   }
 }
+
+body.dark-mode {
+  background-color: #eaeaea;
+  color: #111;
+}
+body.dark-mode .header {
+  background: rgba(250, 250, 250, 0.9);
+  border-bottom: 1px solid #ccc;
+}
+body.dark-mode .home-link,
+body.dark-mode .actions a,
+body.dark-mode .actions button {
+  color: #0077cc;
+}
+body.dark-mode .actions a:hover,
+body.dark-mode .actions button:hover {
+  background-color: #0077cc;
+  color: #fff;
+}
