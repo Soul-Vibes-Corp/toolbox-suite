@@ -244,7 +244,24 @@ document.addEventListener("DOMContentLoaded", () => {
   renderTools(tools.slice(0, 5));
 });
 
-  
+function saveUserSettings(settingsObject) {
+  const user = firebase.auth().currentUser;
+  if (!user) return;
+
+  firebase.firestore().collection("userSettings").doc(user.uid).set(settingsObject);
+}
+
+// Example:
+saveUserSettings({
+  theme: "dark",
+  compressorSettings: {
+    threshold: -12,
+    ratio: 4,
+  },
+  reverbPreset: "Valhalla Space",
+});
+
+
   // ---- Keyboard Navigation ----
   searchInput.addEventListener('keydown', (e) => {
     const visibleCards = toolCards.filter(card => card.offsetParent !== null);
@@ -269,3 +286,11 @@ document.addEventListener("DOMContentLoaded", () => {
     card.setAttribute('tabindex', '0');
   });
 });
+
+firebase.firestore().collection("userSettings").doc(user.uid).get().then(doc => {
+  if (doc.exists) {
+    const settings = doc.data();
+    // Apply settings to app UI
+  }
+});
+
