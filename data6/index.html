@@ -56,13 +56,170 @@
 
 <header class="header">
    <h1><a href="../dashboard.html" class="home-link">🧰 Toolbox Suite</a></h1>
+
+  <!-- Hidden checkbox to toggle the menu -->
+  <input type="checkbox" id="menuToggle" class="menu-toggle" />
+  <label for="menuToggle" class="hamburger" aria-label="Toggle Menu">&#9776;</label>
+
+   <nav class="menu">
   <div class="actions">
     <button id="search-toggle" aria-label="Search"> 🔍</button>
     <input type="text" id="search-input" placeholder="Search tools..." aria-label="Search tools" />
+    <span id="result-count" aria-live="polite"></span>
+      <a href="../dashboard.html">Dashboard</a>
+      <a href="../tools.html">Tools</a>
+      <a href="../settings.html">Settings</a>
+      <button onclick="location.href='../index.html'" id="logout-button" aria-label="Logout">Logout</button>
      <button id="toggle-dark" aria-pressed="false">🌙</button>
      <button onclick="location.href='../index.html'" id="logout-button" aria-label="Logout">🚪 Logout</button>
   </div>
+ </nav>
 </header>
+
+  <style>
+  /* Basic Reset */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    background-color: #121212;
+    color: #eee;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  /* Header Styling */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    background-color: rgba(20, 20, 20, 0.9);
+    border-bottom: 1px solid #333;
+    position: relative;
+    z-index: 10;
+  }
+
+  .home-link {
+    color: #0ff;
+    text-decoration: none;
+    font-size: 1.8rem;
+  }
+
+  .home-link:hover {
+    color: #0fa;
+  }
+
+  /* Hamburger Button */
+  .hamburger {
+    font-size: 30px;
+    color: #0ff;
+    cursor: pointer;
+    display: none; /* hidden by default (visible on mobile) */
+    user-select: none;
+  }
+
+  .hamburger:hover {
+    color: #0fa;
+  }
+
+  /* Hidden Checkbox */
+  .menu-toggle {
+    display: none;
+  }
+
+  /* Menu Styling */
+  .menu {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .actions a,
+  .actions button,
+  .actions input[type="text"] {
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: none;
+    background: #222;
+    color: #0ff;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+
+  .actions a:hover,
+  .actions button:hover,
+  .actions input[type="text"]:focus {
+    background-color: #0ff;
+    color: #111;
+    outline: none;
+  }
+
+  .actions input[type="text"] {
+    min-width: 150px;
+    color: #eee;
+  }
+
+  .visually-hidden {
+    position: absolute !important;
+    height: 1px; width: 1px;
+    overflow: hidden;
+    clip: rect(1px, 1px, 1px, 1px);
+    white-space: nowrap;
+  }
+
+  /* Responsive Menu for Mobile */
+  @media (max-width: 768px) {
+    .hamburger {
+      display: block;
+    }
+
+    .menu {
+      position: absolute;
+      top: 100%;
+      right: 24px;
+      flex-direction: column;
+      background: rgba(20, 20, 20, 0.95);
+      padding: 16px;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0, 255, 255, 0.1);
+      width: 250px;
+
+      /* Hide by default */
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+    }
+
+    .actions {
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .actions input[type="text"] {
+      width: 100%;
+    }
+
+    /* When checkbox is checked, show menu */
+    .menu-toggle:checked + .hamburger + .menu {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+  }
+</style>
+
 
 <main>
     <h2 id="free-movies"> Movie Suite</h2>
