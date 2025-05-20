@@ -49,10 +49,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Toggle dark mode on button click
-  toggleDarkBtn.addEventListener('click', () => {
-    const enable = !document.body.classList.contains(DARK_CLASS);
-    setDarkMode(enable);
-  });
+ document.getElementById('toggle-dark').addEventListener('click', function() {
+  const body = document.body;
+  body.classList.toggle('dark-mode');
+  const pressed = this.getAttribute('aria-pressed') === 'true';
+  this.setAttribute('aria-pressed', String(!pressed));
+  this.textContent = pressed ? '🌙 Toggle Dark Mode' : '☀️ Toggle Light Mode';
+});
+
 
   // ---- Search Functionality ----
   const filterTools = () => {
