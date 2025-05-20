@@ -56,13 +56,21 @@
 
 <header class="header">
   <h1><a href="../dashboard.html" class="home-link">🧰 Toolbox Suite</a></h1>
+
+<!-- Hidden checkbox to toggle the menu -->
+  <input type="checkbox" id="menuToggle" class="menu-toggle" />
+  <label for="menuToggle" class="hamburger" aria-label="Toggle Menu">&#9776;</label>
+  
   <div class="actions">
     <button id="search-toggle" aria-label="Search"> 🔍</button>
     <input type="text" id="search-input" placeholder="Search tools..." aria-label="Search tools" />
-    <button id="toggle-dark" aria-pressed="false">🌙</button>
-    <button onclick="location.href='../index.html'" id="logout-button" aria-label="Logout">🚪 Logout</button>
-
-  </div>
+    <span id="result-count" aria-live="polite"></span>
+      <a href="../dashboard.html">Dashboard</a>
+      <a href="../tools.html">Tools</a>
+      <a href="../settings.html">Settings</a>
+      <button onclick="location.href='../index.html'" id="logout-button" aria-label="Logout">Logout</button>
+    </div>
+  </nav>
 </header>
 
 <main>
