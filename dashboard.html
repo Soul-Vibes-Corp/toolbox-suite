@@ -1,3 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard</title>
+</head>
+<body>
+  <h2>Your Dashboard</h2>
+  <p>Points: <span id="pointsDisplay">0</span></p>
+  <div id="rewards">
+    <!-- Reward items or links can be added here -->
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
+
+  <script src="firebase-config.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
+
+
+
+
 
 auth.onAuthStateChanged(user => {
   if (user) {
