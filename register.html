@@ -1,0 +1,44 @@
+<script>
+  const form = document.getElementById('register-form');
+  const errorMsg = document.getElementById('error-msg');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const fullname = document.getElementById('fullname').value.trim();
+    const username = document.getElementById('username').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
+    const occupation = document.getElementById('occupation').value.trim();
+    const skills = document.getElementById('skills').value.trim();
+    const portfolio = document.getElementById('portfolio').value.trim();
+    const bio = document.getElementById('bio').value.trim();
+
+    if (password !== confirmPassword) {
+      errorMsg.textContent = "Passwords do not match.";
+      return;
+    }
+
+    try {
+      const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+      const user = userCredential.user;
+
+      await db.collection('users').doc(user.uid).set({
+        fullname,
+        username,
+        email,
+        occupation,
+        skills,
+        portfolio,
+        bio,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      alert("✅ Registration successful!");
+      window.location.href = "dashboard.html";
+    } catch (error) {
+      errorMsg.textContent = error.message;
+    }
+  });
+</script>
