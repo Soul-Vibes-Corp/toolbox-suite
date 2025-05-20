@@ -5,7 +5,26 @@ document.addEventListener('DOMContentLoaded', () => {
   const toggleDarkBtn = document.getElementById('toggle-dark');
   const toolCards = Array.from(document.querySelectorAll('.tool-card'));
   const categories = Array.from(document.querySelectorAll('.category'));
+  const menuToggle = document.getElementById('menuToggle');
+  const menu = document.getElementById('menu');
 
+   menuToggle.addEventListener('click', () => {
+    menu.classList.toggle('show');
+
+  // Update aria-expanded attribute
+    const expanded = menuToggle.getAttribute('aria-expanded') === 'true';
+    menuToggle.setAttribute('aria-expanded', String(!expanded));
+  });
+
+  // Close menu when clicking outside
+  document.addEventListener('click', (event) => {
+    if (!menu.contains(event.target) && event.target !== menuToggle) {
+      menu.classList.remove('show');
+      menuToggle.setAttribute('aria-expanded', 'false');
+    }
+
+    });
+});
   let currentFocus = -1; // For keyboard navigation
 
   // ---- Dark Mode ----
