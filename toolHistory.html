@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tool Usage History</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #111;
+      color: #f1f1f1;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 2rem;
+    }
+    th, td {
+      padding: 1rem;
+      border: 1px solid #333;
+      text-align: left;
+    }
+    th {
+      background-color: #222;
+    }
+    tbody tr:nth-child(even) {
+      background-color: #1a1a1a;
+    }
+    a {
+      color: #4fc3f7;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧠 Tool Usage History</h1>
+  <p><a href="index.html">⬅ Back to Suite</a></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Tool</th>
+        <th>Last Used</th>
+        <th>Launch Count</th>
+      </tr>
+    </thead>
+    <tbody id="usage-table"></tbody>
+  </table>
+
+  <script>
+    const history = JSON.parse(localStorage.getItem('toolHistory') || '[]');
+    const counts = {};
+    history.forEach(entry => {
+      counts[entry.tool] = (counts[entry.tool] || 0) + 1;
+    });
+
+    const uniqueTools = [...new Set(history.map(e => e.tool))];
+    const table = document.getElementById('usage-table');
+
+    uniqueTools.forEach(tool => {
+      const lastUsed = history.find(e => e.tool === tool)?.time || 'N/A';
+      const count = counts[tool] || 0;
+
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${tool}</td>
+        <td>${new Date(lastUsed).toLocaleString()}</td>
+        <td>${count}</td>
+      `;
+      table.appendChild(row);
+    });
+  </script>
+</body>
+</html>
