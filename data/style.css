@@ -201,3 +201,11 @@ body[data-theme='dark'] header button:hover {
   visibility: visible;
   margin-left: 8px;
 }
+
+.home-link {
+  text-decoration: none;
+  color: inherit;
+}
+.home-link:hover {
+  text-decoration: underline;
+}
