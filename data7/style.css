@@ -172,5 +172,5 @@ body[data-theme='dark'] header button:hover {
   color: inherit;
 }
 .home-link:hover {
-  text-decoration: underline;
+  text-decoration: none;
 }
