@@ -1,78 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Login – Toolbox Suite</title>
-  <link rel="stylesheet" href="style.css" />
-  
-  <!-- Firebase Setup -->
-  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth-compat.js"></script>
-  <script>
-    // Your Firebase config here
-    const firebaseConfig = {
-  apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
-  authDomain: "chat-code-forum.firebaseapp.com",
-  projectId: "chat-code-forum",
-  storageBucket: "chat-code-forum.firebasestorage.app",
-  messagingSenderId: "496765673859",
-  appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
-  measurementId: "G-XJKWXHF8WN"
-};
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login | NeonDAW</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: linear-gradient(145deg, #0f0f2f, #1f1f4f);
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .login-container {
+      background: rgba(20, 20, 40, 0.85);
+      padding: 2em;
+      border-radius: 12px;
+      box-shadow: 0 0 25px rgba(0, 255, 255, 0.2);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1em;
+      color: #0ff;
+    }
+
+    label {
+      display: block;
+      margin-top: 1em;
+      margin-bottom: 0.5em;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.7em;
+      border: none;
+      border-radius: 6px;
+      font-size: 1em;
+      background: #222;
+      color: #0ff;
+      box-shadow: inset 0 0 5px #0ff2;
+    }
+
+    button {
+      margin-top: 1.5em;
+      width: 100%;
+      padding: 0.9em;
+      border: none;
+      border-radius: 6px;
+      background: #0ff;
+      color: #000;
+      font-weight: bold;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #0cc;
+    }
+
+    .register-link {
+      text-align: center;
+      margin-top: 1em;
+      color: #ccc;
+    }
+
+    .register-link a {
+      color: #0ff;
+      text-decoration: none;
+    }
+
+    .error {
+      color: #f88;
+      text-align: center;
+      margin-top: 0.5em;
+    }
+  </style>
 </head>
 <body>
   <div class="login-container">
-    <h1>🔐 Login to Toolbox Suite</h1>
-    <form id="login-form">
-      <input type="email" id="login-email" placeholder="Email Address" required />
-      <input type="password" id="login-password" placeholder="Password" required />
+    <h2>Login to NeonDAW</h2>
+    <form id="loginForm">
+      <label for="email">Email</label>
+      <input type="email" id="email" required placeholder="Enter your email" />
+
+      <label for="password">Password</label>
+      <input type="password" id="password" required placeholder="Enter your password" />
+
       <button type="submit">Login</button>
-      <p id="login-error" class="error"></p>
+      <p class="error" id="errorMsg"></p>
     </form>
 
-    <button id="google-login-btn" style="margin-top: 10px;">Sign in with Google</button>
-
-    <p style="margin-top: 20px;">
-      Don't have an account? 
-      <a href="register.html">Register here</a>
-    </p>
+    <div class="register-link">
+      New here? <a href="register.html">Create an account</a>
+    </div>
   </div>
 
+  <!-- Firebase scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js"></script>
   <script>
-    const loginForm = document.getElementById('login-form');
-    const loginError = document.getElementById('login-error');
-    const googleLoginBtn = document.getElementById('google-login-btn');
+    const firebaseConfig = {
+      apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
+      authDomain: "chat-code-forum.firebaseapp.com",
+      projectId: "chat-code-forum",
+      storageBucket: "chat-code-forum.appspot.com",
+      messagingSenderId: "496765673859",
+      appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
+      measurementId: "G-XJKWXHF8WN"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
 
-    // Email/Password login
+    const loginForm = document.getElementById('loginForm');
+    const errorMsg = document.getElementById('errorMsg');
+
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      loginError.textContent = "";
-
-      const email = document.getElementById('login-email').value.trim();
-      const password = document.getElementById('login-password').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
 
       try {
         await auth.signInWithEmailAndPassword(email, password);
-        window.location.href = "dashboard.html"; // Redirect on success
+        // Redirect to DAW after login
+        window.location.href = "index.html";
       } catch (error) {
-        loginError.textContent = error.message;
-      }
-    });
-
-    // Google Sign-In
-    googleLoginBtn.addEventListener('click', async () => {
-      loginError.textContent = "";
-      const provider = new firebase.auth.GoogleAuthProvider();
-
-      try {
-        await auth.signInWithPopup(provider);
-        window.location.href = "dashboard.html"; // Redirect on success
-      } catch (error) {
-        loginError.textContent = error.message;
+        errorMsg.textContent = error.message;
       }
     });
   </script>
