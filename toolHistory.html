@@ -67,21 +67,21 @@
     <tbody id="usage-table"></tbody>
   </table>
 
-  <!-- Firebase App (core) SDK -->
-  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth-compat.js"></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-analytics.js";
 
-  <script>
-    // Firebase config
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT.appspot.com",
-      messagingSenderId: "SENDER_ID",
-      appId: "APP_ID"
-    };
+  // Your Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
+    authDomain: "chat-code-forum.firebaseapp.com",
+    projectId: "chat-code-forum",
+    storageBucket: "chat-code-forum.appspot.com",
+    messagingSenderId: "496765673859",
+    appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
+    measurementId: "G-XJKWXHF8WN"
+  };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const auth = firebase.auth();
@@ -91,7 +91,7 @@
     auth.onAuthStateChanged(user => {
       if (!user) {
         alert("Please log in to view your history.");
-        window.location.href = "login.html";
+        window.location.href = "index.html";
         return;
       }
 
