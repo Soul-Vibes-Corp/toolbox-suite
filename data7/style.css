@@ -172,8 +172,5 @@ body[data-theme='dark'] header button:hover {
   color: inherit;
 }
 .home-link:hover {
- background: linear-gradient(135deg, #00ffaa, #ff00cc);
-  color: #0d0d0d;
-  transform: translateY(-5px);
-  box-shadow: 0px 6px 12px rgba(0, 255, 170, 0.4);
+  background-color: #c70000;
 }
