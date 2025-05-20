@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Profile | Toolbox Suite</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background-color: #121212;
+      color: #eee;
+      font-family: "Segoe UI", sans-serif;
+      padding: 2rem;
+    }
+    .profile-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #1f1f1f;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+    }
+    h2 {
+      color: #0ff;
+      text-align: center;
+    }
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      margin: 0.5rem 0 1rem;
+      border-radius: 6px;
+      background: #222;
+      color: #0ff;
+      border: none;
+    }
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 0.5rem;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .danger {
+      background: #d9534f;
+    }
+    .danger:hover {
+      background: #c9302c;
+    }
+    .link {
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+    .link a {
+      color: #0ff;
+    }
+    .message {
+      text-align: center;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="profile-container">
+  <h2>👤 My Profile</h2>
+
+  <input type="text" id="username" placeholder="New Username" />
+  <button id="update-username">Update Username</button>
+
+  <input type="text" id="display-name" placeholder="New Display Name" />
+  <button id="update-displayname">Update Display Name</button>
+
+  <input type="password" id="new-password" placeholder="New Password" />
+  <button id="change-password">Change Password</button>
+
+  <button id="delete-account" class="danger">❌ Delete Account</button>
+
+  <button id="logout">🚪 Logout</button>
+
+  <p class="message" id="message"></p>
+
+  <div class="link">
+    <a href="settings.html">⚙️ Go to Settings</a>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
+  import {
+    getAuth,
+    updateProfile,
+    updatePassword,
+    deleteUser,
+    signOut,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+  import {
+    getFirestore,
+    doc,
+    updateDoc,
+    getDoc
+  } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
+    authDomain: "chat-code-forum.firebaseapp.com",
+    projectId: "chat-code-forum",
+    storageBucket: "chat-code-forum.appspot.com",
+    messagingSenderId: "496765673859",
+    appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
+    measurementId: "G-XJKWXHF8WN"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const msg = document.getElementById("message");
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = "login.html";
+    } else {
+      const docSnap = await getDoc(doc(db, "users", user.uid));
+      if (docSnap.exists()) {
+        document.getElementById("username").placeholder = "Current: " + docSnap.data().username;
+      }
+      document.getElementById("display-name").placeholder = "Current: " + (user.displayName || "Not Set");
+    }
+  });
+
+  document.getElementById("update-username").addEventListener("click", async () => {
+    const username = document.getElementById("username").value.trim();
+    if (!username) return;
+
+    try {
+      const user = auth.currentUser;
+      await updateDoc(doc(db, "users", user.uid), { username });
+      msg.textContent = "✅ Username updated!";
+    } catch (err) {
+      msg.textContent = "❌ " + err.message;
+    }
+  });
+
+  document.getElementById("update-displayname").addEventListener("click", async () => {
+    const displayName = document.getElementById("display-name").value.trim();
+    if (!displayName) return;
+
+    try {
+      await updateProfile(auth.currentUser, { displayName });
+      msg.textContent = "✅ Display name updated!";
+    } catch (err) {
+      msg.textContent = "❌ " + err.message;
+    }
+  });
+
+  document.getElementById("change-password").addEventListener("click", async () => {
+    const newPass = document.getElementById("new-password").value;
+    if (!newPass) return;
+
+    try {
+      await updatePassword(auth.currentUser, newPass);
+      msg.textContent = "✅ Password changed!";
+    } catch (err) {
+      msg.textContent = "❌ " + err.message;
+    }
+  });
+
+  document.getElementById("delete-account").addEventListener("click", async () => {
+    if (!confirm("Are you sure you want to delete your account? This cannot be undone.")) return;
+
+    try {
+      await deleteUser(auth.currentUser);
+      msg.textContent = "Account deleted.";
+      setTimeout(() => window.location.href = "register.html", 2000);
+    } catch (err) {
+      msg.textContent = "❌ " + err.message;
+    }
+  });
+
+  document.getElementById("logout").addEventListener("click", () => {
+    signOut(auth).then(() => {
+      window.location.href = "login.html";
+    });
+  });
+</script>
+
+</body>
+</html>
