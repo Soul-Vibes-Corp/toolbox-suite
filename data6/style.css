@@ -174,3 +174,132 @@ body[data-theme='dark'] header button:hover {
 .home-link:hover {
   text-decoration: underline;
 }
+
+/* Hamburger button */
+.hamburger {
+  font-size: 28px;
+  background: none;
+  border: none;
+  color: #0ff;
+  cursor: pointer;
+  display: none; /* hidden on desktop */
+  user-select: none;
+  transition: color 0.3s ease;
+}
+.hamburger:hover {
+  color: #ff0;
+}
+
+/* Navigation menu */
+.menu {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Actions container */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Links & buttons inside actions */
+.actions a,
+.actions button,
+.actions input {
+  background: #222;
+  border: none;
+  border-radius: 6px;
+  color: #0ff;
+  padding: 8px 14px;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.actions a:hover,
+.actions button:hover,
+.actions input:focus {
+  background-color: #0ff;
+  color: #111;
+  outline: none;
+}
+
+/* Search input */
+.actions input[type="text"] {
+  min-width: 150px;
+  color: #eee;
+  padding-left: 10px;
+}
+
+/* Visually hidden (for label) */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0,0,0,0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Responsive: dropdown for mobile */
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+  }
+
+  .menu {
+    position: absolute;
+    top: 100%;
+    right: 24px;
+    background: rgba(30,30,30,0.95);
+    flex-direction: column;
+    width: 220px;
+    padding: 16px 12px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 255, 255, 0.25);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-15px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .menu.show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .actions input[type="text"] {
+    width: 100%;
+  }
+}
+
+body.dark-mode {
+  background-color: #eaeaea;
+  color: #111;
+}
+body.dark-mode .header {
+  background: rgba(250, 250, 250, 0.9);
+  border-bottom: 1px solid #ccc;
+}
+body.dark-mode .home-link,
+body.dark-mode .actions a,
+body.dark-mode .actions button {
+  color: #0077cc;
+}
+body.dark-mode .actions a:hover,
+body.dark-mode .actions button:hover {
+  background-color: #0077cc;
+  color: #fff;
+}
