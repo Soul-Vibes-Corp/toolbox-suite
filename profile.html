@@ -108,7 +108,7 @@
 
   <button id="delete-account" class="danger">❌ Delete Account</button>
 
- <button id="logout" aria-label="Logout">🚪Logout</button>
+  <button id="logout" aria-label="Logout">🚪Logout</button>
 
 
   <p class="message" id="message"></p>
@@ -243,12 +243,6 @@ firebase.firestore().collection("userSettings").doc(user.uid).get().then(doc => 
     const settings = doc.data();
     // Apply settings to app UI
   }
-});
-
-document.getElementById("logout").addEventListener("click", () => {
-  signOut(auth).then(() => {
-    window.location.href = "index.html";
-  });
 });
 
   
