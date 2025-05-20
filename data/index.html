@@ -63,6 +63,12 @@
 
    <nav class="menu">
   <div class="actions">
+    <div id="search-container" style="display: flex; align-items: center; gap: 0.5rem;">
+  <input type="text" id="search-input" placeholder="Search..." aria-label="Search" style="padding: 0.5rem; border-radius: 4px; border: 1px solid #ccc;" />
+  <button id="search-button" aria-label="Search" style="padding: 0.5rem 1rem; border-radius: 4px; border: none; background-color: #333; color: white; cursor: pointer;">
+    🔍
+  </button>
+</div>
       <button id="search-toggle" aria-label="Search"> 🔍</button>
     <input type="text" id="search-input" placeholder="Search tools..." aria-label="Search tools" />
     <span id="result-count" aria-live="polite"></span>
