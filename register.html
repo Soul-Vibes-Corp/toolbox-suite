@@ -3,181 +3,160 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#000000" />
-  <link rel="icon" href="assets/favicon.png" type="image/png" />
-  <link rel="apple-touch-icon" href="assets/logo-192.png" />
   <title>Register – Toolbox Suite</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    body, html {
-      font-family: 'Inter', sans-serif;
-      background-color: #111;
-      color: #e0e0e0;
-      min-height: 100vh;
+    body {
+      background-color: #121212;
+      color: #eee;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       display: flex;
-      align-items: center;
       justify-content: center;
-      background-image:
-        linear-gradient(45deg, #1a1a1a 25%, transparent 25%),
-        linear-gradient(-45deg, #1a1a1a 25%, transparent 25%),
-        linear-gradient(45deg, transparent 75%, #1a1a1a 75%),
-        linear-gradient(-45deg, transparent 75%, #1a1a1a 75%);
-      background-size: 60px 60px;
-      background-position: 0 0, 0 30px, 30px -30px, -30px 0px;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle, rgba(0, 255, 170, 0.1), transparent 70%),
-                  radial-gradient(circle at bottom right, rgba(255, 100, 200, 0.08), transparent 80%);
-      z-index: -1;
-      animation: float 10s linear infinite;
-    }
-
-    @keyframes float {
-      0% { transform: translateY(0); }
-      50% { transform: translateY(-30px); }
-      100% { transform: translateY(0); }
+      align-items: center;
+      height: 100vh;
     }
 
     .register-container {
-      background: #ffffff;
-      color: #000;
-      padding: 2rem;
+      background: #1e1e1e;
+      padding: 32px;
       border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+      max-width: 500px;
       width: 100%;
-      max-width: 480px;
+    }
+
+    .register-container h2 {
+      color: #0ff;
       text-align: center;
+      margin-bottom: 20px;
     }
 
-    h1 {
-      margin-bottom: 1.5rem;
+    .register-container form {
+      display: flex;
+      flex-direction: column;
     }
 
-    input, textarea {
-      width: 100%;
-      padding: 0.75rem;
-      margin-bottom: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 1rem;
+    .register-container label {
+      margin: 10px 0 5px;
+      font-size: 0.95rem;
+      color: #aaa;
     }
 
-    button {
-      background-color: #007bff;
-      color: white;
+    .register-container input,
+    .register-container select {
+      padding: 10px;
+      background: #222;
+      border: 1px solid #333;
+      border-radius: 6px;
+      color: #0ff;
+    }
+
+    .register-container input:focus,
+    .register-container select:focus {
+      border-color: #0ff;
+      outline: none;
+      background: #111;
+    }
+
+    .register-container button {
+      margin-top: 20px;
+      padding: 12px;
+      background: #0ff;
+      color: #111;
       border: none;
-      padding: 0.75rem 1.5rem;
-      font-size: 1rem;
-      border-radius: 8px;
+      border-radius: 6px;
+      font-weight: bold;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: all 0.3s ease;
     }
 
-    button:hover {
-      background-color: #0056b3;
+    .register-container button:hover {
+      background: #0fa;
     }
 
-    .error {
-      color: red;
+    .login-link {
+      margin-top: 16px;
+      text-align: center;
       font-size: 0.9rem;
+      color: #aaa;
     }
 
-    .redirect-link {
-      margin-top: 15px;
-      display: block;
-      color: #007bff;
+    .login-link a {
+      color: #0ff;
+      text-decoration: none;
     }
 
-    .redirect-link:hover {
-      text-decoration: underline;
+    .login-link a:hover {
+      color: #0fa;
     }
   </style>
-
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
-      authDomain: "chat-code-forum.firebaseapp.com",
-      projectId: "chat-code-forum",
-      storageBucket: "chat-code-forum.appspot.com",
-      messagingSenderId: "496765673859",
-      appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
-      measurementId: "G-XJKWXHF8WN"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-  </script>
 </head>
 <body>
   <div class="register-container">
-    <h1>📝 Register for Toolbox Suite</h1>
-    <form id="register-form">
-      <input type="text" id="fullname" placeholder="Full Name" required />
-      <input type="text" id="username" placeholder="Username" required />
-      <input type="email" id="reg-email" placeholder="Email Address" required />
-      <input type="password" id="reg-password" placeholder="Password" required />
-      <input type="password" id="confirm-password" placeholder="Confirm Password" required />
-      <input type="text" id="occupation" placeholder="Occupation" />
-      <input type="text" id="skills" placeholder="Key Skills" />
-      <input type="url" id="portfolio" placeholder="Portfolio URL" />
-      <textarea id="bio" placeholder="Short Bio (optional)"></textarea>
+    <h2>🧰 Join Toolbox Suite</h2>
+    <form id="registerForm">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" name="name" required />
+
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="email" required />
+
+      <label for="password">Create Password</label>
+      <input type="password" id="password" name="password" required />
+
+      <label for="field">Main Professional Field</label>
+      <select id="field" name="field" required>
+        <option value="">-- Choose One --</option>
+        <option value="marketing">Marketing & Branding</option>
+        <option value="freelance">Freelance Services</option>
+        <option value="design">Design / Creative</option>
+        <option value="business">Business Strategy</option>
+        <option value="finance">Finance & Planning</option>
+        <option value="developer">Developer / Tech</option>
+        <option value="other">Other</option>
+      </select>
+
+      <label for="goals">Your Primary Goal with Toolbox Suite</label>
+      <select id="goals" name="goals" required>
+        <option value="">-- Select Goal --</option>
+        <option value="find_gigs">Find Gigs & Jobs</option>
+        <option value="launch_brand">Launch My Brand</option>
+        <option value="manage_clients">Manage Clients</option>
+        <option value="grow_socials">Grow Social Media</option>
+        <option value="automate">Automate Business Tasks</option>
+      </select>
+
+      <label for="experience">Years of Experience</label>
+      <select id="experience" name="experience" required>
+        <option value="">-- Select --</option>
+        <option value="0">Beginner (0-1 years)</option>
+        <option value="1-3">1–3 Years</option>
+        <option value="4-7">4–7 Years</option>
+        <option value="8+">8+ Years</option>
+      </select>
+
       <button type="submit">Create Account</button>
-      <p class="redirect-link"><a href="index.html">Already have an account? Login</a></p>
-      <p id="error-msg" class="error"></p>
     </form>
+    <div class="login-link">
+      Already have an account? <a href="login.html">Login here</a>
+    </div>
   </div>
 
   <script>
-    const form = document.getElementById('register-form');
-    const errorMsg = document.getElementById('error-msg');
-
-    form.addEventListener('submit', async (e) => {
+    document.getElementById("registerForm").addEventListener("submit", function (e) {
       e.preventDefault();
-      errorMsg.textContent = "";
+      const formData = {
+        name: this.name.value,
+        email: this.email.value,
+        password: this.password.value,
+        field: this.field.value,
+        goals: this.goals.value,
+        experience: this.experience.value
+      };
 
-      const fullname = document.getElementById('fullname').value.trim();
-      const username = document.getElementById('username').value.trim();
-      const email = document.getElementById('reg-email').value.trim();
-      const password = document.getElementById('reg-password').value;
-      const confirmPassword = document.getElementById('confirm-password').value;
-
-      if (password !== confirmPassword) {
-        errorMsg.textContent = "Passwords do not match.";
-        return;
-      }
-
-      try {
-        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-        const user = userCredential.user;
-
-        // Save additional user info to Firestore
-        await db.collection("users").doc(user.uid).set({
-          fullname,
-          username,
-          email,
-          occupation: document.getElementById('occupation').value.trim(),
-          skills: document.getElementById('skills').value.trim(),
-          portfolio: document.getElementById('portfolio').value.trim(),
-          bio: document.getElementById('bio').value.trim(),
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-
-        alert("✅ Account created successfully!");
-        window.location.href = "dashboard.html";
-      } catch (error) {
-        errorMsg.textContent = error.message;
-      }
+      localStorage.setItem("toolboxUser", JSON.stringify(formData));
+      alert("Registration successful! Redirecting to dashboard...");
+      window.location.href = "dashboard.html";
     });
   </script>
 </body>
