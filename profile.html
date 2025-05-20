@@ -52,12 +52,18 @@
     .danger:hover {
       background: #c9302c;
     }
-    .link {
+     .link {
       text-align: center;
-      margin-top: 1.5rem;
+      margin-top: 1rem;
     }
     .link a {
       color: #0ff;
+      text-decoration: none;
+      display: inline-block;
+      margin: 0.5rem;
+    }
+    .link a:hover {
+      color: #0fa;
     }
     .message {
       text-align: center;
@@ -85,10 +91,14 @@
 
   <p class="message" id="message"></p>
 
-  <div class="link">
-    <a href="settings.html">⚙️ Go to Settings</a>
-  </div>
+ <div class="link">
+  <a href="profile.html">👤 Manage Profile</a>
 </div>
+
+<div class="link">
+  <a href="dashboard.html">🔙 Back to Dashboard</a>
+</div>
+
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
