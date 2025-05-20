@@ -167,17 +167,21 @@ body[data-theme='dark'] header button:hover {
   clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0% 50%);
 }
 
-/* Make header link look clean and highlight on hover */
 .home-link {
+  display: inline-block;
+  background-color: rgba(18, 18, 18, 0.85);
+  border-radius: 12px;
+  padding: 20px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease, box-shadow 0.6s ease;
+  color: inherit;
   text-decoration: none;
-  color:  #fff;
-  text-shadow: 0px 6px 12px rgba(0, 255, 170, 0.4);
-  border-radius: 8px;
-  padding: 4px 8px;
-  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .home-link:hover {
-  background-color: rgba(255, 255, 255, 0.1); /* Light highlight */
-  color: #00ffff; /* Optional color change */
+  transform: rotateX(3deg) rotateY(-3deg) translateZ(10px);
+  box-shadow: 0px 8px 20px rgba(0, 255, 170, 0.4);
 }
+
