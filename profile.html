@@ -156,7 +156,7 @@
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
-      window.location.href = "login.html";
+      window.location.href = "index.html";
     } else {
       const docSnap = await getDoc(doc(db, "users", user.uid));
       if (docSnap.exists()) {
@@ -217,7 +217,7 @@
 
   document.getElementById("logout").addEventListener("click", () => {
     signOut(auth).then(() => {
-      window.location.href = "login.html";
+      window.location.href = "index.html";
     });
   });
 
