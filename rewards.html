@@ -2,58 +2,168 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Rewards Center</title>
-  <!-- Include your CSS and JS files here -->
+  <link rel="icon" href="assets/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background-color: #121212;
+      color: #eee;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      background-color: rgba(20, 20, 20, 0.9);
+      border-bottom: 1px solid #333;
+    }
+
+    .home-link {
+      color: #0ff;
+      text-decoration: none;
+      font-size: 1.8rem;
+    }
+
+    .menu a,
+    .menu button {
+      color: #0ff;
+      background: #222;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 1rem;
+      margin-left: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .menu a:hover,
+    .menu button:hover {
+      background-color: #0ff;
+      color: #111;
+    }
+
+    main {
+      padding: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    section {
+      background: #1e1e1e;
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 255, 255, 0.1);
+    }
+
+    section h2 {
+      color: #0ff;
+      margin-bottom: 1rem;
+    }
+
+    button {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      background-color: #007bff;
+      color: white;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    input[type="text"] {
+      padding: 0.5rem;
+      border-radius: 6px;
+      border: none;
+      background: #222;
+      color: #0ff;
+      width: 100%;
+      max-width: 400px;
+      margin-bottom: 1rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: #999;
+    }
+
+    @media (max-width: 600px) {
+      .menu {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>Rewards Center</h1>
-    <!-- Navigation links -->
+  <header class="header">
+    <h1><a href="./dashboard.html" class="home-link">🧰 Toolbox Suite</a></h1>
+    <nav class="menu">
+      <a href="./dashboard.html">Dashboard</a>
+      <a href="./toolHistory.html">Tool History</a>
+      <a href="./settings.html">Settings</a>
+      <button onclick="location.href='./index.html'">Logout</button>
+    </nav>
   </header>
 
   <main>
-    <!-- Sign-Up Bonus Section -->
     <section id="signup-bonus">
-      <h2>Welcome Bonus</h2>
+      <h2>🎁 Welcome Bonus</h2>
       <p>Claim your sign-up bonus now!</p>
       <button id="claim-signup-bonus">Claim Bonus</button>
     </section>
 
-    <!-- Daily Bonus Ladder Section -->
     <section id="daily-bonus-ladder">
-      <h2>Daily Bonus Ladder</h2>
-      <!-- Progress tracker and action buttons -->
+      <h2>📆 Daily Bonus Ladder</h2>
+      <p>Log in daily to climb the ladder and earn increasing rewards.</p>
+      <button>Check Today's Bonus</button>
     </section>
 
-    <!-- Streak Rewards Section -->
     <section id="streak-rewards">
-      <h2>Streak Rewards</h2>
-      <!-- Calendar or streak counter -->
+      <h2>🔥 Streak Rewards</h2>
+      <p>Maintain your streak to unlock premium rewards!</p>
+      <button>View Streak</button>
     </section>
 
-    <!-- Leaderboard Section -->
     <section id="leaderboard">
-      <h2>Top Earners</h2>
-      <!-- Leaderboard table -->
+      <h2>🏆 Top Earners</h2>
+      <ul>
+        <li>1. UserX — 1200 points</li>
+        <li>2. UserY — 950 points</li>
+        <li>3. UserZ — 870 points</li>
+      </ul>
     </section>
 
-    <!-- Reward Multiplier Section -->
     <section id="reward-multiplier">
-      <h2>Reward Multiplier</h2>
-      <!-- Multiplier status and progress -->
+      <h2>🔄 Reward Multiplier</h2>
+      <p>Your current multiplier: <strong>1.5x</strong></p>
+      <button>Boost Multiplier</button>
     </section>
 
-    <!-- Bonus Code Redemption Section -->
     <section id="bonus-code">
-      <h2>Enter Bonus Code</h2>
+      <h2>💬 Enter Bonus Code</h2>
       <input type="text" id="bonus-code-input" placeholder="Enter code here" />
       <button id="redeem-code">Redeem</button>
     </section>
 
-    <!-- Referral Program Section -->
     <section id="referral-program">
-      <h2>Invite Friends</h2>
+      <h2>🤝 Invite Friends</h2>
       <p>Share your referral link and earn bonuses!</p>
       <input type="text" id="referral-link" readonly value="https://yourapp.com/referral?code=XYZ123" />
       <button id="copy-referral-link">Copy Link</button>
@@ -61,9 +171,25 @@
   </main>
 
   <footer>
-    <!-- Footer content -->
+    <p>© 2025 Toolbox Suite — Fast, Private, Free | Powered by Soul Vibes Corp</p>
   </footer>
 
-  <!-- Include your JS scripts here -->
+  <script>
+    document.getElementById('copy-referral-link').addEventListener('click', function () {
+      const link = document.getElementById('referral-link');
+      link.select();
+      document.execCommand('copy');
+      alert('Referral link copied!');
+    });
+
+    document.getElementById('claim-signup-bonus').addEventListener('click', function () {
+      alert('🎉 Welcome bonus claimed!');
+    });
+
+    document.getElementById('redeem-code').addEventListener('click', function () {
+      const code = document.getElementById('bonus-code-input').value;
+      alert(`🔑 Code "${code}" redeemed!`);
+    });
+  </script>
 </body>
 </html>
