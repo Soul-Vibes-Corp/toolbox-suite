@@ -22,9 +22,18 @@
         <option value="low">$0 - $500</option>
         <option value="mid">$500 - $2K</option>
         <option value="high">$2K+</option>
+        <aside class="filters">
+  <h3>Filters</h3>
+  <label><input type="checkbox" id="fullTime"> Full-time</label>
+  <label><input type="checkbox" id="partTime"> Part-time</label>
+  <label>Budget: <input type="range" id="budgetRange" min="0" max="5000" step="100"></label>
+  <!-- Add more filters as needed -->
+</aside>
+
       </select>
       <button class="generate-btn" type="submit">🔍 Find Gigs</button>
     </form>
+<button id="themeToggle">Toggle Theme</button>
 
     <div class="loader" id="loader">🔄 Searching for gigs...</div>
 
