@@ -115,7 +115,7 @@
 
     signInWithEmailAndPassword(auth, email, password)
       .then(() => {
-        window.location.href = "./dashboard.html";
+        window.location.href = "dashboard.html";
       })
       .catch((error) => {
         document.getElementById("error-message").innerText = error.message;
