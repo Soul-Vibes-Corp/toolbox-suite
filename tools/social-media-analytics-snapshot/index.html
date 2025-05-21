@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#000000" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="assets/favicon.png" type="image/png" />
@@ -48,9 +48,13 @@
       border-radius: 6px;
       font-weight: bold;
       box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+      margin-top: 8px;
     }
 
-    .menu-toggle { display: none; }
+    .menu-toggle {
+      display: none;
+    }
+
     .hamburger {
       display: none;
       font-size: 30px;
@@ -61,24 +65,33 @@
     nav.menu {
       display: flex;
       gap: 12px;
+      align-items: center;
     }
 
-    .menu a, .menu button, .menu input {
+    .menu a,
+    .menu button,
+    .menu input {
       background: #222;
       color: var(--accent);
       border: none;
       padding: 8px 14px;
       border-radius: 6px;
       text-decoration: none;
+      font-size: 0.95rem;
     }
 
-    .menu a:hover, .menu button:hover, .menu input:focus {
+    .menu a:hover,
+    .menu button:hover,
+    .menu input:focus {
       background: var(--accent);
       color: #111;
     }
 
     @media (max-width: 768px) {
-      .hamburger { display: block; }
+      .hamburger {
+        display: block;
+      }
+
       nav.menu {
         position: absolute;
         top: 100%;
@@ -114,6 +127,7 @@
       gap: 1rem;
       width: 100%;
       max-width: 800px;
+      margin-bottom: 2rem;
     }
 
     .suite-button {
@@ -134,6 +148,15 @@
       background-color: #0056b3;
     }
 
+    .report-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
     footer {
       text-align: center;
       padding: 1rem;
@@ -145,106 +168,100 @@
 </head>
 
 <body>
+  <header class="header">
+    <div class="header-left">
+      <h1><a href="#">📸 SnapShot Suite</a></h1>
+      <div class="points-counter">⭐ Points: <span id="points-value">880</span></div>
+    </div>
+    <input type="checkbox" id="menuToggle" class="menu-toggle" />
+    <label for="menuToggle" class="hamburger" aria-label="Toggle menu">&#9776;</label>
+    <nav class="menu" aria-label="Main navigation">
+      <input type="text" id="search-input" placeholder="Search..." aria-label="Search" />
+      <a href="#">My Snaps</a>
+      <a href="#">Settings</a>
+      <button onclick="alert('Logging out...')">Logout</button>
+    </nav>
+  </header>
 
-<header class="header">
-  <div class="header-left">
-    <h1><a href="#">📸 SnapShot Suite</a></h1>
-    <div class="points-counter">⭐ Points: <span id="points-value">880</span></div>
-  </div>
-  <input type="checkbox" id="menuToggle" class="menu-toggle" />
-  <label for="menuToggle" class="hamburger" aria-label="Toggle Menu">&#9776;</label>
-  <nav class="menu">
-    <input type="text" id="search-input" placeholder="Search..." />
-    <a href="#">My Snaps</a>
-    <a href="#">Settings</a>
-    <button onclick="alert('Logging out...')">Logout</button>
-  </nav>
-</header>
+  <main>
+    <h2>Welcome to SnapShot Dashboard</h2>
 
-<main>
-  <h2>Welcome to NapShot Dashboard</h2>
-  <section class="suite-grid">
-    <a href="editor/index.html" class="suite-button">📷 Snap Editor</a>
-    <a href="gallery/index.html" class="suite-button">🖼️ Snap Gallery</a>
-    <a href="analytics/index.html" class="suite-button">📊 Snap Insights</a>
-    <a href="scheduler/index.html" class="suite-button">📅 Snap Scheduler</a>
-    <a href="share/index.html" class="suite-button">📤 Share Manager</a>
+    <section class="suite-grid">
+      <a href="editor/index.html" class="suite-button">📷 Snap Editor</a>
+      <a href="gallery/index.html" class="suite-button">🖼️ Snap Gallery</a>
+      <a href="analytics/index.html" class="suite-button">📊 Snap Insights</a>
+      <a href="scheduler/index.html" class="suite-button">📅 Snap Scheduler</a>
+      <a href="share/index.html" class="suite-button">📤 Share Manager</a>
+    </section>
 
-<div>
-  <select id="platform-select">
-    <option value="facebook">Facebook</option>
-    <option value="instagram">Instagram</option>
-    <!-- Add more platforms as needed -->
-  </select>
-  <input type="date" id="start-date" />
-  <input type="date" id="end-date" />
-  <button onclick="generateReport()">Generate Report</button>
-</div>
-<canvas id="analyticsChart"></canvas>
+    <section class="report-controls">
+      <select id="platform-select" aria-label="Select Platform">
+        <option value="facebook">Facebook</option>
+        <option value="instagram">Instagram</option>
+      </select>
+      <input type="date" id="start-date" aria-label="Start Date" />
+      <input type="date" id="end-date" aria-label="End Date" />
+      <button onclick="generateReport()">Generate Report</button>
+    </section>
 
-  </section>
-</main>
+    <canvas id="analyticsChart" width="800" height="400" aria-label="Analytics Chart"></canvas>
+  </main>
 
-<footer>
-  <p>© 2025 SnapShot Suite — Secure, Private, AI-Enhanced. Powered by Soul Vibes Corp.</p>
-</footer>
+  <footer>
+    <p>© 2025 SnapShot Suite — Secure, Private, AI-Enhanced. Powered by Soul Vibes Corp.</p>
+  </footer>
 
-<script>
-  // Placeholder for service worker registration
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(() => console.log('✅ Service Worker Registered'))
-      .catch(err => console.error('❌ Service Worker Failed', err));
-  }
-
-  const pointsElement = document.getElementById('points-value');
-  // Simulate point update (optional logic)
-  setTimeout(() => {
-    pointsElement.textContent = parseInt(pointsElement.textContent) + 10;
-  }, 2000);
-</script>
-<script>
-  // JavaScript
-async function generateReport() {
-  const platform = document.getElementById('platform-select').value;
-  const startDate = document.getElementById('start-date').value;
-  const endDate = document.getElementById('end-date').value;
-
-  // Fetch data from the respective platform's API
-  const data = await fetchDataFromAPI(platform, startDate, endDate);
-
-  // Process and visualize data
-  const ctx = document.getElementById('analyticsChart').getContext('2d');
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: data.dates,
-      datasets: [{
-        label: 'Engagement',
-        data: data.engagement,
-        borderColor: 'rgba(75, 192, 192, 1)',
-        fill: false,
-      }]
-    },
-    options: {
-      responsive: true,
-      title: {
-        display: true,
-        text: 'Social Media Engagement Over Time'
-      }
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(() => console.log('✅ Service Worker Registered'))
+        .catch(err => console.error('❌ Service Worker Failed', err));
     }
-  });
-}
 
-async function fetchDataFromAPI(platform, startDate, endDate) {
-  // Placeholder function to simulate API data retrieval
-  // Replace with actual API calls and data processing
-  return {
-    dates: ['2025-05-01', '2025-05-02', '2025-05-03'],
-    engagement: [120, 150, 170]
-  };
-}
+    const pointsElement = document.getElementById('points-value');
+    setTimeout(() => {
+      pointsElement.textContent = parseInt(pointsElement.textContent) + 10;
+    }, 2000);
+  </script>
 
-</script>
+  <script>
+    async function generateReport() {
+      const platform = document.getElementById('platform-select').value;
+      const startDate = document.getElementById('start-date').value;
+      const endDate = document.getElementById('end-date').value;
+
+      const data = await fetchDataFromAPI(platform, startDate, endDate);
+
+      const ctx = document.getElementById('analyticsChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: data.dates,
+          datasets: [{
+            label: 'Engagement',
+            data: data.engagement,
+            borderColor: 'rgba(75, 192, 192, 1)',
+            fill: false,
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            title: {
+              display: true,
+              text: 'Social Media Engagement Over Time'
+            }
+          }
+        }
+      });
+    }
+
+    async function fetchDataFromAPI(platform, startDate, endDate) {
+      return {
+        dates: ['2025-05-01', '2025-05-02', '2025-05-03'],
+        engagement: [120, 150, 170]
+      };
+    }
+  </script>
 </body>
 </html>
