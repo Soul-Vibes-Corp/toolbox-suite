@@ -161,7 +161,50 @@
   });
 </script>
 
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
+  
+  <script>
+  const firebaseConfig = {
+  apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
+  authDomain: "chat-code-forum.firebaseapp.com",
+  projectId: "chat-code-forum",
+  storageBucket: "chat-code-forum.firebasestorage.app",
+  messagingSenderId: "496765673859",
+  appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
+  measurementId: "G-XJKWXHF8WN"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+</script>
+
+<script>
+// Save event
+db.collection("events").add({
+  title: "Sample Event",
+  date: "2025-05-21"
+});
+
+// Retrieve events
+db.collection("events").get().then((querySnapshot) => {
+  querySnapshot.forEach((doc) => {
+    console.log(`${doc.id} => ${doc.data().title}`);
+  });
+});
+
+    function generateHashtags(topic) {
+  const hashtags = [
+    `#${topic.replace(/\s+/g, '')}`,
+    `#${topic.split(' ')[0]}Life`,
+    `#${topic.split(' ')[1]}Goals`
+  ];
+  return hashtags;
+}
+
+    
+</script>
     
   </script>
   <script src="script.js"></script>
