@@ -63,3 +63,22 @@ function displayGigs(gigs) {
     resultsDiv.appendChild(card);
   });
 }
+
+// Toggle favorite
+function toggleFavorite(gigId) {
+  let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+  if (favorites.includes(gigId)) {
+    favorites = favorites.filter(id => id !== gigId);
+  } else {
+    favorites.push(gigId);
+  }
+  localStorage.setItem('favorites', JSON.stringify(favorites));
+  updateFavoriteUI(gigId);
+}
+
+// Update UI
+function updateFavoriteUI(gigId) {
+  const heartIcon = document.getElementById(`heart-${gigId}`);
+  const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+  heartIcon.classList.toggle('favorited', favorites.includes(gigId));
+}
