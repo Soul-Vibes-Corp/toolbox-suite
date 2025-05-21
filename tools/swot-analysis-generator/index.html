@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>⚖️ Instant SWOT Analysis Generator</title>
+<style>
+  /* Reset & base */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0; padding: 0;
+    background: #121212;
+    color: #eee;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    background: #1f1f1f;
+    padding: 1rem 2rem;
+    text-align: center;
+    font-size: 1.6rem;
+    font-weight: 700;
+    border-bottom: 2px solid #4caf50;
+    color: #4caf50;
+    user-select: none;
+  }
+  main {
+    flex-grow: 1;
+    padding: 1.5rem 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+  }
+  input[type=text], textarea {
+    width: 100%;
+    padding: 0.4rem 0.6rem;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    border: none;
+    font-size: 1rem;
+    background: #222;
+    color: #eee;
+    resize: vertical;
+  }
+  textarea {
+    min-height: 70px;
+  }
+  button {
+    background: #4caf50;
+    border: none;
+    color: #121212;
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0.3rem 0.6rem 0 0;
+    transition: background 0.3s ease;
+  }
+  button:hover {
+    background: #66bb6a;
+  }
+  button:disabled {
+    background: #333;
+    color: #666;
+    cursor: not-allowed;
+  }
+  .flex-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .flex-col {
+    display: flex;
+    flex-direction: column;
+  }
+  .swot-section {
+    background: #1f1f1f;
+    border-radius: 8px;
+    padding: 1rem;
+    flex: 1 1 42%;
+    min-width: 300px;
+    max-width: 100%;
+  }
+  .swot-section h2 {
+    margin-top: 0;
+    color: #4caf50;
+    user-select: none;
+  }
+  ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+    max-height: 200px;
+    overflow-y: auto;
+    margin: 0.5rem 0 1rem 0;
+  }
+  ul li {
+    margin-bottom: 0.4rem;
+    word-wrap: break-word;
+  }
+  .input-inline {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.7rem;
+  }
+  .input-inline input[type=text] {
+    flex-grow: 1;
+    margin-bottom: 0;
+  }
+  .remove-btn {
+    background: #e53935;
+    color: white;
+    border-radius: 3px;
+    padding: 0 0.5rem;
+    cursor: pointer;
+    border: none;
+    font-weight: 700;
+    transition: background 0.2s ease;
+  }
+  .remove-btn:hover {
+    background: #f44336;
+  }
+  footer {
+    text-align: center;
+    padding: 1rem 0;
+    font-size: 0.85rem;
+    color: #666;
+    user-select: none;
+  }
+  .export-area {
+    margin-top: 1rem;
+    background: #222;
+    padding: 1rem;
+    border-radius: 6px;
+    white-space: pre-wrap;
+    font-family: monospace;
+    max-height: 250px;
+    overflow-y: auto;
+  }
+  @media (max-width: 650px) {
+    .swot-section {
+      flex-basis: 100%;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>⚖️ Instant SWOT Analysis Generator</header>
+
+<main>
+
+<section class="flex-col" style="max-width: 600px; margin: auto; margin-bottom: 2rem;">
+  <label for="projectName">Project/Topic Name:</label>
+  <input type="text" id="projectName" placeholder="E.g., New Product Launch" autocomplete="off" />
+
+  <label for="projectDesc">Brief Description:</label>
+  <textarea id="projectDesc" placeholder="Describe your project or topic here..." rows="3"></textarea>
+
+  <button id="generateBtn" disabled>Generate SWOT Draft</button>
+  <button id="clearAllBtn" style="background:#e53935;">Clear All</button>
+</section>
+
+<section class="flex-row">
+
+  <div class="swot-section" id="strengthsSection">
+    <h2>Strengths 💪</h2>
+    <ul id="strengthsList"></ul>
+    <div class="input-inline">
+      <input type="text" placeholder="Add a strength..." id="strengthsInput" autocomplete="off"/>
+      <button id="addStrengthBtn">Add</button>
+    </div>
+  </div>
+
+  <div class="swot-section" id="weaknessesSection">
+    <h2>Weaknesses ⚠️</h2>
+    <ul id="weaknessesList"></ul>
+    <div class="input-inline">
+      <input type="text" placeholder="Add a weakness..." id="weaknessesInput" autocomplete="off"/>
+      <button id="addWeaknessBtn">Add</button>
+    </div>
+  </div>
+
+  <div class="swot-section" id="opportunitiesSection">
+    <h2>Opportunities 🌟</h2>
+    <ul id="opportunitiesList"></ul>
+    <div class="input-inline">
+      <input type="text" placeholder="Add an opportunity..." id="opportunitiesInput" autocomplete="off"/>
+      <button id="addOpportunityBtn">Add</button>
+    </div>
+  </div>
+
+  <div class="swot-section" id="threatsSection">
+    <h2>Threats ⚡</h2>
+    <ul id="threatsList"></ul>
+    <div class="input-inline">
+      <input type="text" placeholder="Add a threat..." id="threatsInput" autocomplete="off"/>
+      <button id="addThreatBtn">Add</button>
+    </div>
+  </div>
+
+</section>
+
+<section style="max-width: 900px; margin: 2rem auto 0 auto; display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+  <button id="exportTextBtn">Export as Text</button>
+  <button id="exportJsonBtn">Export as JSON</button>
+  <button id="saveLocalBtn">Save to Local Storage</button>
+  <button id="loadLocalBtn">Load from Local Storage</button>
+  <button id="clearLocalBtn" style="background:#e53935;">Clear Local Storage</button>
+</section>
+
+<section class="export-area" id="exportArea" aria-live="polite" style="display:none;"></section>
+
+</main>
+
+<footer>
+  Developed by Soul Vibes Corp | <a href="https://github.com/soul-vibes-corp/toolbox-suite" target="_blank" style="color:#4caf50;">GitHub Repo</a>
+</footer>
+
+<script>
+  // --- Cached DOM ---
+  const projectNameInput = document.getElementById('projectName');
+  const projectDescInput = document.getElementById('projectDesc');
+  const generateBtn = document.getElementById('generateBtn');
+  const clearAllBtn = document.getElementById('clearAllBtn');
+
+  const strengthsList = document.getElementById('strengthsList');
+  const weaknessesList = document.getElementById('weaknessesList');
+  const opportunitiesList = document.getElementById('opportunitiesList');
+  const threatsList = document.getElementById('threatsList');
+
+  const strengthsInput = document.getElementById('strengthsInput');
+  const weaknessesInput = document.getElementById('weaknessesInput');
+  const opportunitiesInput = document.getElementById('opportunitiesInput');
+  const threatsInput = document.getElementById('threatsInput');
+
+  const addStrengthBtn = document.getElementById('addStrengthBtn');
+  const addWeaknessBtn = document.getElementById('addWeaknessBtn');
+  const addOpportunityBtn = document.getElementById('addOpportunityBtn');
+  const addThreatBtn = document.getElementById('addThreatBtn');
+
+  const exportTextBtn = document.getElementById('exportTextBtn');
+  const exportJsonBtn = document.getElementById('exportJsonBtn');
+  const saveLocalBtn = document.getElementById('saveLocalBtn');
+  const loadLocalBtn = document.getElementById('loadLocalBtn');
+  const clearLocalBtn = document.getElementById('clearLocalBtn');
+
+  const exportArea = document.getElementById('exportArea');
+
+  // --- State ---
+  let swotData = {
+    strengths: [],
+    weaknesses: [],
+    opportunities: [],
+    threats: [],
+  };
+
+  // Enable generate button if project name and description not empty
+  function updateGenerateButton() {
+    generateBtn.disabled = !projectNameInput.value.trim() || !projectDescInput.value.trim();
+  }
+
+  projectNameInput.addEventListener('input', updateGenerateButton);
+  projectDescInput.addEventListener('input', updateGenerateButton);
+
+  // Utility: Add item to a list in UI and state
+  function addItem(category, text) {
+    if (!text.trim()) return;
+    swotData[category].push(text.trim());
+    renderList(category);
+  }
+
+  // Utility: Remove item from a category by index
+  function removeItem(category, index) {
+    swotData[category].splice(index, 1);
+    renderList(category);
+  }
+
+  // Render list in UI
+  function renderList(category) {
+    let listElement;
+    let inputElement;
+    switch(category) {
+      case 'strengths': listElement = strengthsList; inputElement = strengthsInput; break;
+      case 'weaknesses': listElement = weaknessesList; inputElement = weaknessesInput; break;
+      case 'opportunities': listElement = opportunitiesList; inputElement = opportunitiesInput; break;
+      case 'threats': listElement = threatsList; inputElement = threatsInput; break;
+    }
+    listElement.innerHTML = '';
+    swotData[category].forEach((item, i) => {
+      const li = document.createElement('li');
+      li.textContent = item;
+
+      // Remove button
+      const removeBtn = document.createElement('button');
+      removeBtn.textContent = '×';
+      removeBtn.className = 'remove-btn';
+      removeBtn.title = 'Remove item';
+      removeBtn.onclick = () => removeItem(category, i);
+
+      li.appendChild(removeBtn);
+      listElement.appendChild(li);
+    });
+    inputElement.value = '';
+    inputElement.focus();
+  }
+
+  // Add buttons event listeners
+  addStrengthBtn.addEventListener('click', () => addItem('strengths', strengthsInput.value));
+  addWeaknessBtn.addEventListener('click', () => addItem('weaknesses', weaknessesInput.value));
+  addOpportunityBtn.addEventListener('click', () => addItem('opportunities', opportunitiesInput.value));
+  addThreatBtn.addEventListener('click', () => addItem('threats', threatsInput.value));
+
+  // Allow Enter key to add items quickly
+  [strengthsInput, weaknessesInput, opportunitiesInput, threatsInput].forEach(input => {
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        switch(input.id) {
+          case 'strengthsInput': addItem('strengths', input.value); break;
+          case 'weaknessesInput': addItem('weaknesses', input.value); break;
+          case 'opportunitiesInput': addItem('opportunities', input.value); break;
+          case 'threatsInput': addItem('threats', input.value); break;
+        }
+      }
+    });
+  });
+
+  // Generate SWOT draft (simple AI-simulated using keywords extraction)
+  function generateSWOT() {
+    const name = projectNameInput.value.trim();
+    const desc = projectDescInput.value.trim();
+
+    // Clear existing data first
+    swotData = {
+      strengths: [],
+      weaknesses: [],
+      opportunities: [],
+      threats: [],
+    };
+
+    // Very basic simulated AI heuristics (could be replaced by real API calls later)
+    // Extract keywords from description (split by punctuation and spaces)
+    const keywords = desc.toLowerCase().match(/\b\w{4,}\b/g) || [];
+
+    // Simple lists of positive/negative/opportunity/threat keywords to seed ideas
+    const positiveKeywords = ['innovative', 'strong', 'unique', 'scalable', 'efficient', 'fast', 'experienced', 'flexible', 'reliable', 'secure', 'profitable', 'competitive', 'advanced', 'trusted', 'powerful', 'effective'];
+    const negativeKeywords = ['expensive', 'slow', 'weak', 'limited', 'inexperienced', 'complex', 'risky', 'new', 'unproven', 'fragile', 'costly'];
+    const opportunityKeywords = ['market', 'growth', 'trend', 'demand', 'expand', 'partnership', 'technology', 'digital', 'emerging', 'niche', 'customer', 'global'];
+    const threatKeywords = ['competition', 'regulation', 'risk', 'economic', 'delay', 'failure', 'cyber', 'uncertain', 'disrupt', 'challenge', 'crisis', 'change'];
+
+    // Helper: find if keywords contain any from the lists
+    function containsAny(arr) {
+      return arr.some(word => keywords.includes(word));
+    }
+
+    // Strengths: positive keywords or project name phrases
+    if (containsAny(positiveKeywords)) swotData.strengths.push(`Strong attributes like ${positiveKeywords.filter(w => keywords.includes(w)).join(', ')}`);
+    else swotData.strengths.push(`Unique qualities of ${name}`);
+
+    // Weaknesses: negative keywords
+    if (containsAny(negativeKeywords)) swotData.weaknesses.push(`Challenges such as ${negativeKeywords.filter(w => keywords.includes(w)).join(', ')}`);
+    else swotData.weaknesses.push('Areas needing improvement or attention');
+
+    // Opportunities: opportunity keywords
+    if (containsAny(opportunityKeywords)) swotData.opportunities.push(`Potential in ${opportunityKeywords.filter(w => keywords.includes(w)).join(', ')}`);
+    else swotData.opportunities.push('Growth potential and new markets');
+
+    // Threats: threat keywords
+    if (containsAny(threatKeywords)) swotData.threats.push(`External risks like ${threatKeywords.filter(w => keywords.includes(w)).join(', ')}`);
+    else swotData.threats.push('Possible risks or competitive pressures');
+
+    // Render all lists
+    ['strengths', 'weaknesses', 'opportunities', 'threats'].forEach(renderList);
+  }
+
+  generateBtn.addEventListener('click', generateSWOT);
+
+  // Clear all inputs and lists
+  clearAllBtn.addEventListener('click', () => {
+    if (confirm('Clear all inputs and SWOT lists?')) {
+      projectNameInput.value = '';
+      projectDescInput.value = '';
+      swotData = { strengths: [], weaknesses: [], opportunities: [], threats: [] };
+      ['strengths', 'weaknesses', 'opportunities', 'threats'].forEach(renderList);
+      exportArea.style.display = 'none';
+      updateGenerateButton();
+    }
+  });
+
+  // Export as plain text
+  function exportAsText() {
+    if (!projectNameInput.value.trim()) return alert('Please enter a Project/Topic Name first.');
+    let txt = `SWOT Analysis for: ${projectNameInput.value.trim()}\n\n`;
+    if(projectDescInput.value.trim()) txt += `Description:\n${projectDescInput.value.trim()}\n\n`;
+    ['Strengths', 'Weaknesses', 'Opportunities', 'Threats'].forEach(cat => {
+      const key = cat.toLowerCase();
+      txt += `${cat}:\n`;
+      if(swotData[key].length === 0) {
+        txt += '  - None\n';
+      } else {
+        swotData[key].forEach(item => {
+          txt += `  - ${item}\n`;
+        });
+      }
+      txt += '\n';
+    });
+    exportArea.textContent = txt;
+    exportArea.style.display = 'block';
+  }
+
+  exportTextBtn.addEventListener('click', exportAsText);
+
+  // Export as JSON file
+  function exportAsJSON() {
+    if (!projectNameInput.value.trim()) return alert('Please enter a Project/Topic Name first.');
+    const data = {
+      projectName: projectNameInput.value.trim(),
+      description: projectDescInput.value.trim(),
+      swot: swotData,
+      generatedAt: new Date().toISOString(),
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${projectNameInput.value.trim().replace(/\s+/g,'_').toLowerCase()}_swot.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  exportJsonBtn.addEventListener('click', exportAsJSON);
+
+  // Save to localStorage
