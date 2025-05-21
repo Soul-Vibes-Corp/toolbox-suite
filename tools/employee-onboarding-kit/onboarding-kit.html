@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Employee Onboarding Kit Generator</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f9fafb;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      padding: 2rem;
+    }
+    #root {
+      max-width: 900px;
+      width: 100%;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      padding: 2rem 3rem;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+      color: #222;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: 600;
+      color: #555;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="date"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      margin-top: 0.5rem;
+      border: 1.8px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.3s ease;
+    }
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="date"]:focus,
+    textarea:focus,
+    select:focus {
+      border-color: #0078d4;
+      outline: none;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+    button {
+      margin-top: 2rem;
+      background-color: #0078d4;
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      font-size: 1.1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: background-color 0.3s ease;
+      width: 100%;
+    }
+    button:hover {
+      background-color: #005ea2;
+    }
+    .output {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: #f1f5f9;
+      border-radius: 8px;
+      white-space: pre-wrap;
+      font-family: Consolas, monospace;
+      font-size: 1rem;
+      color: #222;
+      max-height: 400px;
+      overflow-y: auto;
+      box-shadow: inset 0 0 6px #ddd;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 3rem;
+      font-size: 0.9rem;
+      color: #888;
+    }
+    @media (max-width: 600px) {
+      #root {
+        padding: 1.5rem;
+      }
+      button {
+        font-size: 1rem;
+        padding: 12px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script>
+    const { useState } = React;
+
+    function OnboardingKitGenerator() {
+      const [employeeName, setEmployeeName] = useState('');
+      const [startDate, setStartDate] = useState('');
+      const [position, setPosition] = useState('');
+      const [department, setDepartment] = useState('');
+      const [manager, setManager] = useState('');
+      const [officeLocation, setOfficeLocation] = useState('');
+      const [equipment, setEquipment] = useState('');
+      const [trainingModules, setTrainingModules] = useState('');
+      const [companyValues, setCompanyValues] = useState('');
+      const [additionalNotes, setAdditionalNotes] = useState('');
+      const [generatedKit, setGeneratedKit] = useState('');
+
+      function generateKit() {
+        if (!employeeName || !startDate || !position) {
+          alert("Please fill in at least Employee Name, Start Date, and Position.");
+          return;
+        }
+
+        const kit = `
+Employee Onboarding Kit
+
+1. Welcome
+--------------
+Dear ${employeeName},
+
+Welcome to the team! We are excited to have you join us as a ${position} in the ${department || 'N/A'} department starting on ${new Date(startDate).toLocaleDateString()}.
+
+Your manager will be ${manager || 'TBD'}.
+
+2. Office & Equipment
+----------------------
+Your primary office location will be: ${officeLocation || 'To Be Assigned'}.
+
+You will be provided with the following equipment:
+${equipment ? '- ' + equipment.split('\n').join('\n- ') : 'No equipment specified.'}
+
+3. Training & Development
+---------------------------
+Initial training modules assigned to you:
+${trainingModules ? '- ' + trainingModules.split('\n').join('\n- ') : 'No training modules specified.'}
+
+4. Company Culture & Values
+-----------------------------
+We want you to be aligned with our core company values:
+${companyValues ? '- ' + companyValues.split('\n').join('\n- ') : 'No values provided.'}
+
+5. Additional Notes
+--------------------
+${additionalNotes || 'None'}
+
+---
+
+If you have any questions, please reach out to your manager or HR.
+
+Welcome aboard and we look forward to your success!
+
+Best regards,
+Human Resources Team
+        `.trim();
+
+        setGeneratedKit(kit);
+      }
+
+      return (
+        <div>
+          <h1>Employee Onboarding Kit Generator</h1>
+
+          <label htmlFor="employeeName">Employee Name *</label>
+          <input
+            type="text"
+            id="employeeName"
+            value={employeeName}
+            onChange={e => setEmployeeName(e.target.value)}
+            placeholder="Full Name"
+            required
+          />
+
+          <label htmlFor="startDate">Start Date *</label>
+          <input
+            type="date"
+            id="startDate"
+            value={startDate}
+            onChange={e => setStartDate(e.target.value)}
+            required
+          />
+
+          <label htmlFor="position">Position *</label>
+          <input
+            type="text"
+            id="position"
+            value={position}
+            onChange={e => setPosition(e.target.value)}
+            placeholder="Job Title"
+            required
+          />
+
+          <label htmlFor="department">Department</label>
+          <input
+            type="text"
+            id="department"
+            value={department}
+            onChange={e => setDepartment(e.target.value)}
+            placeholder="Department Name"
+          />
+
+          <label htmlFor="manager">Manager Name</label>
+          <input
+            type="text"
+            id="manager"
+            value={manager}
+            onChange={e => setManager(e.target.value)}
+            placeholder="Manager's Full Name"
+          />
+
+          <label htmlFor="officeLocation">Office Location</label>
+          <input
+            type="text"
+            id="officeLocation"
+            value={officeLocation}
+            onChange={e => setOfficeLocation(e.target.value)}
+            placeholder="Office Address or Remote"
+          />
+
+          <label htmlFor="equipment">Equipment Provided (one per line)</label>
+          <textarea
+            id="equipment"
+            value={equipment}
+            onChange={e => setEquipment(e.target.value)}
+            placeholder="Laptop
+Monitor
+Keyboard
+Phone"
+          ></textarea>
+
+          <label htmlFor="trainingModules">Training Modules (one per line)</label>
+          <textarea
+            id="trainingModules"
+            value={trainingModules}
+            onChange={e => setTrainingModules(e.target.value)}
+            placeholder="Company Orientation
+Safety Training
+Product Knowledge"
+          ></textarea>
+
+          <label htmlFor="companyValues">Company Core Values (one per line)</label>
+          <textarea
+            id="companyValues"
+            value={companyValues}
+            onChange={e => setCompanyValues(e.target.value)}
+            placeholder="Integrity
+Innovation
+Teamwork"
+          ></textarea>
+
+          <label htmlFor="additionalNotes">Additional Notes</label>
+          <textarea
+            id="additionalNotes"
+            value={additionalNotes}
+            onChange={e => setAdditionalNotes(e.target.value)}
+            placeholder="Any other relevant info or reminders"
+          ></textarea>
+
+          <button onClick={generateKit}>Generate Onboarding Kit</button>
+
+          {generatedKit && (
+            <div className="output" aria-live="polite" aria-label="Generated Onboarding Kit">
+              {generatedKit}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<OnboardingKitGenerator />);
+  </script>
+</body>
+</html>
