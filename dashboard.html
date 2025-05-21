@@ -83,25 +83,24 @@
 <body>
  <!-- Updated Header with Points Counter -->
 <header class="header">
-  <div class="header-left">
-    <h1><a href="./dashboard.html" class="home-link">🧰 Toolbox Suite Launcher</a></h1>
+   <h1><a href="./dashboard.html" class="home-link">🧰 Toolbox Suite Launcher</a></h1>
+   <div class="actions">
     <div class="points-counter">⭐ Points: <span id="points-value">2340</span></div>
   </div>
-
+  
   <input type="checkbox" id="menuToggle" class="menu-toggle" />
   <label for="menuToggle" class="hamburger" aria-label="Toggle Menu">&#9776;</label>
 
   <nav class="menu">
     <div class="actions">
-      <button id="search-toggle" aria-label="Search">🔍</button>
+      <button id="search-toggle" aria-label="Search"> 🔍</button>
+    <input type="text" id="search-input" placeholder="Search tools..." aria-label="Search tools" />
       <button onclick="searchInput.value=''; searchInput.dispatchEvent(new Event('input'))">Clear</button>
-      <input type="text" id="search-input" placeholder="Search tools..." aria-label="Search tools" />
-      <span id="result-count" aria-live="polite"></span>
       <a href="./rewards.html">Rewards</a>
       <a href="./toolHistory.html">Track Tools</a>
       <a href="./settings.html">Settings</a>
-      <button onclick="location.href='./index.html'" id="logout-button" aria-label="Logout">Logout</button>
-    </div>
+       <button onclick="location.href='index.html'" id="logout-button" aria-label="Logout">Logout</button>
+  </div>
   </nav>
 </header>
 
@@ -259,10 +258,9 @@
   </style>
 
  <main class="dashboard-layout">
-    <h1>Toolbox Suite Launcher</h1>
- <section id="dashboard" class="suite-grid">
-    <div id="search-results" class="suite-grid" style="display: none;"></div>
-    <div class="suite-grid">
+     <h1>Toolbox Suite Launcher</h1>
+  <div id="search-results" class="suite-grid" style="display: none;"></div>
+  <div class="suite-grid">
        <a href="data/index.html" class="suite-button">Marketing Hub</a>
       <a href="data1/index.html" class="suite-button">Business Suite</a>
       <a href="data2/index.html" class="suite-button">CRM & Service Hub</a>
@@ -276,7 +274,7 @@
     </div>
     </section>
 
-<section id="dashboard" class="futuristic-panel">
+<section id="dashboard2" class="futuristic-panel">
    
   <div class="extra-sections">
     <div class="live-chat">
