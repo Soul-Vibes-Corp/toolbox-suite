@@ -471,7 +471,7 @@ const tools = [
 firebase.auth().onAuthStateChanged(user => {
   if (!user) {
     // Not logged in, redirect to login page
-    window.location.href = "login.html";
+    window.location.href = "index.html";
   }
   // Otherwise, user is logged in, show dashboard content
 });
