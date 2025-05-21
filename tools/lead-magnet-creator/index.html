@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>📚 Lead Magnet Creator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>📚 Advanced Lead Magnet Creator</h1>
+    <form id="lead-form">
+      <label for="lead-type">Choose Lead Magnet Type:</label>
+      <select id="lead-type" required>
+        <option value="eBook">📘 eBook</option>
+        <option value="Checklist">✅ Checklist</option>
+        <option value="Template">📄 Template</option>
+        <option value="Toolkit">🧰 Toolkit</option>
+        <option value="Webinar">🎥 Webinar</option>
+        <option value="Guide">📙 Ultimate Guide</option>
+        <option value="Course">🎓 Mini Course</option>
+      </select>
+
+      <label for="lead-topic">Enter a Topic:</label>
+      <input type="text" id="lead-topic" placeholder="e.g. AI Marketing, Email Funnels" required />
+
+      <button type="submit">Generate Lead Magnet</button>
+    </form>
+
+    <div id="lead-output" class="hidden">
+      <h2 id="lead-title"></h2>
+      <p id="lead-subheading"></p>
+      <ul id="lead-bullets"></ul>
+      <button id="download-pdf">📥 Download as PDF</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
