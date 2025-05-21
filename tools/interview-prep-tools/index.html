@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🎤 Interview Prep Tool</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>🎤 Interview Prep Tool</h1>
+    <button id="themeToggle">🌓</button>
+  </header>
+
+  <section class="controls">
+    <select id="roleSelector">
+      <option value="frontend">Frontend Developer</option>
+      <option value="backend">Backend Developer</option>
+      <option value="data">Data Scientist</option>
+      <option value="pm">Product Manager</option>
+    </select>
+    
+    <div class="filters">
+      <label><input type="checkbox" value="technical" checked> Technical</label>
+      <label><input type="checkbox" value="behavioral"> Behavioral</label>
+      <label><input type="checkbox" value="company"> Company-Specific</label>
+    </div>
+  </section>
+
+  <main id="questionContainer"></main>
+
+  <section class="actions">
+    <button id="generateBtn">✨ Generate Questions</button>
+    <button id="mockBtn">🎬 Start Mock Interview</button>
+    <button id="exportBtn">💾 Export Prep</button>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
