@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Proposal Generator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Smart Proposal Generator</h1>
+    <form id="proposalForm">
+      <input id="clientName" type="text" placeholder="Client Name" required />
+      <textarea id="projectScope" placeholder="Project Scope" required></textarea>
+      <textarea id="deliverables" placeholder="Deliverables" required></textarea>
+      <input id="timeline" type="text" placeholder="Timeline" required />
+      <input id="budget" type="text" placeholder="Budget" required />
+      <button type="submit">Generate</button>
+    </form>
+    <div id="output" class="output"></div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
