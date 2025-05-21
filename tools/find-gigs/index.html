@@ -16,20 +16,15 @@
       <input id="gigKeyword" type="text" placeholder="What kind of gig?" required>
       <input id="skill" type="text" placeholder="Your skills (e.g. React, music, design)" required>
       <input id="location" type="text" placeholder="Location (optional)">
-      <label><input type="checkbox" id="remoteToggle"> Remote Only</label>
       <select id="budgetRange">
         <option value="any">Any Budget</option>
         <option value="low">$0 - $500</option>
         <option value="mid">$500 - $2K</option>
         <option value="high">$2K+</option>
-        <aside class="filters">
-  <h3>Filters</h3>
-  <label><input type="checkbox" id="fullTime"> Full-time</label>
-  <label><input type="checkbox" id="partTime"> Part-time</label>
-  <label>Budget: <input type="range" id="budgetRange" min="0" max="5000" step="100"></label>
-  <!-- Add more filters as needed -->
-</aside>
-
+         <label><input type="checkbox" id="remoteToggle"> Remote Only</label>
+         <label><input type="checkbox" id="fullTime"> Full-time</label>
+         <label><input type="checkbox" id="partTime"> Part-time</label>
+         <label>Budget: <input type="range" id="budgetRange" min="0" max="5000" step="100"></label>
       </select>
       <button class="generate-btn" type="submit">🔍 Find Gigs</button>
     </form>
