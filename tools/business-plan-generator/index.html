@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📄 One-Page Business Plan Generator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="header">
+    <h1><a href="index.html" class="home-link">📄 BizPlan Generator</a></h1>
+    <nav class="menu">
+      <a href="./dashboard.html">Dashboard</a>
+      <a href="./savedPlans.html">Saved Plans</a>
+      <a href="./settings.html">Settings</a>
+    </nav>
+  </header>
+
+  <main class="main-content">
+    <h2>Create Your Business Plan in Minutes</h2>
+    <form id="bizplan-form" class="form-container">
+      <input type="text" placeholder="Business Name" required />
+      <input type="text" placeholder="Mission Statement" required />
+      <textarea placeholder="Target Market Description" required></textarea>
+      <textarea placeholder="Marketing Strategy" required></textarea>
+      <textarea placeholder="Revenue Streams" required></textarea>
+      <textarea placeholder="Operational Plan" required></textarea>
+      <button type="submit" class="generate-button">⚙️ Generate Plan</button>
+    </form>
+
+    <section id="plan-output" class="output-panel hidden">
+      <h3>Your One-Page Business Plan:</h3>
+      <div id="plan-content" class="plan-box"></div>
+      <button onclick="downloadPlan()" class="download-button">⬇️ Download as PDF</button>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Soul Vibes Corp — Business Plan Generator</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
