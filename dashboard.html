@@ -94,6 +94,7 @@
   <nav class="menu">
     <div class="actions">
       <button id="search-toggle" aria-label="Search">🔍</button>
+      <button onclick="searchInput.value=''; searchInput.dispatchEvent(new Event('input'))">Clear</button>
       <input type="text" id="search-input" placeholder="Search tools..." aria-label="Search tools" />
       <span id="result-count" aria-live="polite"></span>
       <a href="./rewards.html">Rewards</a>
@@ -377,6 +378,8 @@ const tools = [
 
 
 
+  
+
   searchToggle.addEventListener('click', () => {
     searchInput.classList.toggle('expanded');
     if (searchInput.classList.contains('expanded')) {
@@ -428,6 +431,45 @@ const tools = [
   });
 </script>
 
+<script>
+  searchInput.addEventListener('input', () => {
+    const query = searchInput.value.trim().toLowerCase();
+    searchResults.innerHTML = '';
+
+    if (query.length === 0) {
+      searchResults.style.display = 'none';
+      suiteGrid.style.display = 'grid';
+      return;
+    }
+
+    const matchedTools = tools.filter(tool =>
+      tool.name.toLowerCase().includes(query) ||
+      tool.tags.some(tag => tag.toLowerCase().includes(query))
+    );
+
+    if (matchedTools.length > 0) {
+      matchedTools.forEach(tool => {
+        const toolLink = document.createElement('a');
+        toolLink.href = tool.link;
+        toolLink.className = 'suite-button';
+        toolLink.textContent = tool.name;
+        searchResults.appendChild(toolLink);
+      });
+
+      suiteGrid.style.display = 'none';
+      searchResults.style.display = 'grid';
+    } else {
+      const noResult = document.createElement('p');
+      noResult.textContent = 'No matching tools found.';
+      noResult.style.color = 'red';
+      searchResults.appendChild(noResult);
+      suiteGrid.style.display = 'none';
+      searchResults.style.display = 'block';
+    }
+  });
+</script>
+
+  
   <script>
   if (localStorage.getItem('loggedIn') !== 'true') {
     window.location.href = 'dashboard.html';
