@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Invoice & Payment Tool</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="invoice-container">
+    <h1>Invoice Generator</h1>
+    <form id="invoiceForm">
+      <input id="sender" type="text" placeholder="Your Company Name" required />
+      <input id="client" type="text" placeholder="Client Name" required />
+      <input id="invoiceNumber" type="text" placeholder="Invoice #" required />
+      <input id="date" type="date" required />
+
+      <div class="items">
+        <h3>Items</h3>
+        <div id="itemList">
+          <div class="item-row">
+            <input type="text" class="desc" placeholder="Description" required />
+            <input type="number" class="qty" placeholder="Qty" required />
+            <input type="number" class="rate" placeholder="Rate" required />
+          </div>
+        </div>
+        <button type="button" id="addItem">+ Add Item</button>
+      </div>
+
+      <input id="taxRate" type="number" placeholder="Tax (%)" value="5" required />
+      <button type="submit">Generate Invoice</button>
+    </form>
+
+    <div id="invoiceOutput" class="output"></div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
