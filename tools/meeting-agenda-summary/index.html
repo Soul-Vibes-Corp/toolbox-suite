@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Meeting Agenda & Summary Tool</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Meeting Agenda & Summary Tool</h1>
+    
+    <form id="agendaForm">
+      <label for="meetingTitle">Meeting Title</label>
+      <input type="text" id="meetingTitle" placeholder="Enter meeting title" required />
+
+      <label for="meetingDate">Date & Time</label>
+      <input type="datetime-local" id="meetingDate" required />
+
+      <div id="agendaItemsContainer">
+        <h3>Agenda Items</h3>
+        <button type="button" id="addAgendaItemBtn">+ Add Agenda Item</button>
+      </div>
+
+      <button type="submit">Start Meeting Notes</button>
+    </form>
+
+    <div id="notesSection" class="hidden">
+      <h2>Meeting Notes: <span id="meetingTitleDisplay"></span></h2>
+      <div id="agendaSummary"></div>
+      <textarea id="notesInput" placeholder="Type notes here..." rows="8"></textarea>
+      <button id="generateSummaryBtn">Generate Summary</button>
+    </div>
+
+    <div id="summaryOutput" class="output hidden"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
