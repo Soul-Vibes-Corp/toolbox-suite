@@ -139,3 +139,9 @@ h1.typewriter {
 .apply-btn:hover {
   background: #00cc88;
 }
+
+
+body.dark-mode {
+  background-color: #121212;
+  color: #ffffff;
+}
