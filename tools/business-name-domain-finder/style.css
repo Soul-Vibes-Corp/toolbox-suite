@@ -1,0 +1,109 @@
+/* Glassmorphic + animated styles */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #1b1e3c, #2d325c);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.app {
+  width: 90%;
+  max-width: 700px;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(12px);
+  text-align: center;
+  animation: fadeIn 1.5s ease;
+}
+
+header h1 {
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+  color: #ffe36f;
+}
+
+input {
+  width: 70%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  margin-right: 10px;
+  outline: none;
+  font-size: 1rem;
+}
+
+button {
+  padding: 12px 20px;
+  background: #ffdd57;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background: #ffcc33;
+}
+
+.results {
+  margin-top: 30px;
+}
+
+.hidden {
+  display: none;
+}
+
+#loading {
+  font-size: 1.2rem;
+  animation: blink 1.2s infinite;
+}
+
+.cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 18px;
+  border-radius: 12px;
+  transition: transform 0.3s ease, background 0.3s ease;
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  animation: slideIn 0.5s ease forwards;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
