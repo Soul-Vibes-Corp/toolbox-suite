@@ -2,16 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Smart Business Name & Domain Finder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Name & Domain Finder</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="app-container">
-    <h1 class="animated-title">🔍 Smart Name & Domain Finder</h1>
-    
-    <form id="nameForm" class="input-area">
-      <input type="text" id="keyword" placeholder="Enter a keyword..." required />
+  <div class="particles"></div>
+
+  <div class="container">
+    <h1 class="typewriter">🔍 Smart Name & Domain Finder</h1>
+
+    <form id="nameForm" class="input-form animated-form">
+      <input id="keyword" type="text" placeholder="Enter a keyword..." required>
       <select id="industry">
         <option value="tech">Tech</option>
         <option value="fashion">Fashion</option>
@@ -24,8 +26,15 @@
         <option value="playful">Playful</option>
         <option value="luxury">Luxury</option>
       </select>
-      <button type="submit" class="generate-btn">🚀 Generate</button>
+      <select id="domainExt">
+        <option value=".com">.com</option>
+        <option value=".io">.io</option>
+        <option value=".ai">.ai</option>
+      </select>
+      <button class="generate-btn" type="submit">⚡ Generate</button>
     </form>
+
+    <div class="loader" id="loader">✨ Generating Ideas...</div>
 
     <div id="results" class="results-area"></div>
   </div>
