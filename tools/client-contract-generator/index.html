@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Client Contract Generator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Client Contract Generator</h1>
+    <form id="contractForm">
+      <input id="companyName" type="text" placeholder="Your Company Name" required />
+      <input id="clientName" type="text" placeholder="Client Name" required />
+      <input id="serviceDesc" type="text" placeholder="Service Description" required />
+      <textarea id="scopeWork" placeholder="Scope of Work" rows="4" required></textarea>
+      <textarea id="paymentTerms" placeholder="Payment Terms" rows="3" required></textarea>
+      <input id="startDate" type="date" required />
+      <input id="endDate" type="date" required />
+      <input id="contractAmount" type="number" placeholder="Contract Amount ($)" required />
+      <button type="submit">Generate Contract</button>
+    </form>
+
+    <div id="contractOutput" class="output"></div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
