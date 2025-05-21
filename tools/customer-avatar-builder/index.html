@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>👥 Customer Avatar Builder</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="header">
+    <h1><a href="index.html" class="home-link">👥 Avatar Builder</a></h1>
+    <nav class="menu">
+      <div class="actions">
+        <a href="../dashboard.html">Dashboard</a>
+        <a href="../avatars.html">Saved Avatars</a>
+        <a href="../settings.html">Settings</a>
+        <button onclick="location.href='../index.html'" id="logout-button">Logout</button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="main-content">
+    <h2>Build a Powerful Customer Avatar</h2>
+    <form id="avatar-form" class="form-container">
+      <input type="text" placeholder="Name of Avatar (e.g., Marketing Mary)" required />
+      <input type="text" placeholder="Age / Gender / Location" required />
+      <textarea placeholder="Occupation & Income Level" required></textarea>
+      <textarea placeholder="Biggest Challenges or Pain Points" required></textarea>
+      <textarea placeholder="Goals, Dreams, and Desires" required></textarea>
+      <textarea placeholder="Where Do They Spend Time (Web, Media, etc.)" required></textarea>
+      <textarea placeholder="Buying Behavior or Decision Triggers" required></textarea>
+      <button type="submit" class="generate-button">🧠 Generate Avatar</button>
+    </form>
+
+    <section id="avatar-output" class="output-panel hidden">
+      <h3>Your Customer Avatar:</h3>
+      <div id="avatar-content" class="plan-box"></div>
+      <button onclick="downloadAvatar()" class="download-button">⬇️ Download Avatar Profile</button>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Soul Vibes Corp — Customer Avatar Builder</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
