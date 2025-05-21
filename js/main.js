@@ -5,6 +5,6 @@ auth.onAuthStateChanged(user => {
       document.getElementById("pointsDisplay").innerText = data.points || 0;
     });
   } else {
-    window.location.href = "login.html";
+    window.location.href = "dashboard.html.html";
   }
 });
