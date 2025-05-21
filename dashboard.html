@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#000000" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="assets/favicon.png" type="image/png" />
@@ -49,6 +49,102 @@
       padding: 1rem;
       font-size: 0.9rem;
     }
+
+    /* Ensure body and main take full height and center content */
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+main.dashboard-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  margin: 0 auto;
+  max-width: 1200px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Grid responsive behavior */
+.suite-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+/* Extra sections layout - responsive stacking */
+.extra-sections {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-top: 2rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.live-chat, .forum-link {
+  background-color: #1e1e1e;
+  padding: 1rem;
+  border-radius: 8px;
+  flex: 1 1 300px;
+  max-width: 500px;
+  box-shadow: 0 0 10px rgba(0,255,255,0.1);
+}
+
+#chat-window {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+#chat-messages {
+  background-color: #111;
+  padding: 1rem;
+  border-radius: 6px;
+  height: 150px;
+  overflow-y: auto;
+  border: 1px solid #333;
+}
+
+#chat-input {
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background-color: #222;
+  color: #0ff;
+}
+
+/* Floating chatbot positioning */
+#chatbot-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #0ff;
+  color: #111;
+  padding: 0.7rem 1rem;
+  border-radius: 50px;
+  font-size: 1.2rem;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+  cursor: pointer;
+  z-index: 1000;
+}
+
+/* Footer centering */
+footer {
+  text-align: center;
+  padding: 2rem 1rem;
+  font-size: 0.9rem;
+  color: #888;
+}
+
   </style>
 </head>
 
