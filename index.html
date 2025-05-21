@@ -92,6 +92,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-analytics.js";
 
   // Your Firebase config
@@ -107,6 +108,7 @@
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  const db = getFirestore(app);
   const analytics = getAnalytics(app);
 
   document.getElementById("login-btn").addEventListener("click", () => {
@@ -114,39 +116,31 @@
     const password = document.getElementById("password").value;
 
     signInWithEmailAndPassword(auth, email, password)
-      .then(() => {
+      .then((userCredential) => {
+        const user = userCredential.user;
+
+        // Example settings to save
+        const settingsObject = {
+          theme: "dark",
+          compressorSettings: {
+            threshold: -12,
+            ratio: 4,
+          },
+          reverbPreset: "Valhalla Space",
+        };
+
+        // Save user settings
+        setDoc(doc(db, "userSettings", user.uid), settingsObject);
+
+        // Redirect to dashboard
         window.location.href = "dashboard.html";
       })
       .catch((error) => {
         document.getElementById("error-message").innerText = error.message;
       });
   });
-function saveUserSettings(settingsObject) {
-  const user = firebase.auth().currentUser;
-  if (!user) return;
-
-  firebase.firestore().collection("userSettings").doc(user.uid).set(settingsObject);
-}
-
-// Example:
-saveUserSettings({
-  theme: "dark",
-  compressorSettings: {
-    threshold: -12,
-    ratio: 4,
-  },
-  reverbPreset: "Valhalla Space",
-});
-
-firebase.firestore().collection("userSettings").doc(user.uid).get().then(doc => {
-  if (doc.exists) {
-    const settings = doc.data();
-    // Apply settings to app UI
-  }
-});
-
-  
 </script>
+
 
 </body>
 </html>
