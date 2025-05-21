@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Marketing Content Calendar Generator</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <main class="calendar-generator">
+    <h1>📅 Marketing Content Calendar Generator</h1>
+
+    <form id="calendar-form">
+      <input type="text" id="businessName" placeholder="Business Name" required />
+      <input type="text" id="audience" placeholder="Target Audience" required />
+      <input type="text" id="industry" placeholder="Industry/Niche" required />
+      
+      <label>Content Themes (comma-separated)</label>
+      <input type="text" id="themes" placeholder="e.g., Productivity, Wellness, AI" />
+
+      <label>Frequency</label>
+      <select id="frequency">
+        <option value="daily">Daily</option>
+        <option value="3">3 posts/week</option>
+        <option value="weekly">Weekly</option>
+      </select>
+
+      <label>Platforms</label>
+      <select id="platforms" multiple>
+        <option value="Instagram">Instagram</option>
+        <option value="LinkedIn">LinkedIn</option>
+        <option value="Facebook">Facebook</option>
+        <option value="Email">Email</option>
+        <option value="Blog">Blog</option>
+      </select>
+
+      <label>Start Date</label>
+      <input type="date" id="startDate" required />
+
+      <label>Duration (in days)</label>
+      <input type="number" id="duration" value="30" min="7" max="365"/>
+
+      <button type="submit">Generate Calendar</button>
+    </form>
+
+    <section id="calendar-output">
+      <h2>📆 Your Content Calendar</h2>
+      <div id="calendar-table"></div>
+      <button id="downloadCsv" style="display: none;">⬇️ Download CSV</button>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
