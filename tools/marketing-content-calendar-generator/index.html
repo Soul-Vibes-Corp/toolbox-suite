@@ -43,6 +43,14 @@
       <button type="submit">Generate Calendar</button>
     </form>
 
+<div class="ai-generator">
+  <h2>🧠 AI Content Generator</h2>
+  <input type="text" id="content-topic" placeholder="Enter topic (e.g., 'summer sale')" />
+  <button id="generate-content">Generate Ideas</button>
+  <div id="generated-ideas"></div>
+</div>
+
+    
     <section id="calendar-output">
       <h2>📆 Your Content Calendar</h2>
       <div id="calendar-table"></div>
@@ -50,6 +58,22 @@
     </section>
   </main>
 
+  <script>
+document.getElementById('generate-content').addEventListener('click', async () => {
+  const topic = document.getElementById('content-topic').value.trim();
+  if (!topic) return;
+
+  // Simulate AI content generation
+  const ideas = [
+    `🔥 Don't miss our ${topic} extravaganza!`,
+    `🎉 Celebrate ${topic} with exclusive deals!`,
+    `📣 Announcing our ${topic} event – join us!`
+  ];
+
+  const ideasContainer = document.getElementById('generated-ideas');
+  ideasContainer.innerHTML = ideas.map(idea => `<p>${idea}</p>`).join('');
+});
+  </script>
   <script src="script.js"></script>
 </body>
 </html>
