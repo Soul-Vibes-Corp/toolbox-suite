@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pro Salary Calculator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container animated fadeIn">
+    <header>
+      <h1>💰 Advanced Salary Calculator</h1>
+      <div class="toggle-theme">
+        <button id="toggleTheme">🌗</button>
+      </div>
+    </header>
+
+    <section class="calculator-form">
+      <label>Base Salary ($): <input type="number" id="baseSalary" /></label>
+      <label>Bonus ($): <input type="number" id="bonus" /></label>
+      <label>Overtime ($): <input type="number" id="overtime" /></label>
+      <label>Tax Rate (%): <input type="number" id="taxRate" value="30" /></label>
+      <label>Deductions ($): <input type="number" id="deductions" /></label>
+      <label>Benefits ($): <input type="number" id="benefits" /></label>
+      
+      <div class="view-toggle">
+        <label><input type="radio" name="view" value="monthly" checked /> Monthly</label>
+        <label><input type="radio" name="view" value="yearly" /> Yearly</label>
+      </div>
+
+      <button id="calculateBtn">📊 Calculate</button>
+    </section>
+
+    <section class="results-section">
+      <h2>Results</h2>
+      <div id="results"></div>
+      <button id="exportJSON">💾 Export JSON</button>
+      <button id="exportPDF">📄 Export PDF</button>
+    </section>
+
+    <footer>Made for professionals 🧮</footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
