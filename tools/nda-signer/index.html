@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NDA Signer Tool</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>NDA Signer Tool</h1>
+    <form id="ndaForm">
+      <input type="text" id="disclosingParty" placeholder="Disclosing Party Name" required />
+      <input type="text" id="receivingParty" placeholder="Receiving Party Name" required />
+      <textarea id="ndaTerms" rows="5" placeholder="Confidential Information Description / Terms" required>All confidential and proprietary information shared between parties.</textarea>
+      
+      <div class="signature-section">
+        <label>Sign as Disclosing Party:</label>
+        <canvas id="sigCanvasDisclosing" class="signature-pad" width="400" height="150"></canvas>
+        <button type="button" onclick="clearSignature('sigCanvasDisclosing')">Clear Signature</button>
+      </div>
+
+      <div class="signature-section">
+        <label>Sign as Receiving Party:</label>
+        <canvas id="sigCanvasReceiving" class="signature-pad" width="400" height="150"></canvas>
+        <button type="button" onclick="clearSignature('sigCanvasReceiving')">Clear Signature</button>
+      </div>
+
+      <button type="submit">Generate Signed NDA</button>
+    </form>
+
+    <div id="ndaOutput" class="output"></div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
