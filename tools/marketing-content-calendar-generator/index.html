@@ -67,85 +67,86 @@
     </section>
   </main>
 
-  <script>
-document.getElementById('generate-content').addEventListener('click', async () => {
-  const topic = document.getElementById('content-topic').value.trim();
-  if (!topic) return;
+ <!-- FullCalendar Styles -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/main.min.css" rel="stylesheet" />
 
-  // Simulate AI content generation
-  const ideas = [
-  `🔥 Don't miss our ${topic} extravaganza!.`,
-  `🎉 Celebrate ${topic} with exclusive deals!.`,
-  `📣 Announcing our ${topic} event – join us!.`,
-  `🚀 Launching our latest ${topic} campaign – experience innovation like never before.`,
-  `💡 Unlock the secrets of successful ${topic} strategies – exclusive guide now available.`,
-  `📊 Transform your ${topic} approach with data-driven insights and proven techniques.`,
-  `🎯 Master the art of ${topic} – learn from top experts in the industry.`,
-  `🔥 This isn't just another ${topic}—it's your game-changer. Discover why.`,
-  `📆 Mark your calendar: The ultimate ${topic} masterclass drops this week!`,
-  `🌟 Elevate your brand's presence with next-gen ${topic} solutions.`,
-  `👥 Join the ${topic} movement — thousands already have. Be part of the future.`,
-  `🎉 Celebrating success stories powered by smart ${topic} execution. You’re next.`,
-  `💼 Built for professionals: Our new ${topic} tools deliver real-world impact.`,
-  `📣 Big news: We’re reimagining ${topic} with creativity and cutting-edge tech.`,
-  `🚧 Behind the scenes of our revolutionary ${topic} workflow — now revealed.`,
-  `🔍 Explore the trends reshaping ${topic} in 2025. Download the free report.`,
-  `💬 What people are saying about our ${topic} platform: “Genius-level results.”`,
-  `📈 See how smart brands are doubling their ROI with targeted ${topic} campaigns.`,
-  `🌐 Step into the future of ${topic} — powered by AI, optimized for you.`,
-  `🎓 Learn how to craft magnetic ${topic} content that converts browsers into buyers.`,
-  `🔄 Rethinking the way you do ${topic}? Start here. Transform fast.`,
-  `🛠️ Ready to build your ${topic} engine? Access our free template bundle now.`,
-  `🧠 Intelligent automation meets strategic ${topic} — the results speak for themselves.`,
-  `💥 5 powerful ${topic} tactics that top-performing brands swear by.`,
-  `🏆 This week's spotlight: How one user scaled their business using ${topic} magic.`,
-  `🎬 From concept to execution — your ${topic} playbook awaits.`,
-  `📥 Free download: The Ultimate ${topic} Content Calendar Template.`,
-  `📢 Announcing: Our brand-new ${topic} toolkit is finally here.`,
-  `📌 Save this post! Your go-to list of ${topic} tips is inside.`,
-  `🕵️‍♂️ We've studied 100+ campaigns to bring you the ultimate ${topic} cheat sheet.`,
-  `🤖 Let AI supercharge your ${topic} workflow — see it in action now.`,
-  `📚 Discover how to turn ${topic} into a repeatable, scalable success system.`,
-  `✨ It’s not just ${topic}, it’s brand strategy redefined.`,
-  `🧩 Piece together the perfect ${topic} plan in minutes, not hours.`,
-  `🔧 Fix your broken ${topic} funnel with these 3 quick changes.`,
-  `🎁 BONUS: 10 plug-and-play ${topic} headlines you can steal right now.`,
-  `🎯 Goal-driven ${topic} plans that actually move the needle.`,
-  `📝 Build smarter, not harder: Our top ${topic} frameworks revealed.`,
-  `🧭 Your north star for successful ${topic} strategy starts here.`,
-  `💬 Heard in the industry: “Their ${topic} tools changed our workflow overnight.”`,
-  `🌱 Start small, scale fast: The lean approach to ${topic} success.`,
-  `📉 Losing traction? Try these 7 underrated ${topic} techniques.`,
-  `📸 Visual storytelling meets data in our new ${topic} templates.`,
-  `👀 Sneak peek: Our team’s internal ${topic} dashboard — now yours.`,
-  `💎 The hidden value of strategic ${topic} — it's more than you think.`,
-  `🔓 Unlock full access to our premium ${topic} toolkit. Limited seats.`,
-  `📲 Going mobile? Optimize your ${topic} for on-the-go users.`,
-  `⏱️ Only 10 minutes to build your next ${topic} campaign — here’s how.`,
-  `💣 The #1 mistake you’re making with ${topic} — and how to fix it.`,
-  `🌈 Creativity meets conversion: Why your ${topic} deserves better.`,
-  `🎙️ Listen to our podcast: Expert tips on world-class ${topic} execution.`,
-  `🛎️ Your 24-hour ${topic} launch plan – download the checklist now.`,
-  `💡 New research: The future of ${topic} lies in human-AI collaboration.`
-];
+<!-- FullCalendar Script -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/main.min.js"></script>
 
-  const ideasContainer = document.getElementById('generated-ideas');
-  ideasContainer.innerHTML = ideas.map(idea => `<p>${idea}</p>`).join('');
-});
-
-<!-- Include FullCalendar CSS and JS -->
-<link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/main.min.css' rel='stylesheet' />
-<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/main.min.js'></script>
-
+<!-- AI Content Generator Script -->
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('generate-content').addEventListener('click', () => {
+    const topic = document.getElementById('content-topic').value.trim();
+    if (!topic) return;
+
+    const ideas = [
+      `🚀 Launching our latest ${topic} campaign – experience innovation like never before.`,
+      `💡 Unlock the secrets of successful ${topic} strategies – exclusive guide now available.`,
+      `📊 Transform your ${topic} approach with data-driven insights and proven techniques.`,
+      `🎯 Master the art of ${topic} – learn from top experts in the industry.`,
+      `🔥 This isn't just another ${topic}—it's your game-changer. Discover why.`,
+      `📆 Mark your calendar: The ultimate ${topic} masterclass drops this week!`,
+      `🌟 Elevate your brand's presence with next-gen ${topic} solutions.`,
+      `👥 Join the ${topic} movement — thousands already have. Be part of the future.`,
+      `🎉 Celebrating success stories powered by smart ${topic} execution. You’re next.`,
+      `💼 Built for professionals: Our new ${topic} tools deliver real-world impact.`,
+      `📣 Big news: We’re reimagining ${topic} with creativity and cutting-edge tech.`,
+      `🚧 Behind the scenes of our revolutionary ${topic} workflow — now revealed.`,
+      `🔍 Explore the trends reshaping ${topic} in 2025. Download the free report.`,
+      `💬 What people are saying about our ${topic} platform: “Genius-level results.”`,
+      `📈 See how smart brands are doubling their ROI with targeted ${topic} campaigns.`,
+      `🌐 Step into the future of ${topic} — powered by AI, optimized for you.`,
+      `🎓 Learn how to craft magnetic ${topic} content that converts browsers into buyers.`,
+      `🔄 Rethinking the way you do ${topic}? Start here. Transform fast.`,
+      `🛠️ Ready to build your ${topic} engine? Access our free template bundle now.`,
+      `🧠 Intelligent automation meets strategic ${topic} — the results speak for themselves.`,
+      `💥 5 powerful ${topic} tactics that top-performing brands swear by.`,
+      `🏆 This week's spotlight: How one user scaled their business using ${topic} magic.`,
+      `🎬 From concept to execution — your ${topic} playbook awaits.`,
+      `📥 Free download: The Ultimate ${topic} Content Calendar Template.`,
+      `📢 Announcing: Our brand-new ${topic} toolkit is finally here.`,
+      `📌 Save this post! Your go-to list of ${topic} tips is inside.`,
+      `🕵️‍♂️ We've studied 100+ campaigns to bring you the ultimate ${topic} cheat sheet.`,
+      `🤖 Let AI supercharge your ${topic} workflow — see it in action now.`,
+      `📚 Discover how to turn ${topic} into a repeatable, scalable success system.`,
+      `✨ It’s not just ${topic}, it’s brand strategy redefined.`,
+      `🧩 Piece together the perfect ${topic} plan in minutes, not hours.`,
+      `🔧 Fix your broken ${topic} funnel with these 3 quick changes.`,
+      `🎁 BONUS: 10 plug-and-play ${topic} headlines you can steal right now.`,
+      `🎯 Goal-driven ${topic} plans that actually move the needle.`,
+      `📝 Build smarter, not harder: Our top ${topic} frameworks revealed.`,
+      `🧭 Your north star for successful ${topic} strategy starts here.`,
+      `💬 Heard in the industry: “Their ${topic} tools changed our workflow overnight.”`,
+      `🌱 Start small, scale fast: The lean approach to ${topic} success.`,
+      `📉 Losing traction? Try these 7 underrated ${topic} techniques.`,
+      `📸 Visual storytelling meets data in our new ${topic} templates.`,
+      `👀 Sneak peek: Our team’s internal ${topic} dashboard — now yours.`,
+      `💎 The hidden value of strategic ${topic} — it's more than you think.`,
+      `🔓 Unlock full access to our premium ${topic} toolkit. Limited seats.`,
+      `📲 Going mobile? Optimize your ${topic} for on-the-go users.`,
+      `⏱️ Only 10 minutes to build your next ${topic} campaign — here’s how.`,
+      `💣 The #1 mistake you’re making with ${topic} — and how to fix it.`,
+      `🌈 Creativity meets conversion: Why your ${topic} deserves better.`,
+      `🎙️ Listen to our podcast: Expert tips on world-class ${topic} execution.`,
+      `🛎️ Your 24-hour ${topic} launch plan – download the checklist now.`,
+      `💡 New research: The future of ${topic} lies in human-AI collaboration.`
+    ];
+
+    const container = document.getElementById('generated-ideas');
+    container.innerHTML = ideas.map(idea => `<p>${idea}</p>`).join('');
+  });
+</script>
+
+<!-- FullCalendar Setup Script -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
     const calendarEl = document.getElementById('calendar');
     const calendar = new FullCalendar.Calendar(calendarEl, {
       initialView: 'dayGridMonth',
       editable: true,
       selectable: true,
       events: [],
-      dateClick: function(info) {
+      dateClick: function (info) {
         const title = prompt('Enter Event Title:');
         if (title) {
           calendar.addEvent({
@@ -159,6 +160,7 @@ document.getElementById('generate-content').addEventListener('click', async () =
     calendar.render();
   });
 </script>
+
 
     
   </script>
