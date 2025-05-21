@@ -82,3 +82,8 @@ function updateFavoriteUI(gigId) {
   const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
   heartIcon.classList.toggle('favorited', favorites.includes(gigId));
 }
+
+document.getElementById('themeToggle').addEventListener('click', () => {
+  document.body.classList.toggle('dark-mode');
+  // Optionally, save preference to localStorage
+});
