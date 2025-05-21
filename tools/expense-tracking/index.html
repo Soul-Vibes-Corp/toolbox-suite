@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Expense Tracking Tool | Pro Level</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #121212;
+      color: #eee;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #1f1f1f;
+      padding: 1rem 2rem;
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: #fbc02d;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    }
+
+    main {
+      flex-grow: 1;
+      padding: 1rem 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr auto;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    input, select, button {
+      font-size: 1rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 4px;
+      border: none;
+      outline: none;
+    }
+
+    input[type="text"], input[type="number"], input[type="date"], select {
+      background: #222;
+      color: #eee;
+      border: 1px solid #444;
+      transition: border-color 0.2s ease;
+    }
+    input[type="text"]:focus, input[type="number"]:focus, input[type="date"]:focus, select:focus {
+      border-color: #fbc02d;
+    }
+
+    button {
+      background: #fbc02d;
+      color: #121212;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      border: 1px solid #fbc02d;
+    }
+    button:hover {
+      background: #cfa20a;
+      border-color: #cfa20a;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1rem;
+    }
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid #333;
+    }
+    th {
+      background: #222;
+      color: #fbc02d;
+      font-weight: 600;
+    }
+
+    tbody tr:hover {
+      background: #2a2a2a;
+    }
+
+    .actions button {
+      background: transparent;
+      border: none;
+      color: #fbc02d;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 0 0.5rem;
+      font-size: 1rem;
+    }
+    .actions button:hover {
+      color: #cfa20a;
+    }
+
+    .summary {
+      background: #1f1f1f;
+      padding: 1rem 1.5rem;
+      border-radius: 6px;
+      box-shadow: 0 0 8px rgba(251, 192, 45, 0.3);
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .summary div {
+      flex: 1 1 30%;
+      min-width: 150px;
+      text-align: center;
+    }
+    .summary div span {
+      display: block;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fbc02d;
+      margin-bottom: 0.25rem;
+    }
+
+    canvas {
+      max-width: 100%;
+      height: 300px;
+      margin-bottom: 2rem;
+      border-radius: 8px;
+      background: #222;
+      box-shadow: 0 0 10px rgba(251, 192, 45, 0.3);
+    }
+
+    .filters {
+      margin-bottom: 1rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .filters select, .filters input[type="date"] {
+      background: #222;
+      color: #eee;
+      border: 1px solid #444;
+      padding: 0.5rem;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    .export-btn {
+      background: transparent;
+      border: 2px solid #fbc02d;
+      color: #fbc02d;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s ease, color 0.2s ease;
+      align-self: flex-start;
+      margin-bottom: 1rem;
+    }
+    .export-btn:hover {
+      background-color: #fbc02d;
+      color: #121212;
+    }
+
+    @media (max-width: 600px) {
+      form {
+        grid-template-columns: 1fr;
+      }
+      .summary div {
+        flex: 1 1 100%;
+      }
+      .filters {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>Expense Tracking Tool</header>
+
+<main>
+
+  <form id="expense-form" aria-label="Add new expense">
+    <input type="date" id="date" required aria-label="Expense date" />
+    <input type="text" id="description" placeholder="Description" required aria-label="Expense description" />
+    <select id="category" aria-label="Expense category" required>
+      <option value="" disabled selected>Select category</option>
+      <option>Food & Drinks</option>
+      <option>Transportation</option>
+      <option>Utilities</option>
+      <option>Healthcare</option>
+      <option>Entertainment</option>
+      <option>Education</option>
+      <option>Personal Care</option>
+      <option>Others</option>
+    </select>
+    <input type="number" id="amount" min="0" step="0.01" placeholder="Amount" required aria-label="Expense amount" />
+    <button type="submit" aria-label="Add expense">Add</button>
+  </form>
+
+  <div class="filters" aria-label="Filters">
+    <select id="filter-category" aria-label="Filter by category">
+      <option value="">All Categories</option>
+      <option>Food & Drinks</option>
+      <option>Transportation</option>
+      <option>Utilities</option>
+      <option>Healthcare</option>
+      <option>Entertainment</option>
+      <option>Education</option>
+      <option>Personal Care</option>
+      <option>Others</option>
+    </select>
+
+    <input type="date" id="filter-start" aria-label="Filter start date" />
+    <input type="date" id="filter-end" aria-label="Filter end date" />
+
+    <button id="clear-filters" aria-label="Clear filters">Clear Filters</button>
+  </div>
+
+  <button class="export-btn" id="export-csv" aria-label="Export expenses to CSV">Export CSV</button>
+
+  <div class="summary" aria-live="polite" aria-atomic="true">
+    <div><span id="total-amount">$0.00</span>Total Expenses</div>
+    <div><span id="count-expenses">0</span>Entries</div>
+  </div>
+
+  <table aria-label="Expense entries table" id="expenses-table">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Description</th>
+        <th>Category</th>
+        <th>Amount</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <canvas id="categoryChart" aria-label="Category expenses chart"></canvas>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  (() => {
+    const form = document.getElementById('expense-form');
+    const tbody = document.querySelector('#expenses-table tbody');
+    const totalAmountEl = document.getElementById('total-amount');
+    const countExpensesEl = document.getElementById('count-expenses');
+    const categoryFilter = document.getElementById('filter-category');
+    const startDateFilter = document.getElementById('filter-start');
+    const endDateFilter = document.getElementById('filter-end');
+    const clearFiltersBtn = document.getElementById('clear-filters');
+    const exportCSVBtn = document.getElementById('export-csv');
+    const ctx = document.getElementById('categoryChart').getContext('2d');
+
+    let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+
+    let categoryChart;
+
+    function saveExpenses() {
+      localStorage.setItem('expenses', JSON.stringify(expenses));
+    }
+
+    function formatCurrency(num) {
+      return '$' + num.toFixed(2);
+    }
+
+    function renderExpenses() {
+      tbody.innerHTML = '';
+      const filtered = filterExpenses();
+
+      filtered.forEach(({ id, date, description, category, amount }) => {
+        const tr = document.createElement('tr');
+
+        tr.innerHTML = `
+          <td>${date}</td>
+          <td>${description}</td>
+          <td>${category}</td>
+          <td>${formatCurrency(amount)}</td>
+          <td class="actions">
+            <button aria-label="Delete expense on ${date}, ${description}" data-id="${id}">✕</button>
+          </td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+
+      updateSummary(filtered);
+      renderChart(filtered);
+    }
+
+    function updateSummary(list) {
+      const total = list.reduce((acc, cur) => acc + cur.amount, 0);
+      totalAmountEl.textContent = formatCurrency(total);
+      countExpensesEl.textContent = list.length;
+    }
+
+    function renderChart(list) {
+      const categorySums = {};
+
+      list.forEach(({ category, amount }) => {
+        categorySums[category] = (categorySums[category] || 0) + amount;
+      });
+
+      const labels = Object.keys(categorySums);
+      const data = Object.values(categorySums);
+
+      if (categoryChart) {
+        categoryChart.destroy();
+      }
+
+      categoryChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels,
+          datasets: [{
+            data,
+            backgroundColor: [
+              '#fbc02d', '#ff9800', '#4caf50', '#03a9f4',
+              '#e91e63', '#9c27b0', '#607d8b', '#795548'
+            ],
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { color: '#fbc02d', font: { size: 14 } }
+            },
+            tooltip: {
+              callbacks: {
+                label: context => `${context.label}: ${formatCurrency(context.parsed)}`
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function filterExpenses() {
+      let filtered = [...expenses];
+
+      const category = categoryFilter.value;
+      const start = startDateFilter.value;
+      const end = endDateFilter.value;
+
+      if (category) {
+        filtered = filtered.filter(e => e.category === category);
+      }
+      if (start) {
+        filtered = filtered.filter(e => e.date >= start);
+      }
+      if (end) {
+        filtered = filtered.filter(e => e.date <= end);
+      }
+
+      return filtered;
+    }
+
+    function addExpense(expense) {
+      expenses.push(expense);
+      saveExpenses();
+      renderExpenses();
+    }
+
+    function deleteExpense(id) {
+      expenses = expenses.filter(e => e.id !== id);
+      saveExpenses();
+      renderExpenses();
+    }
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+
+      const date = form.date.value;
+      const description = form.description.value.trim();
+      const category = form.category.value;
+      const amount = parseFloat(form.amount.value);
+
+      if (!date || !description || !category || isNaN(amount) || amount < 0) {
+        alert('Please fill all fields correctly.');
+        return;
+      }
+
+      addExpense({ id: Date.now().toString(), date, description, category, amount });
+
+      form.reset();
+      form.date.focus();
+    });
+
+    tbody.addEventListener('click', e => {
+      if (e.target.tagName === 'BUTTON') {
+        const id = e.target.dataset.id;
+        if (id && confirm('Delete this expense?')) {
+          deleteExpense(id);
+        }
+      }
+    });
+
+    categoryFilter.addEventListener('change', renderExpenses);
+    startDateFilter.addEventListener('change', renderExpenses);
+    endDateFilter.addEventListener('change', renderExpenses);
+
+    clearFiltersBtn.addEventListener('click', () => {
+      categoryFilter.value = '';
+      startDateFilter.value = '';
+      endDateFilter.value = '';
+      renderExpenses();
+    });
+
+    exportCSVBtn.addEventListener('click', () => {
+      const filtered = filterExpenses();
+      if (filtered.length === 0) {
+        alert('No expenses to export.');
+        return;
+      }
+      const headers = ['Date', 'Description', 'Category', 'Amount'];
+      const csvRows = [headers.join(',')];
+
+      filtered.forEach(({ date, description, category, amount }) => {
+        const row = [
+          `"${date}"`,
+          `"${description.replace(/"/g, '""')}"`,
+          `"${category}"`,
+          amount.toFixed(2)
+        ];
+        csvRows.push(row.join(','));
+      });
+
+      const csvData = csvRows.join('\n');
+      const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `expenses_${new Date().toISOString().slice(0,10)}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    });
+
+    // Initial render
+    renderExpenses();
+  })();
+</script>
+
+</body>
+</html>
