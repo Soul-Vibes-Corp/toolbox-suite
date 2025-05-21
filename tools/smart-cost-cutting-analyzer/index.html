@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Smart Cost Cutting Analyzer</title>
+<style>
+  body {
+    background: #121212;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+  }
+  h1 {
+    color: #fbc02d;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  .container {
+    background: #1e1e1e;
+    padding: 2rem;
+    border-radius: 12px;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 0 0 15px #fbc02daa;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+  th, td {
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid #444;
+    text-align: left;
+    font-size: 1rem;
+  }
+  th {
+    color: #fbc02d;
+    font-weight: 700;
+  }
+  input[type="text"], input[type="number"], select {
+    width: 100%;
+    padding: 0.4rem 0.6rem;
+    border-radius: 6px;
+    border: none;
+    background: #2c2c2c;
+    color: #fbc02d;
+    font-size: 1rem;
+  }
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  button {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    width: 100%;
+    font-size: 1.1rem;
+    font-weight: 700;
+    background: #fbc02d;
+    color: #121212;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  button:hover {
+    background: #ffeb3b;
+  }
+  .results {
+    margin-top: 2rem;
+    background: #262626;
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 0 10px #fbc02d88;
+  }
+  .result-item {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+  }
+  .suggestion {
+    background: #333822;
+    padding: 0.75rem;
+    margin: 0.5rem 0;
+    border-radius: 8px;
+    color: #f0f9ff;
+  }
+  .suggestion.high {
+    background: #d84315;
+    color: #ffccbc;
+  }
+  canvas {
+    margin-top: 1rem;
+    display: block;
+    max-width: 100%;
+  }
+  @media (max-width: 620px) {
+    .container {
+      padding: 1.5rem 1rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<h1>Smart Cost Cutting Analyzer</h1>
+
+<div class="container">
+
+  <form id="expenseForm">
+    <table>
+      <thead>
+        <tr>
+          <th>Expense Category</th>
+          <th>Amount (USD)</th>
+          <th>Priority</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="expenseTableBody">
+        <!-- Rows will be dynamically added -->
+      </tbody>
+    </table>
+    <button type="button" id="addRowBtn">Add Expense Category</button>
+    <button type="submit">Analyze Costs & Suggestions</button>
+  </form>
+
+  <div class="results" id="results" style="display:none;">
+    <h2>Analysis & Suggestions</h2>
+    <div class="result-item" id="totalExpense"></div>
+    <div class="result-item" id="suggestedSavings"></div>
+    <div id="suggestionsList"></div>
+    <canvas id="expenseChart" width="400" height="240"></canvas>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const expenseTableBody = document.getElementById('expenseTableBody');
+  const addRowBtn = document.getElementById('addRowBtn');
+  const expenseForm = document.getElementById('expenseForm');
+  const resultsDiv = document.getElementById('results');
+  const totalExpenseEl = document.getElementById('totalExpense');
+  const suggestedSavingsEl = document.getElementById('suggestedSavings');
+  const suggestionsListEl = document.getElementById('suggestionsList');
+  const expenseChartCtx = document.getElementById('expenseChart').getContext('2d');
+  let chartInstance;
+
+  // Priority levels and their description for suggestion severity
+  const priorityLevels = {
+    High: 0.05,   // Suggest up to 5% cut if high priority
+    Medium: 0.15, // Suggest up to 15% cut if medium priority
+    Low: 0.3      // Suggest up to 30% cut if low priority
+  };
+
+  function createRow(category = '', amount = '', priority = 'Medium') {
+    const tr = document.createElement('tr');
+
+    tr.innerHTML = `
+      <td><input type="text" required placeholder="e.g. Office Supplies" value="${category}" /></td>
+      <td><input type="number" required min="0" step="0.01" placeholder="e.g. 500" value="${amount}" /></td>
+      <td>
+        <select required>
+          <option${priority === 'High' ? ' selected' : ''}>High</option>
+          <option${priority === 'Medium' ? ' selected' : ''}>Medium</option>
+          <option${priority === 'Low' ? ' selected' : ''}>Low</option>
+        </select>
+      </td>
+      <td><button type="button" class="removeRowBtn" aria-label="Remove Expense Row">✖</button></td>
+    `;
+
+    expenseTableBody.appendChild(tr);
+
+    // Attach event listener to remove row button
+    tr.querySelector('.removeRowBtn').addEventListener('click', () => {
+      tr.remove();
+    });
+  }
+
+  // Add initial rows for convenience
+  createRow('Office Supplies', 1000, 'Medium');
+  createRow('Travel & Accommodation', 3500, 'High');
+  createRow('Marketing', 2500, 'Low');
+
+  addRowBtn.addEventListener('click', () => {
+    createRow();
+  });
+
+  function analyzeExpenses(expenses) {
+    const total = expenses.reduce((acc, e) => acc + e.amount, 0);
+    const suggestions = [];
+    let totalSuggestedSavings = 0;
+
+    expenses.forEach(({ category, amount, priority }) => {
+      const cutPercent = priorityLevels[priority];
+      const suggestedCut = amount * cutPercent;
+      totalSuggestedSavings += suggestedCut;
+
+      suggestions.push({
+        category,
+        amount,
+        priority,
+        suggestedCut,
+        severity: priority === 'High' ? 'high' : 'normal'
+      });
+    });
+
+    return {
+      total,
+      totalSuggestedSavings,
+      suggestions
+    };
+  }
+
+  function displayResults(analysis) {
+    totalExpenseEl.textContent = `Total Monthly Expenses: $${analysis.total.toFixed(2)}`;
+    suggestedSavingsEl.textContent = `Estimated Potential Savings: $${analysis.totalSuggestedSavings.toFixed(2)} (${((analysis.totalSuggestedSavings / analysis.total) * 100).toFixed(2)}%)`;
+
+    suggestionsListEl.innerHTML = '';
+    analysis.suggestions.forEach(({ category, amount, priority, suggestedCut, severity }) => {
+      const div = document.createElement('div');
+      div.className = 'suggestion' + (severity === 'high' ? ' high' : '');
+      div.innerHTML = `<strong>${category}</strong> (${priority} Priority): Cut ~$${suggestedCut.toFixed(2)} from $${amount.toFixed(2)}`;
+      suggestionsListEl.appendChild(div);
+    });
+
+    // Plot chart
+    if (chartInstance) {
+      chartInstance.destroy();
+    }
+
+    chartInstance = new Chart(expenseChartCtx, {
+      type: 'doughnut',
+      data: {
+        labels: analysis.suggestions.map(s => s.category),
+        datasets: [{
+          data: analysis.suggestions.map(s => s.amount),
+          backgroundColor: analysis.suggestions.map(s => s.severity === 'high' ? '#d84315' : '#fbc02d'),
+          borderColor: '#121212',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        plugins: {
+          legend: { labels: { color: '#fbc02d' } }
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+      }
+    });
+
+    resultsDiv.style.display = 'block';
+    resultsDiv.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  expenseForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const expenses = [];
+    let valid = true;
+
+    [...expenseTableBody.querySelectorAll('tr')].forEach(tr => {
+      const inputs = tr.querySelectorAll('input, select');
+      const category = inputs[0].value.trim();
+      const amount = parseFloat(inputs[1].value);
+      const priority = inputs[2].value;
+
+      if (!category || isNaN(amount) || amount < 0) {
+        valid = false;
+      } else {
+        expenses.push({ category, amount, priority });
+      }
+    });
+
+    if (!valid || expenses.length === 0) {
+      alert('Please fill all fields correctly.');
+      return;
+    }
+
+    const analysis = analyzeExpenses(expenses);
+    displayResults(analysis);
+  });
+</script>
+
+</body>
+</html>
