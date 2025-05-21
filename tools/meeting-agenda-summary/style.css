@@ -1,0 +1,101 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f2f8fc;
+  color: #222;
+  padding: 25px;
+}
+
+.container {
+  max-width: 720px;
+  background: white;
+  margin: auto;
+  padding: 25px 30px;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+h1 {
+  color: #005ea3;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+label {
+  font-weight: 600;
+  margin-top: 12px;
+  display: block;
+}
+
+input, textarea, button {
+  width: 100%;
+  margin-top: 8px;
+  padding: 12px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1.5px solid #ccc;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+input:focus, textarea:focus {
+  border-color: #005ea3;
+  outline: none;
+}
+
+button {
+  background-color: #005ea3;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-top: 16px;
+  font-weight: 700;
+  transition: background-color 0.25s ease;
+}
+
+button:hover {
+  background-color: #004080;
+}
+
+#addAgendaItemBtn {
+  width: auto;
+  padding: 8px 14px;
+  margin-top: 10px;
+  font-weight: 600;
+  border-radius: 6px;
+}
+
+.agenda-item {
+  display: flex;
+  margin-top: 10px;
+  gap: 10px;
+}
+
+.agenda-item input {
+  flex: 1;
+}
+
+.agenda-item button {
+  width: 34px;
+  padding: 0;
+  font-weight: 700;
+  background-color: #e55353;
+  border-radius: 6px;
+}
+
+.agenda-item button:hover {
+  background-color: #b00000;
+}
+
+.hidden {
+  display: none;
+}
+
+.output {
+  margin-top: 25px;
+  background: #d9eaff;
+  padding: 20px;
+  border-left: 6px solid #005ea3;
+  font-family: 'Courier New', Courier, monospace;
+  white-space: pre-wrap;
+  user-select: text;
+}
