@@ -169,6 +169,19 @@
     <a href="analytics/index.html" class="suite-button">📊 Snap Insights</a>
     <a href="scheduler/index.html" class="suite-button">📅 Snap Scheduler</a>
     <a href="share/index.html" class="suite-button">📤 Share Manager</a>
+
+<div>
+  <select id="platform-select">
+    <option value="facebook">Facebook</option>
+    <option value="instagram">Instagram</option>
+    <!-- Add more platforms as needed -->
+  </select>
+  <input type="date" id="start-date" />
+  <input type="date" id="end-date" />
+  <button onclick="generateReport()">Generate Report</button>
+</div>
+<canvas id="analyticsChart"></canvas>
+
   </section>
 </main>
 
