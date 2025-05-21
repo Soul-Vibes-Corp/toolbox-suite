@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart KPI Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <script defer src="firebase.js"></script>
+  <script defer src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <div id="app">
+    <aside class="sidebar">
+      <h2>Smart KPI</h2>
+      <nav>
+        <a href="#" class="nav-item">📊 Dashboard</a>
+        <a href="#" class="nav-item">📁 Reports</a>
+        <a href="#" class="nav-item">⚙️ Settings</a>
+        <button id="logoutBtn">🚪 Logout</button>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header>
+        <h1>Welcome, <span id="userName">User</span></h1>
+        <button id="toggleTheme">🌓</button>
+      </header>
+      <section class="kpi-grid" id="kpiGrid">
+        <!-- KPI widgets will load here -->
+      </section>
+    </main>
+  </div>
+
+  <div id="loginScreen">
+    <h2>Login to Dashboard</h2>
+    <input type="email" id="email" placeholder="Email"/>
+    <input type="password" id="password" placeholder="Password"/>
+    <button id="loginBtn">Login</button>
+  </div>
+</body>
+</html>
