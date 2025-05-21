@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>📧 Smart Email Sequence Generator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="header">
+    <h1><a href="index.html" class="home-link">📧 Email Sequence Tool</a></h1>
+    <nav class="menu">
+      <div class="actions">
+        <a href="../dashboard.html">Dashboard</a>
+        <a href="../savedemails.html">Saved Sequences</a>
+        <a href="../settings.html">Settings</a>
+        <button onclick="location.href='../index.html'" id="logout-button">Logout</button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="main-content">
+    <h2>Generate a High-Converting Email Sequence</h2>
+    <form id="email-form" class="form-container">
+      <input type="text" id="audience" placeholder="Target Audience (e.g. Startup Founders)" required />
+      <input type="text" id="offer" placeholder="Your Offer or CTA (e.g. Book a Free Demo)" required />
+      <textarea id="goal" placeholder="Objective of Sequence (e.g. Nurture leads for SaaS trial)" required></textarea>
+      <select id="emails-count" required>
+        <option value="">Number of Emails</option>
+        <option value="3">3 Email Sequence</option>
+        <option value="5">5 Email Sequence</option>
+        <option value="7">7 Email Sequence</option>
+      </select>
+      <button type="submit" class="generate-button">⚙️ Generate Sequence</button>
+    </form>
+
+    <section id="email-output" class="output-panel hidden">
+      <h3>Your Smart Email Sequence:</h3>
+      <div id="email-content" class="plan-box"></div>
+      <button onclick="downloadSequence()" class="download-button">⬇️ Download as .txt</button>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Soul Vibes Corp — Email Sequence Generator</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
