@@ -87,3 +87,14 @@ document.getElementById('themeToggle').addEventListener('click', () => {
   document.body.classList.toggle('dark-mode');
   // Optionally, save preference to localStorage
 });
+
+function exportToJSON() {
+  const dataStr = JSON.stringify(gigData);
+  const blob = new Blob([dataStr], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  // Create a link and trigger download
+}
+
+function exportToPDF() {
+  // Use a library like jsPDF to generate and download PDF
+}
