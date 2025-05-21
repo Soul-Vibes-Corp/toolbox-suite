@@ -261,6 +261,29 @@
         .catch(err => console.error('Service Worker registration failed:', err));
     }
   </script>
+<script>
+  const chatInput = document.getElementById("chat-input");
+  const chatMessages = document.getElementById("chat-messages");
+
+  chatInput?.addEventListener("keypress", function (e) {
+    if (e.key === "Enter" && chatInput.value.trim()) {
+      const msg = chatInput.value.trim();
+      const messageEl = document.createElement("div");
+      messageEl.textContent = "🧑‍🚀 You: " + msg;
+      chatMessages.appendChild(messageEl);
+      chatInput.value = "";
+
+      // Auto-scroll to latest
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+  });
+
+  // Optional chatbot toggle interaction
+  document.getElementById("chatbot-toggle").addEventListener("click", () => {
+    alert("🤖 Opening futuristic assistant...");
+    // Implement chatbot modal or redirect here
+  });
+</script>
 
   <script>
     const searchToggle = document.getElementById('search-toggle');
