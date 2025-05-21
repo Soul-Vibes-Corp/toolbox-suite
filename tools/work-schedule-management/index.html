@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advanced Work Scheduler</title>
+  <link rel="stylesheet" href="style.css" />
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <div id="intro-animation">
+    <h1>🧠 Work Smart Scheduler</h1>
+    <p>Plan your day. Master your time.</p>
+  </div>
+  <main class="app">
+    <header class="top-bar">
+      <h2>📆 Schedule</h2>
+      <button id="toggle-theme">🌗 Toggle Theme</button>
+    </header>
+    <section class="calendar-controls">
+      <button id="week-view">Week</button>
+      <button id="month-view">Month</button>
+      <button id="export-json">Export JSON</button>
+      <button id="export-pdf">Export PDF</button>
+    </section>
+    <section id="calendar">
+      <!-- Generated dynamically -->
+    </section>
+    <section id="task-panel">
+      <h3>✅ Tasks</h3>
+      <ul id="task-list"></ul>
+      <input type="text" id="new-task-input" placeholder="Add task..." />
+    </section>
+    <section id="analytics">
+      <h3>📊 Productivity</h3>
+      <div id="stats">Hours: 0 | Tasks: 0</div>
+    </section>
+    <section id="sticky-notes">
+      <h3>📌 Notes</h3>
+      <textarea placeholder="Quick memo..."></textarea>
+    </section>
+    <div id="time-tracker"></div>
+  </main>
+</body>
+</html>
