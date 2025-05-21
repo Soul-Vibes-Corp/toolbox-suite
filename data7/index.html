@@ -1,464 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#000000">
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="assets/favicon.png" type="image/png">
-  <link rel="apple-touch-icon" href="assets/logo-192.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="assets/favicon.png" />
+  <link rel="apple-touch-icon" href="assets/logo-192.png" />
   <title>Toolbox Suite</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      margin: 0;
+      background: #121212;
+      color: #fff;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+    }
 
-  <script>
-  // Your web app's Firebase configuration
-  const firebaseConfig = {
-  apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
-  authDomain: "chat-code-forum.firebaseapp.com",
-  projectId: "chat-code-forum",
-  storageBucket: "chat-code-forum.firebasestorage.app",
-  messagingSenderId: "496765673859",
-  appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
-  measurementId: "G-XJKWXHF8WN"
-};
+    header {
+      padding: 16px 24px;
+      background: #1f1f1f;
+      border-bottom: 1px solid #333;
+    }
 
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
+    .home-link {
+      color: #0ff;
+      font-size: 1.8rem;
+      text-decoration: none;
+    }
 
+    h2 {
+      margin: 2rem 1rem 1rem;
+      font-size: 1.3rem;
+      color: #0ff;
+    }
 
-    .back-button {
-  position: absolute;
-  top: 24px;
-  left: 24px;
-  background: transparent;
-  color: #0ff;
-  font-weight: 600;
-  text-decoration: none;
-  font-size: 1rem;
-  transition: color 0.3s ease;
-  border: none;
-}
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      gap: 16px;
+      padding: 1rem;
+    }
 
-.back-button:hover {
-  color: #0fa;
-}
+    .tool-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #222;
+      color: #0ff;
+      text-align: center;
+      padding: 16px;
+      border-radius: 24px;
+      font-size: 0.9rem;
+      height: 100px;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
 
-</script>
-  
+    .tool-card:hover {
+      background: #0ff;
+      color: #000;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.9rem;
+      color: #888;
+    }
+
+    @media (min-width: 768px) {
+      .tool-card {
+        height: 110px;
+        font-size: 1rem;
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <header>
+    <a href="../dashboard.html" class="home-link">🧰 Toolbox Suite</a>
+  </header>
 
-  <a href="dashboard.html" class="back-button">← Back to Login</a>
-  <div class="register-container">
+  <main>
+    <!-- MARKETING & BRANDING -->
+    <h2>🛠️ Freelance Marketing, Branding & Employment</h2>
+    <div class="tool-grid">
+      <a class="tool-card" href="/tools/brand-kit-generator/index.html">🎨<br>Brand Kit</a>
+      <a class="tool-card" href="/tools/marketing-content-calendar-generator/index.html">📅<br>Calendar</a>
+      <a class="tool-card" href="/tools/lead-magnet-creator/index.html">📚<br>Lead Magnet</a>
+      <a class="tool-card" href="/tools/social-media-analytics-snapshot/index.html">📊<br>Analytics</a>
+      <a class="tool-card" href="/tools/smart-business-name-domain-finder/index.html">🔍<br>Name Finder</a>
+      <a class="tool-card" href="/tools/find-gigs/index.html">🏢<br>Find Gigs</a>
+      <a class="tool-card" href="/tools/job-search-tools/index.html">🔐<br>Job Tools</a>
+      <a class="tool-card" href="/tools/resume-builder/index.html">📄<br>Resume</a>
+      <a class="tool-card" href="/tools/interview-prep-tools/index.html">🗣️<br>Interview Prep</a>
+      <a class="tool-card" href="/tools/work-chedule-mamagement/index.html">🕒<br>Schedule</a>
+      <a class="tool-card" href="/tools/salary-calculator/index.html">💰<br>Salary</a>
+      <a class="tool-card" href="/tools/time-tracking/index.html">⏱️<br>Time Tracker</a>
+    </div>
 
-<header class="header">
-   <h1><a href="../dashboard.html" class="home-link">🧰 Toolbox Suite</a></h1>
+    <!-- BUSINESS STRATEGY -->
+    <h2>📈 Business Strategy & Financial Planning</h2>
+    <div class="tool-grid">
+      <a class="tool-card" href="/tools/one-page-business-plan-generator/index.html">📝<br>Biz Plan</a>
+      <a class="tool-card" href="/tools/instant-swot-analysis-generator/index.html">⚖️<br>SWOT</a>
+      <a class="tool-card" href="/tools/profit-investment-calculator/index.html">💲<br>Investment</a>
+      <a class="tool-card" href="/tools/smart-kpi-dashboard/index.html">📊<br>KPI Dash</a>
+      <a class="tool-card" href="/tools/smart-cost-cutting-analyzer/index.html">🔧<br>Cut Costs</a>
+      <a class="tool-card" href="/tools/expense-tracking/index.html">🖲️<br>Expenses</a>
+    </div>
 
-  <!-- Hidden checkbox to toggle the menu -->
-  <input type="checkbox" id="menuToggle" class="menu-toggle" />
-  <label for="menuToggle" class="hamburger" aria-label="Toggle Menu">&#9776;</label>
+    <!-- SALES & CLIENT MGMT -->
+    <h2>📊 Sales & Client Management</h2>
+    <div class="tool-grid">
+      <a class="tool-card" href="/tools/smart-proposal-generator/index.html">📑<br>Proposals</a>
+      <a class="tool-card" href="/tools/invoice-bill-payment-services/index.html">🧾<br>Bill Pay</a>
+      <a class="tool-card" href="/tools/client-contract-generator/index.html">📄<br>Contracts</a>
+      <a class="tool-card" href="/tools/automated-nda-signer-tool/index.html">🖋️<br>NDA Tool</a>
+      <a class="tool-card" href="/tools/meeting-agenda-summary-maker/index.html">📅<br>Agenda</a>
+      <a class="tool-card" href="/tools/invoice-generator/index.html">🧾<br>Invoice</a>
+    </div>
 
-    <nav class="menu">
-  <div class="actions">
-      <button id="search-toggle" aria-label="Search"> 🔍</button>
-    <input type="text" id="search-input" placeholder="Search tools..." aria-label="Search tools" />
-    <span id="result-count" aria-live="polite"></span>
-      <a href="../dashboard.html">Dashboard</a>
-     <a href="../toolHistory.html">Track Tools</a>
-      <a href="../settings.html">Settings</a>
-     <button onclick="location.href='../index.html'" id="logout-button" aria-label="Logout">Logout</button>
-  </div>
- </nav>
-</header>
+    <!-- TEAM MGMT -->
+    <h2>🧑‍💼 Operations & Team Management</h2>
+    <div class="tool-grid">
+      <a class="tool-card" href="/tools/employee-onboarding-kit-generator/index.html">📋<br>Onboarding</a>
+      <a class="tool-card" href="/tools/team-taskboard-generator/index.html">🗂️<br>Taskboard</a>
+      <a class="tool-card" href="/tools/proffessional-networking/index.html">📏<br>Networking</a>
+    </div>
 
-  <style>
-  /* Basic Reset */
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+    <!-- AUDIENCE BUILDING -->
+    <h2>🤝 Customer & Audience Building</h2>
+    <div class="tool-grid">
+      <a class="tool-card" href="/tools/customer-avatar-builder/index.html">👥<br>Avatar</a>
+      <a class="tool-card" href="/tools/smart-email-sequence-generator/index.html">📧<br>Email Tools</a>
+    </div>
 
-  body {
-    background-color: #121212;
-    color: #eee;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  }
+    <!-- UTILITIES -->
+    <h2>🛠️ Everyday Utility Tools</h2>
+    <div class="tool-grid">
+      <a class="tool-card" href="/tools/pdf-merger/index.html">📎<br>PDF Merger</a>
+      <a class="tool-card" href="/tools/image-compressor-converter/index.html">🖼️<br>Compressor</a>
+      <a class="tool-card" href="/tools/qr-code-generator/index.html">🔗<br>QR Code</a>
+      <a class="tool-card" href="/tools/document-scanner/index.html">📄<br>Scanner</a>
+      <a class="tool-card" href="/tools/Qoute-box/index.html">💬<br>Quote Box</a>
+      <a class="tool-card" href="/tools/currency-converter/index.html">💱<br>Currency</a>
+      <a class="tool-card" href="/tools/fitness-tracker/index.html">🏋️<br>Fitness</a>
+      <a class="tool-card" href="/tools/image-editor/index.html">🖌️<br>Editor</a>
+      <a class="tool-card" href="/tools/json-formatter/index.html">🗄️<br>Formatter</a>
+      <a class="tool-card" href="/tools/meditation-timer/index.html">🧘<br>Meditate</a>
+      <a class="tool-card" href="/tools/password-generator/index.html">🔐<br>Password</a>
+      <a class="tool-card" href="/tools/text-to-speech/index.html">🗣️<br>TTS</a>
+      <a class="tool-card" href="/tools/unit-converter/index.html">📏<br>Units</a>
+      <a class="tool-card" href="/tools/drum-pad/index.html">🥁<br>Drum Pad</a>
+    </div>
+  </main>
 
-  /* Header Styling */
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 24px;
-    background-color: rgba(20, 20, 20, 0.9);
-    border-bottom: 1px solid #333;
-    position: relative;
-    z-index: 10;
-  }
+  <footer>
+    <p>© 2025 Toolbox Suite — Fast, Private, Free | No signup 🚀</p>
+  </footer>
 
-  .home-link {
-    color: #0ff;
-    text-decoration: none;
-    font-size: 1.8rem;
-  }
-
-  .home-link:hover {
-    color: #0fa;
-  }
-
-  /* Hamburger Button */
-  .hamburger {
-    font-size: 30px;
-    color: #0ff;
-    cursor: pointer;
-    display: none; /* hidden by default (visible on mobile) */
-    user-select: none;
-  }
-
-  .hamburger:hover {
-    color: #0fa;
-  }
-
-  /* Hidden Checkbox */
-  .menu-toggle {
-    display: none;
-  }
-
-  /* Menu Styling */
-  .menu {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .actions {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .actions a,
-  .actions button,
-  .actions input[type="text"] {
-    padding: 8px 14px;
-    border-radius: 6px;
-    border: none;
-    background: #222;
-    color: #0ff;
-    text-decoration: none;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-  }
-
-  .actions a:hover,
-  .actions button:hover,
-  .actions input[type="text"]:focus {
-    background-color: #0ff;
-    color: #111;
-    outline: none;
-  }
-
-  .actions input[type="text"] {
-    min-width: 150px;
-    color: #eee;
-  }
-
-  .visually-hidden {
-    position: absolute !important;
-    height: 1px; width: 1px;
-    overflow: hidden;
-    clip: rect(1px, 1px, 1px, 1px);
-    white-space: nowrap;
-  }
-
-  /* Responsive Menu for Mobile */
-  @media (max-width: 768px) {
-    .hamburger {
-      display: block;
+  <!-- Scripts (Service Worker, Firebase) -->
+  <script src="script.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(() => console.log('✅ Service Worker Registered'))
+        .catch(err => console.error('Service Worker registration failed:', err));
     }
-
-    .menu {
-      position: absolute;
-      top: 100%;
-      right: 24px;
-      flex-direction: column;
-      background: rgba(20, 20, 20, 0.95);
-      padding: 16px;
-      border-radius: 10px;
-      box-shadow: 0 8px 20px rgba(0, 255, 255, 0.1);
-      width: 250px;
-
-      /* Hide by default */
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(-10px);
-      transition: all 0.3s ease;
-    }
-
-    .actions {
-      flex-direction: column;
-      gap: 12px;
-      width: 100%;
-    }
-
-    .actions input[type="text"] {
-      width: 100%;
-    }
-
-    /* When checkbox is checked, show menu */
-    .menu-toggle:checked + .hamburger + .menu {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateY(0);
-    }
-  }
-</style>
-
-
-
-<main>
-
-
-  <h2 id="marketing-branding-heading">🛠️ Frelance Marketing, Branding & Employment</h2>
-  <div class="tool-grid">
-    <a href="/tools/brand-kit-generator/index.html" class="tool-card">🎨 Instant Brand Kit Creator</a>
-    <a href="/tools/marketing-content-calendar-generator/index.html" class="tool-card">📅 Marketing Content Calendar Generator</a>
-    <a href="/tools/lead-magnet-creator/index.html" class="tool-card">📚 Lead Magnet Creator</a>
-    <a href="/tools/social-media-analytics-snapshot/index.html" class="tool-card">📊 Social Media Analytics Snapshot</a>
-    <a href="/tools/smart-business-name-domain-finder/index.html" class="tool-card">🔍 Smart Business Name & Domain Finder</a>
-    <a href="/tools/find-gigs/index.html" class="tool-card">🏢Find Gigs</a>
-     <a href="/tools/job-search-tools/index.html" class="tool-card">🔐Job Search Tools</a>
-    <a href="/tools/resume-builder/index.html" class="tool-card">📄 Resume Builder</a>
-    <a href="/tools/interview-prep-tools/index.html" class="tool-card">🗣️ Interview Prep Tools</a>
-    <a href="/tools/work-chedule-mamagement/index.html" class="tool-card">🏢Work Schedule Management</a>
-    <a href="/tools/salary-calculator/index.html" class="tool-card">📄Salary Calculator</a>
-    <a href="/tools/time-tracking/index.html" class="tool-card">⏱️Time Tracking Tool</a>
-  </div>
-  
-<!-- Business Strategy & Planning -->
-  <h2 id="business-strategy-heading">📈 Business Strategy & Financial Planning</h2>
-  <div class="tool-grid">
-    <a href="/tools/one-page-business-plan-generator/index.html" class="tool-card">📝 One-Page Business Plan Generator</a>
-    <a href="/tools/instant-swot-analysis-generator/index.html" class="tool-card">⚖️ Instant SWOT Analysis Generator</a>
-    <a href="/tools/profit-investment-calculator/index.html" class="tool-card">💲 Profit & Investment Calculator</a>
-    <a href="/tools/smart-kpi-dashboard/index.html" class="tool-card">📊 Smart KPI Dashboard</a>
-    <a href="/tools/smart-cost-cutting-analyzer/index.html" class="tool-card">🔧 Smart Cost-Cutting Analyzer</a>
-    <a href="/tools/expense-tracking/index.html" class="tool-card">🖲️ Expense Tracking</a>
-  </div>
-
-
-<!-- Sales & Client Management -->
-  <h2 id="sales-client-heading">📊 Sales & Client Management</h2>
-  <div class="tool-grid">
-    <a href="/tools/smart-proposal-generator/index.html" class="tool-card">📑 Smart Proposal Generator</a>
-    <a href="/tools/invoice-bill-payment-services/index.html" class="tool-card">🧾 Invoice + Bill Payment Services</a>
-    <a href="/tools/client-contract-generator/index.html" class="tool-card">📝 Client Contract Generator</a>
-    <a href="/tools/automated-nda-signer-tool/index.html" class="tool-card">🖋️ Automated NDA Signer Tool</a>
-    <a href="/tools/meeting-agenda-summary-maker/index.html" class="tool-card">📅 Meeting Agenda + Summary Maker</a>
-    <a href="/tools/invoice-generator/index.html" class="tool-card">🧾 Invoice Generator</a>
-  </div>
-  
-  <!-- Operations & Team Management -->
-  <h2 id="operations-team-heading">🧑‍💼 Operations & Team Management</h2>
-  <div class="tool-grid">
-    <a href="/tools/employee-onboarding-kit-generator/index.html" class="tool-card">📋 Employee Onboarding Kit Generator</a>
-    <a href="/tools/team-taskboard-generator/index.html" class="tool-card">🗂️ Team Taskboard Generator</a>
-    <a href="/tools/proffessional-networking/index.html" class="tool-card">📏 Proffessional Networking</a>
-  </div>
-
-<!-- Customer & Audience Building -->
-  <h2 id="customer-audience-heading">🤝 Customer & Audience Building</h2>
-  <div class="tool-grid">
-    <a href="/tools/customer-avatar-builder/index.html" class="tool-card">👥 Customer Avatar Builder</a>
-    <a href="/tools/smart-email-sequence-generator/index.html" class="tool-card">📧 Smart Email Sequence Generator</a>
-  </div>
-<!-- Everyday Utility Tools -->
-  <h2 id="utility-tools-heading">🛠️ Everyday Utility Tools</h2>
-  <div class="tool-grid">
-    <a href="/tools/pdf-merger/index.html" class="tool-card">📎 PDF Merger Tool</a>
-    <a href="/tools/image-compressor-converter/index.html" class="tool-card">🖼️ Image Compressor</a>
-    <a href="/tools/qr-code-generator/index.html" class="tool-card">🔗 QR Code Generator</a>
-    <a href="/tools/document-scanner/index.html" class="tool-card">📄 Document Scanner</a>
-    <a href="/tools/Qoute-box/index.html" class="tool-card">💬 Quote Box</a>
-    <a href="/tools/currency-converter/index.html" class="tool-card">💱 Currency Converter</a>
-    <a href="/tools/fitness-tracker/index.html" class="tool-card">🏋️‍♂️ Fitness Tracker</a>
-    <a href="/tools/image-editor/index.html" class="tool-card">🖌️ Image Editor</a>
-    <a href="/tools/json-formatter/index.html" class="tool-card">🗄️ JSON Formatter</a>
-    <a href="/tools/meditation-timer/index.html" class="tool-card">🧘 Meditation Timer</a>
-    <a href="/tools/password-generator/index.html" class="tool-card">🔐 Password Generator</a>
-    <a href="/tools/resume-builder/index.html" class="tool-card">📄 Resume Builder</a>
-    <a href="/tools/text-to-speech/index.html" class="tool-card">🗣️ Text to Speech</a>
-    <a href="/tools/unit-converter/index.html" class="tool-card">📏 Unit Converter</a>
-    <a href="/tools/drum-pad/index.html" class="tool-card">🥁 Drum Pad</a>
-  </div>
-
-
-</main>
-
-<footer>
-  <p>© 2025 Toolbox Suite — Fast, Private, Free | No signup 🚀</p>
-</footer>
-<script src="script.js"></script>
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(() => console.log('✅ Service Worker Registered'))
-      .catch(err => console.error('Service Worker registration failed:', err));
-  }
-</script>
-<!-- Firebase App & Auth (optional, only needed if using Firebase auth) -->
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js"></script>
-<script>
-  // Firebase Config (adjust this to your actual config)
-  const firebaseConfig = {
-  apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
-  authDomain: "chat-code-forum.firebaseapp.com",
-  projectId: "chat-code-forum",
-  storageBucket: "chat-code-forum.firebasestorage.app",
-  messagingSenderId: "496765673859",
-  appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
-  measurementId: "G-XJKWXHF8WN"
-};
-
-firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-</script>
-
-<!-- Main Tracking + UI Script -->
-<script>
-  // Theme toggle
-  const themeToggle = document.getElementById('toggle-dark');
-  const isDark = localStorage.getItem('theme') === 'dark';
-  if (isDark) document.body.classList.add('dark');
-
-  themeToggle.addEventListener('click', () => {
-    document.body.classList.toggle('dark');
-    const theme = document.body.classList.contains('dark') ? 'dark' : 'light';
-    localStorage.setItem('theme', theme);
-    themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
-  });
-
-  // Login/Logout (if using Firebase)
-  const logoutBtn = document.getElementById('logout-button');
-  logoutBtn.addEventListener('click', () => {
-    localStorage.removeItem('user');
-    if (auth.currentUser) auth.signOut();
-    alert('Logged out!');
-    location.reload();
-  });
-
-  // Simple visitor tracking
-  const trackVisit = (toolName) => {
-    const history = JSON.parse(localStorage.getItem('toolHistory') || '[]');
-    const now = new Date().toISOString();
-    history.unshift({ tool: toolName, time: now });
-    localStorage.setItem('toolHistory', JSON.stringify(history.slice(0, 25))); // keep last 25
-  };
-
-  // Count launches per tool
-  const countLaunch = (toolName) => {
-    const key = `launchCount_${toolName}`;
-    const current = parseInt(localStorage.getItem(key) || '0');
-    localStorage.setItem(key, current + 1);
-  };
-
-  // Apply launch tracking to buttons
-  document.querySelectorAll('.suite-button').forEach(button => {
-    const name = button.textContent.trim();
-    button.addEventListener('click', () => {
-      trackVisit(name);
-      countLaunch(name);
-    });
-  });
-
-  // Enhanced search
-  const allTools = [...tools]; // From inline script
-  searchInput.addEventListener('input', e => {
-    const val = e.target.value.toLowerCase();
-    if (!val) {
-      searchResults.style.display = 'none';
-      suiteGrid.style.display = 'grid';
-      return;
-    }
-
-    const matches = allTools.filter(tool =>
-      tool.name.toLowerCase().includes(val) ||
-      tool.tags.some(tag => tag.includes(val))
-    );
-
-    searchResults.innerHTML = matches.map(tool =>
-      `<a href="${tool.link}" class="suite-button">${tool.name}</a>`
-    ).join('');
-
-    searchResults.style.display = 'grid';
-    suiteGrid.style.display = 'none';
-  });
-
-  // Optional: auto login stub if using Firebase
-  auth.onAuthStateChanged(user => {
-    if (user) {
-      console.log('✅ Logged in as:', user.email);
-      localStorage.setItem('user', user.email);
-    } else {
-      localStorage.removeItem('user');
-    }
-  });
-</script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js"></script>
-<script>
-  const db = firebase.firestore();
-
-  const logToFirestore = (toolName) => {
-    db.collection("toolUsage").add({
-      tool: toolName,
-      user: localStorage.getItem('user') || 'anonymous',
-      timestamp: new Date().toISOString()
-    }).then(() => {
-      console.log("Logged to Firestore:", toolName);
-    }).catch(err => console.error("Firestore log error:", err));
-  };
-
-  // Modify existing tool click handler
-  document.querySelectorAll('.suite-button').forEach(button => {
-    const name = button.textContent.trim();
-    button.addEventListener('click', () => {
-      trackVisit(name);
-      countLaunch(name);
-      logToFirestore(name); // 🔥 Add this
-    });
-  });
-
-function saveUserSettings(settingsObject) {
-  const user = firebase.auth().currentUser;
-  if (!user) return;
-
-  firebase.firestore().collection("userSettings").doc(user.uid).set(settingsObject);
-}
-
-// Example:
-saveUserSettings({
-  theme: "dark",
-  compressorSettings: {
-    threshold: -12,
-    ratio: 4,
-  },
-  reverbPreset: "Valhalla Space",
-});
-
-firebase.firestore().collection("userSettings").doc(user.uid).get().then(doc => {
-  if (doc.exists) {
-    const settings = doc.data();
-    // Apply settings to app UI
-  }
-});
-
-  
-</script>
-
+  </script>
 </body>
 </html>
