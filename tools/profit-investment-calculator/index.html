@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Investment & Profit Calculator</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #121212;
+    color: #e0e0e0;
+    margin: 0; padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  h1 {
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #4caf50;
+    text-align: center;
+  }
+  .container {
+    background: #1e1e1e;
+    padding: 2rem 3rem;
+    border-radius: 12px;
+    max-width: 480px;
+    width: 100%;
+    box-shadow: 0 0 15px #4caf50aa;
+  }
+  label {
+    display: block;
+    margin-top: 1rem;
+    font-weight: 600;
+    color: #a5d6a7;
+  }
+  input, select {
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 0.25rem;
+    border-radius: 6px;
+    border: none;
+    background: #2c2c2c;
+    color: #c8e6c9;
+    font-size: 1rem;
+    box-sizing: border-box;
+  }
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  button {
+    margin-top: 1.5rem;
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    background: #4caf50;
+    color: #121212;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  button:hover {
+    background: #66bb6a;
+  }
+  .results {
+    margin-top: 2rem;
+    background: #262626;
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 0 10px #4caf5080;
+  }
+  .results h2 {
+    margin-top: 0;
+    color: #81c784;
+    font-weight: 700;
+    text-align: center;
+  }
+  .result-item {
+    margin: 0.5rem 0;
+    font-size: 1.1rem;
+  }
+  canvas {
+    display: block;
+    margin: 1rem auto 0 auto;
+  }
+  @media (max-width: 520px) {
+    .container {
+      padding: 1.5rem 2rem;
+    }
+  }
+</style>
+</head>
+<body>
+  <h1>Investment & Profit Calculator</h1>
+  <div class="container">
+    <label for="principal">Initial Investment (USD):</label>
+    <input type="number" id="principal" min="0" step="0.01" placeholder="e.g. 10000" required />
+
+    <label for="rate">Annual Interest Rate (%):</label>
+    <input type="number" id="rate" min="0" step="0.01" placeholder="e.g. 7" required />
+
+    <label for="time">Investment Duration (years):</label>
+    <input type="number" id="time" min="0" step="0.1" placeholder="e.g. 10" required />
+
+    <label for="compound">Compounding Frequency:</label>
+    <select id="compound">
+      <option value="1">Annually</option>
+      <option value="4">Quarterly</option>
+      <option value="12" selected>Monthly</option>
+      <option value="365">Daily</option>
+    </select>
+
+    <label for="additional">Additional Contribution (per period):</label>
+    <input type="number" id="additional" min="0" step="0.01" placeholder="e.g. 100" />
+
+    <label for="contributionFreq">Contribution Frequency:</label>
+    <select id="contributionFreq">
+      <option value="1">Annually</option>
+      <option value="4" selected>Quarterly</option>
+      <option value="12">Monthly</option>
+      <option value="365">Daily</option>
+    </select>
+
+    <label for="inflation">Estimated Annual Inflation Rate (%):</label>
+    <input type="number" id="inflation" min="0" max="20" step="0.01" placeholder="e.g. 2" value="0" />
+
+    <button id="calculateBtn">Calculate Profit & Growth</button>
+
+    <div class="results" id="results" style="display:none;">
+      <h2>Results</h2>
+      <div class="result-item" id="finalAmount"></div>
+      <div class="result-item" id="totalProfit"></div>
+      <div class="result-item" id="roiPercent"></div>
+      <canvas id="growthChart" width="400" height="200"></canvas>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const calculateBtn = document.getElementById('calculateBtn');
+  const resultsDiv = document.getElementById('results');
+  const finalAmountEl = document.getElementById('finalAmount');
+  const totalProfitEl = document.getElementById('totalProfit');
+  const roiPercentEl = document.getElementById('roiPercent');
+  const growthChartCtx = document.getElementById('growthChart').getContext('2d');
+  let chartInstance;
+
+  function compoundInterest(principal, rate, time, n) {
+    return principal * Math.pow(1 + rate / n, n * time);
+  }
+
+  function calculateInvestmentGrowth(principal, rate, time, compoundFreq, additional, contributionFreq, inflation) {
+    let periods = time * compoundFreq;
+    let contributionPeriods = time * contributionFreq;
+    let balance = principal;
+    const growthOverTime = [];
+
+    for (let i = 0; i <= periods; i++) {
+      // Calculate compounded balance for period i
+      let t = i / compoundFreq;
+
+      // Add contributions if this period matches contribution frequency
+      if (additional > 0 && (i * (contributionFreq / compoundFreq)) % 1 === 0) {
+        let contributionPeriodsPassed = i * (contributionFreq / compoundFreq);
+        balance = balance * Math.pow(1 + rate / compoundFreq, 1) + (contributionPeriodsPassed % 1 === 0 ? additional : 0);
+      } else if (i > 0) {
+        balance = balance * Math.pow(1 + rate / compoundFreq, 1);
+      }
+
+      // Adjust for inflation on value after time passes
+      const inflationFactor = Math.pow(1 + inflation / 100, t);
+
+      growthOverTime.push({
+        time: t.toFixed(2),
+        value: balance / inflationFactor
+      });
+    }
+    return growthOverTime;
+  }
+
+  function calculateAndDisplay() {
+    const principal = parseFloat(document.getElementById('principal').value);
+    const rate = parseFloat(document.getElementById('rate').value) / 100;
+    const time = parseFloat(document.getElementById('time').value);
+    const compoundFreq = parseInt(document.getElementById('compound').value);
+    const additional = parseFloat(document.getElementById('additional').value) || 0;
+    const contributionFreq = parseInt(document.getElementById('contributionFreq').value);
+    const inflation = parseFloat(document.getElementById('inflation').value) || 0;
+
+    if (isNaN(principal) || principal < 0 || isNaN(rate) || rate < 0 || isNaN(time) || time <= 0) {
+      alert('Please enter valid positive values for initial investment, rate, and time.');
+      return;
+    }
+
+    // Calculate growth over time with contributions
+    const growthData = [];
+    let balance = principal;
+    let contributionPeriodsPassed = 0;
+    const totalPeriods = time * compoundFreq;
+
+    for (let i = 0; i <= totalPeriods; i++) {
+      const currentTime = i / compoundFreq;
+
+      // Add interest for this period
+      balance = balance * (1 + rate / compoundFreq);
+
+      // Add contribution if applicable
+      if (additional > 0 && (i % (compoundFreq / contributionFreq) === 0) && i !== 0) {
+        balance += additional;
+      }
+
+      // Adjust for inflation
+      const inflationFactor = Math.pow(1 + inflation / 100, currentTime);
+      growthData.push((balance / inflationFactor).toFixed(2));
+    }
+
+    const finalAmount = balance;
+    const totalContributions = principal + additional * contributionFreq * time;
+    const profit = finalAmount - totalContributions;
+    const roi = (profit / totalContributions) * 100;
+
+    // Display results
+    finalAmountEl.textContent = `Final Amount (adjusted for inflation): $${finalAmount.toFixed(2)}`;
+    totalProfitEl.textContent = `Total Profit: $${profit.toFixed(2)}`;
+    roiPercentEl.textContent = `ROI: ${roi.toFixed(2)}%`;
+
+    resultsDiv.style.display = 'block';
+
+    // Plot chart
+    if (chartInstance) {
+      chartInstance.destroy();
+    }
+
+    chartInstance = new Chart(growthChartCtx, {
+      type: 'line',
+      data: {
+        labels: Array.from({ length: growthData.length }, (_, i) => (i / compoundFreq).toFixed(2) + 'y'),
+        datasets: [{
+          label: 'Investment Value (inflation adjusted)',
+          data: growthData,
+          borderColor: '#4caf50',
+          backgroundColor: 'rgba(76,175,80,0.3)',
+          fill: true,
+          tension: 0.3,
+          pointRadius: 0,
+          borderWidth: 2,
+        }]
+      },
+      options: {
+        responsive: true,
+        interaction: {
+          mode: 'index',
+          intersect: false,
+        },
+        scales: {
+          x: {
+            title: { display: true, text: 'Years' },
+            ticks: { color: '#a5d6a7' }
+          },
+          y: {
+            title: { display: true, text: 'Value (USD)' },
+            ticks: { color: '#a5d6a7' },
+            beginAtZero: true
+          }
+        },
+        plugins: {
+          legend: { labels: { color: '#a5d6a7' } },
+          tooltip: {
+            enabled: true,
+            callbacks: {
+              label: ctx => `$${ctx.parsed.y}`
+            }
+          }
+        }
+      }
+    });
+  }
+
+  calculateBtn.addEventListener('click', calculateAndDisplay);
+</script>
+</body>
+</html>
