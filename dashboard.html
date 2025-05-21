@@ -301,39 +301,16 @@
     <p>© 2025 Toolbox Suite — Fast, Private, Free | No signup | Powered by: Soul Vibes Corp</p>
   </footer>
 
-  <script src="script.js"></script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js')
-        .then(() => console.log('✅ Service Worker Registered'))
-        .catch(err => console.error('Service Worker registration failed:', err));
-    }
-  </script>
+ <script src="script.js"></script>
 <script>
-  const chatInput = document.getElementById("chat-input");
-  const chatMessages = document.getElementById("chat-messages");
-
-  chatInput?.addEventListener("keypress", function (e) {
-    if (e.key === "Enter" && chatInput.value.trim()) {
-      const msg = chatInput.value.trim();
-      const messageEl = document.createElement("div");
-      messageEl.textContent = "🧑‍🚀 You: " + msg;
-      chatMessages.appendChild(messageEl);
-      chatInput.value = "";
-
-      // Auto-scroll to latest
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-  });
-
-  // Optional chatbot toggle interaction
-  document.getElementById("chatbot-toggle").addEventListener("click", () => {
-    alert("🤖 Opening futuristic assistant...");
-    // Implement chatbot modal or redirect here
-  });
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(() => console.log('✅ Service Worker Registered'))
+      .catch(err => console.error('Service Worker registration failed:', err));
+  }
 </script>
 
- <script>
+<script>
   const searchToggle = document.getElementById('search-toggle');
   const searchInput = document.getElementById('search-input');
   const searchResults = document.getElementById('search-results');
@@ -341,7 +318,7 @@
 
 const tools = [
   // 🛠️ Freelance Marketing, Branding & Employment
-  { name: "🎨 Instant Brand Kit Creator", tags: ["branding", "design", "brand"], link: "./tools/brand-kit-generator/index.html" },
+  { name: "🎨 Instant Brand Kit Generator", tags: ["branding", "design", "brand"], link: "./tools/brand-kit-generator/index.html" },
   { name: "📅 Marketing Content Calendar Generator", tags: ["marketing", "calendar", "content"], link: "./tools/content-calendar-generator/index.html" },
   { name: "📚 Lead Magnet Creator", tags: ["lead", "magnet", "conversion"], link: "./tools/lead-magnet-creator/index.html" },
   { name: "📊 Social Media Analytics Snapshot", tags: ["social", "analytics", "media"], link: "./tools/social-media-analytics-snapshot/index.html" },
@@ -355,46 +332,46 @@ const tools = [
   { name: "⏱️ Time Tracking Tool", tags: ["time", "tracking", "productivity"], link: "./tools/time-tracking-tool/index.html" },
 
   // 📈 Business Strategy & Financial Planning
-  { name: "📝 One-Page Business Plan Generator", tags: ["business", "plan", "strategy"], link: "../tools/business-plan-generator/index.html" },
-  { name: "⚖️ Instant SWOT Analysis Generator", tags: ["swot", "analysis", "strategy"], link: "../tools/swot-analysis-generator/index.html" },
-  { name: "💲 Profit & Investment Calculator", tags: ["profit", "investment", "finance"], link: "../tools/profit-investment-calculator/index.html" },
-  { name: "📊 Smart KPI Dashboard", tags: ["kpi", "dashboard", "metrics"], link: "../tools/kpi-dashboard/index.html" },
-  { name: "🔧 Smart Cost-Cutting Analyzer", tags: ["cost", "cutting", "savings"], link: "../tools/cost-cutting-analyzer/index.html" },
-  { name: "🖲️ Expense Tracking", tags: ["expense", "tracking", "finance"], link: "../tools/expense-tracking/index.html" },
+  { name: "📝 One-Page Business Plan Generator", tags: ["business", "plan", "strategy"], link: "./tools/business-plan-generator/index.html" },
+  { name: "⚖️ Instant SWOT Analysis Generator", tags: ["swot", "analysis", "strategy"], link: "./tools/swot-analysis-generator/index.html" },
+  { name: "💲 Profit & Investment Calculator", tags: ["profit", "investment", "finance"], link: "./tools/profit-investment-calculator/index.html" },
+  { name: "📊 Smart KPI Dashboard", tags: ["kpi", "dashboard", "metrics"], link: "./tools/kpi-dashboard/index.html" },
+  { name: "🔧 Smart Cost-Cutting Analyzer", tags: ["cost", "cutting", "savings"], link: "./tools/cost-cutting-analyzer/index.html" },
+  { name: "🖲️ Expense Tracking", tags: ["expense", "tracking", "finance"], link: "./tools/expense-tracking/index.html" },
 
   // 📊 Sales & Client Management
-  { name: "📑 Smart Proposal Generator", tags: ["proposal", "sales", "client"], link: "../tools/proposal-generator/index.html" },
-  { name: "🧾 Invoice + Bill Payment Services", tags: ["invoice", "payment", "billing"], link: "../tools/invoice-bill-payment/index.html" },
-  { name: "📝 Client Contract Generator", tags: ["contract", "client", "agreement"], link: "../tools/client-contract-generator/index.html" },
-  { name: "🖋️ Automated NDA Signer Tool", tags: ["nda", "signer", "legal"], link: "../tools/nda-signer/index.html" },
-  { name: "📅 Meeting Agenda + Summary Maker", tags: ["meeting", "agenda", "summary"], link: "../tools/meeting-agenda-summary/index.html" },
-  { name: "🧾 Invoice Generator", tags: ["invoice", "generator", "billing"], link: "../tools/invoice-generator/index.html" },
+  { name: "📑 Smart Proposal Generator", tags: ["proposal", "sales", "client"], link: "./tools/proposal-generator/index.html" },
+  { name: "🧾 Invoice + Bill Payment Services", tags: ["invoice", "payment", "billing"], link: "./tools/invoice-bill-payment/index.html" },
+  { name: "📝 Client Contract Generator", tags: ["contract", "client", "agreement"], link: "./tools/client-contract-generator/index.html" },
+  { name: "🖋️ Automated NDA Signer Tool", tags: ["nda", "signer", "legal"], link: "./tools/nda-signer/index.html" },
+  { name: "📅 Meeting Agenda + Summary Maker", tags: ["meeting", "agenda", "summary"], link: "./tools/meeting-agenda-summary/index.html" },
+  { name: "🧾 Invoice Generator", tags: ["invoice", "generator", "billing"], link: "./tools/invoice-generator/index.html" },
 
   // 🧑‍💼 Operations & Team Management
-  { name: "📋 Employee Onboarding Kit Generator", tags: ["employee", "onboarding", "hr"], link: "../tools/employee-onboarding-kit/index.html" },
-  { name: "🗂️ Team Taskboard Generator", tags: ["team", "taskboard", "management"], link: "../tools/team-taskboard/index.html" },
-  { name: "📏 Professional Networking", tags: ["networking", "professional", "connections"], link: "../tools/professional-networking/index.html" },
+  { name: "📋 Employee Onboarding Kit Generator", tags: ["employee", "onboarding", "hr"], link: "./tools/employee-onboarding-kit/index.html" },
+  { name: "🗂️ Team Taskboard Generator", tags: ["team", "taskboard", "management"], link: "./tools/team-taskboard/index.html" },
+  { name: "📏 Professional Networking", tags: ["networking", "professional", "connections"], link: "./tools/professional-networking/index.html" },
 
   // 🤝 Customer & Audience Building
-  { name: "👥 Customer Avatar Builder", tags: ["customer", "avatar", "persona"], link: "../tools/customer-avatar-builder/index.html" },
-  { name: "📧 Smart Email Sequence Generator", tags: ["email", "sequence", "marketing"], link: "../tools/email-sequence-generator/index.html" },
+  { name: "👥 Customer Avatar Builder", tags: ["customer", "avatar", "persona"], link: "./tools/customer-avatar-builder/index.html" },
+  { name: "📧 Smart Email Sequence Generator", tags: ["email", "sequence", "marketing"], link: "./tools/email-sequence-generator/index.html" },
 
   // 🛠️ Everyday Utility Tools
-  { name: "📎 PDF Merger Tool", tags: ["pdf", "merge", "documents"], link: "../tools/pdf-merger/index.html" },
-  { name: "🖼️ Image Compressor", tags: ["image", "compressor", "optimize"], link: "../tools/image-compressor/index.html" },
-  { name: "🔗 QR Code Generator", tags: ["qr", "code", "generator"], link: "../tools/qr-code-generator/index.html" },
-  { name: "📄 Document Scanner", tags: ["document", "scanner", "pdf"], link: "../tools/document-scanner/index.html" },
-  { name: "💬 Quote Box", tags: ["quote", "box", "inspiration"], link: "../tools/quote-box/index.html" },
-  { name: "💱 Currency Converter", tags: ["currency", "converter", "exchange"], link: "../tools/currency-converter/index.html" },
-  { name: "🏋️‍♂️ Fitness Tracker", tags: ["fitness", "tracker", "health"], link: "../tools/fitness-tracker/index.html" },
-  { name: "🖌️ Image Editor", tags: ["image", "editor", "design"], link: "../tools/image-editor/index.html" },
-  { name: "🗄️ JSON Formatter", tags: ["json", "formatter", "code"], link: "../tools/json-formatter/index.html" },
-  { name: "🧘 Meditation Timer", tags: ["meditation", "timer", "relaxation"], link: "../tools/meditation-timer/index.html" },
-  { name: "🔐 Password Generator", tags: ["password", "generator", "security"], link: "../tools/password-generator/index.html" },
-  { name: "🗣️ Text to Speech", tags: ["text", "speech", "audio"], link: "../tools/text-to-speech/index.html" },
-  { name: "📏 Unit Converter", tags: ["unit", "converter", "measurement"], link: "../tools/unit-converter/index.html" },
-  { name: "🥁 Drum Pad", tags: ["drum", "pad", "music"], link: "../tools/drum-pad/index.html" },
-  { name: "🎬 Free Movies Tool", tags: ["movies", "streaming", "video"], link: "../tools/free-movies/index.html" },
+  { name: "📎 PDF Merger Tool", tags: ["pdf", "merge", "documents"], link: "./tools/pdf-merger/index.html" },
+  { name: "🖼️ Image Compressor", tags: ["image", "compressor", "optimize"], link: "./tools/image-compressor/index.html" },
+  { name: "🔗 QR Code Generator", tags: ["qr", "code", "generator"], link: "./tools/qr-code-generator/index.html" },
+  { name: "📄 Document Scanner", tags: ["document", "scanner", "pdf"], link: "./tools/document-scanner/index.html" },
+  { name: "💬 Quote Box", tags: ["quote", "box", "inspiration"], link: "./tools/quote-box/index.html" },
+  { name: "💱 Currency Converter", tags: ["currency", "converter", "exchange"], link: "./tools/currency-converter/index.html" },
+  { name: "🏋️‍♂️ Fitness Tracker", tags: ["fitness", "tracker", "health"], link: "./tools/fitness-tracker/index.html" },
+  { name: "🖌️ Image Editor", tags: ["image", "editor", "design"], link: "./tools/image-editor/index.html" },
+  { name: "🗄️ JSON Formatter", tags: ["json", "formatter", "code"], link: "./tools/json-formatter/index.html" },
+  { name: "🧘 Meditation Timer", tags: ["meditation", "timer", "relaxation"], link: "./tools/meditation-timer/index.html" },
+  { name: "🔐 Password Generator", tags: ["password", "generator", "security"], link: "./tools/password-generator/index.html" },
+  { name: "🗣️ Text to Speech", tags: ["text", "speech", "audio"], link: "./tools/text-to-speech/index.html" },
+  { name: "📏 Unit Converter", tags: ["unit", "converter", "measurement"], link: "./tools/unit-converter/index.html" },
+  { name: "🥁 Drum Pad", tags: ["drum", "pad", "music"], link: "./tools/drum-pad/index.html" },
+  { name: "🎬 Free Movies Tool", tags: ["movies", "streaming", "video"], link: "./tools/free-movies/index.html" },
   // ✅ All tools now included
 ];
 
@@ -451,23 +428,34 @@ const tools = [
   });
 </script>
 
-  <!-- Firebase App & Auth (optional, only needed if using Firebase auth) -->
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js"></script>
-<script>
-  // Firebase Config (adjust this to your actual config)
-  const firebaseConfig = {
-  apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
-  authDomain: "chat-code-forum.firebaseapp.com",
-  projectId: "chat-code-forum",
-  storageBucket: "chat-code-forum.firebasestorage.app",
-  messagingSenderId: "496765673859",
-  appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
-  measurementId: "G-XJKWXHF8WN"
-};
+  <script>
+  if (localStorage.getItem('loggedIn') !== 'true') {
+    window.location.href = 'dashboard.html';
+  }
+</script>
 
-firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
+    authDomain: "chat-code-forum.firebaseapp.com",
+    projectId: "chat-code-forum",
+    storageBucket: "chat-code-forum.firebasestorage.app",
+    messagingSenderId: "496765673859",
+    appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
+    measurementId: "G-XJKWXHF8WN"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
 </script>
 
 <!-- Main Tracking + UI Script -->
@@ -503,7 +491,7 @@ firebase.initializeApp(firebaseConfig);
 
   // Count launches per tool
   const countLaunch = (toolName) => {
-    const key = `launchCount_${toolName}`;
+    const key = launchCount_${toolName};
     const current = parseInt(localStorage.getItem(key) || '0');
     localStorage.setItem(key, current + 1);
   };
@@ -533,13 +521,22 @@ firebase.initializeApp(firebaseConfig);
     );
 
     searchResults.innerHTML = matches.map(tool =>
-      `<a href="${tool.link}" class="suite-button">${tool.name}</a>`
+      <a href="${tool.link}" class="suite-button">${tool.name}</a>
     ).join('');
 
     searchResults.style.display = 'grid';
     suiteGrid.style.display = 'none';
   });
 
+firebase.auth().onAuthStateChanged(user => {
+  if (!user) {
+    // Not logged in, redirect to login page
+    window.location.href = "index.html";
+  }
+  // Otherwise, user is logged in, show dashboard content
+});
+
+  
   // Optional: auto login stub if using Firebase
   auth.onAuthStateChanged(user => {
     if (user) {
@@ -548,30 +545,6 @@ firebase.initializeApp(firebaseConfig);
     } else {
       localStorage.removeItem('user');
     }
-  });
-</script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js"></script>
-<script>
-  const db = firebase.firestore();
-
-  const logToFirestore = (toolName) => {
-    db.collection("toolUsage").add({
-      tool: toolName,
-      user: localStorage.getItem('user') || 'anonymous',
-      timestamp: new Date().toISOString()
-    }).then(() => {
-      console.log("Logged to Firestore:", toolName);
-    }).catch(err => console.error("Firestore log error:", err));
-  };
-
-  // Modify existing tool click handler
-  document.querySelectorAll('.suite-button').forEach(button => {
-    const name = button.textContent.trim();
-    button.addEventListener('click', () => {
-      trackVisit(name);
-      countLaunch(name);
-      logToFirestore(name); // 🔥 Add this
-    });
   });
 
 function saveUserSettings(settingsObject) {
@@ -600,3 +573,7 @@ firebase.firestore().collection("userSettings").doc(user.uid).get().then(doc => 
 
   
 </script>
+
+  
+</body>
+</html>
