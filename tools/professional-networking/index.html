@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📏 ProNet — Professional Networking Tool</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="header">
+    <h1><a href="index.html" class="home-link">📏 ProNet</a></h1>
+    <nav class="menu">
+      <div class="actions">
+        <a href="../dashboard.html">Dashboard</a>
+        <a href="../connections.html">Connections</a>
+        <a href="../profile.html">My Profile</a>
+        <a href="../settings.html">Settings</a>
+        <button onclick="location.href='../index.html'" id="logout-button" aria-label="Logout">Logout</button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="main-content">
+    <h2>Grow, Collaborate, and Connect Like a Pro</h2>
+    <form id="network-form" class="form-container">
+      <input type="text" placeholder="Your Full Name" required />
+      <input type="text" placeholder="Professional Title / Role" required />
+      <input type="text" placeholder="Industry or Field" required />
+      <textarea placeholder="What are you looking for? (Mentorship, Projects, Clients...)" required></textarea>
+      <textarea placeholder="Tell us about yourself (Bio, Skills, Achievements...)" required></textarea>
+      <button type="submit" class="generate-button">🔗 Generate Profile</button>
+    </form>
+
+    <section id="profile-output" class="output-panel hidden">
+      <h3>Your Professional Networking Profile:</h3>
+      <div id="profile-content" class="plan-box"></div>
+      <button onclick="downloadProfile()" class="download-button">⬇️ Download as PDF</button>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Soul Vibes Corp — ProNet Networking Tool</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
