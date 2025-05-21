@@ -9,13 +9,12 @@
   <link rel="apple-touch-icon" href="assets/logo-192.png" />
   <title>📸 SnapShot App Suite</title>
   <link rel="stylesheet" href="style.css" />
-
   <style>
     :root {
       --accent: #0ff;
-      --accent-glow: 0 0 10px #0ff, 0 0 20px #0ff;
       --bg-dark: #121212;
       --fg-light: #eee;
+      --instagram-gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
     }
 
     body {
@@ -23,7 +22,6 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: var(--bg-dark);
       color: var(--fg-light);
-      overflow-x: hidden;
     }
 
     .header {
@@ -31,8 +29,7 @@
       justify-content: space-between;
       align-items: center;
       padding: 16px 24px;
-      background: linear-gradient(to right, #111, #1a1a1a);
-      box-shadow: 0 4px 12px rgba(0, 255, 255, 0.1);
+      background: rgba(20, 20, 20, 0.95);
       border-bottom: 1px solid #333;
       position: relative;
       z-index: 10;
@@ -42,7 +39,6 @@
       text-decoration: none;
       color: var(--accent);
       font-size: 1.8rem;
-      text-shadow: var(--accent-glow);
     }
 
     .points-counter {
@@ -51,17 +47,10 @@
       padding: 6px 12px;
       border-radius: 6px;
       font-weight: bold;
-      box-shadow: var(--accent-glow);
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
     }
 
     .menu-toggle { display: none; }
-
     .hamburger {
       display: none;
       font-size: 30px;
@@ -81,23 +70,15 @@
       padding: 8px 14px;
       border-radius: 6px;
       text-decoration: none;
-      transition: 0.3s ease;
-      box-shadow: 0 0 8px transparent;
-    }
-
-    .menu input {
-      width: 140px;
     }
 
     .menu a:hover, .menu button:hover, .menu input:focus {
       background: var(--accent);
       color: #111;
-      box-shadow: var(--accent-glow);
     }
 
     @media (max-width: 768px) {
       .hamburger { display: block; }
-
       nav.menu {
         position: absolute;
         top: 100%;
@@ -127,43 +108,30 @@
       align-items: center;
     }
 
-    h2 {
-      text-shadow: 0 0 10px #0ff;
-    }
-
     .suite-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 1rem;
       width: 100%;
       max-width: 800px;
-      margin-top: 1rem;
-      animation: fadeInUp 1s ease both;
     }
 
     .suite-button {
       display: flex;
       justify-content: center;
       align-items: center;
-      background: linear-gradient(145deg, #00aaff, #005577);
+      background: var(--instagram-gradient);
       color: white;
       padding: 1.5rem;
       border-radius: 8px;
       font-size: 1.2rem;
       font-weight: bold;
       text-decoration: none;
-      box-shadow: 0 4px 12px rgba(0, 170, 255, 0.3);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      transition: background-color 0.3s ease;
     }
 
     .suite-button:hover {
-      transform: translateY(-5px) scale(1.02);
-      box-shadow: 0 6px 20px rgba(0, 255, 255, 0.6);
-    }
-
-    @keyframes fadeInUp {
-      0% { opacity: 0; transform: translateY(20px); }
-      100% { opacity: 1; transform: translateY(0); }
+      opacity: 0.9;
     }
 
     footer {
@@ -172,33 +140,46 @@
       font-size: 0.9rem;
       border-top: 1px solid #333;
       margin-top: 2rem;
-      opacity: 0.7;
     }
 
-    canvas {
-      margin-top: 2rem;
-      max-width: 100%;
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.8);
     }
 
-    #platform-select, input[type="date"], button {
-      margin-top: 0.5rem;
-      margin-right: 0.5rem;
-      padding: 8px 12px;
-      border: none;
-      border-radius: 6px;
-      background-color: #222;
-      color: var(--accent);
-      box-shadow: 0 0 6px #0ff2;
-      transition: all 0.2s ease-in-out;
+    .modal-content {
+      background-color: #1e1e1e;
+      margin: 10% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      border-radius: 10px;
+      color: var(--fg-light);
     }
 
-    button:hover {
-      background-color: var(--accent);
-      color: #000;
-      box-shadow: 0 0 10px #0ff;
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: #fff;
+      text-decoration: none;
+      cursor: pointer;
     }
   </style>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -219,32 +200,44 @@
 </header>
 
 <main>
-  <h2>Welcome to NapShot Dashboard</h2>
+  <h2>Welcome to SnapShot Dashboard</h2>
   <section class="suite-grid">
     <a href="editor/index.html" class="suite-button">📷 Snap Editor</a>
     <a href="gallery/index.html" class="suite-button">🖼️ Snap Gallery</a>
     <a href="analytics/index.html" class="suite-button">📊 Snap Insights</a>
     <a href="scheduler/index.html" class="suite-button">📅 Snap Scheduler</a>
     <a href="share/index.html" class="suite-button">📤 Share Manager</a>
-
-    <div style="grid-column: span 2;">
-      <select id="platform-select">
-        <option value="facebook">Facebook</option>
-        <option value="instagram">Instagram</option>
-      </select>
-      <input type="date" id="start-date" />
-      <input type="date" id="end-date" />
-      <button onclick="generateReport()">Generate Report</button>
-      <canvas id="analyticsChart"></canvas>
-    </div>
   </section>
+
+  <div style="margin-top: 2rem; width: 100%; max-width: 800px;">
+    <select id="platform-select">
+      <option value="instagram">Instagram</option>
+      <option value="facebook">Facebook</option>
+      <!-- Add more platforms as needed -->
+    </select>
+    <input type="date" id="start-date" />
+    <input type="date" id="end-date" />
+    <button onclick="generateReport()">Generate Report</button>
+    <canvas id="analyticsChart"></canvas>
+  </div>
 </main>
 
 <footer>
   <p>© 2025 SnapShot Suite — Secure, Private, AI-Enhanced. Powered by Soul Vibes Corp.</p>
 </footer>
 
+<!-- Modal Structure -->
+<div id="dataModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h3>Data Point Details</h3>
+    <p id="modalContent">Loading...</p>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+  // Placeholder for service worker registration
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js')
       .then(() => console.log('✅ Service Worker Registered'))
@@ -252,70 +245,45 @@
   }
 
   const pointsElement = document.getElementById('points-value');
+  // Simulate point update (optional logic)
   setTimeout(() => {
     pointsElement.textContent = parseInt(pointsElement.textContent) + 10;
   }, 2000);
-</script>
 
-<script>
+  let analyticsChart;
+
   async function generateReport() {
     const platform = document.getElementById('platform-select').value;
     const startDate = document.getElementById('start-date').value;
     const endDate = document.getElementById('end-date').value;
 
+    // Fetch data from the respective platform's API
     const data = await fetchDataFromAPI(platform, startDate, endDate);
 
     const ctx = document.getElementById('analyticsChart').getContext('2d');
-    new Chart(ctx, {
+
+    // Destroy existing chart if it exists
+    if (analyticsChart) {
+      analyticsChart.destroy();
+    }
+
+    analyticsChart = new Chart(ctx, {
       type: 'line',
       data: {
         labels: data.dates,
         datasets: [{
           label: 'Engagement',
           data: data.engagement,
-          borderColor: 'rgba(0,255,255,1)',
-          backgroundColor: getGradient(ctx),
+          borderColor: '#dc2743',
+          backgroundColor: 'rgba(220, 39, 67, 0.2)',
           fill: true,
-          tension: 0.3
+          tension: 0.4,
+          pointBackgroundColor: '#e6683c',
+          pointBorderColor: '#fff',
+          pointRadius: 5,
+          pointHoverRadius: 7,
         }]
       },
-      options: {
-        responsive: true,
-        plugins: {
-          title: {
-            display: true,
-            text: 'Social Media Engagement Over Time',
-            color: '#0ff',
-            font: { size: 18 }
-          },
-          legend: {
-            labels: {
-              color: '#eee'
-            }
-          }
-        },
-        scales: {
-          x: { ticks: { color: '#aaa' } },
-          y: { ticks: { color: '#aaa' } }
-        }
-      }
-    });
-  }
-
-  function getGradient(ctx) {
-    const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-    gradient.addColorStop(0, 'rgba(0,255,255,0.4)');
-    gradient.addColorStop(1, 'rgba(0,255,255,0.05)');
-    return gradient;
-  }
-
-  async function fetchDataFromAPI(platform, startDate, endDate) {
-    return {
-      dates: ['2025-05-01', '2025-05-02', '2025-05-03'],
-      engagement: [120, 150, 170]
-    };
-  }
-</script>
-
-</body>
-</html>
+      options:
+::contentReference[oaicite:17]{index=17}
+ 
