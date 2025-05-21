@@ -53,24 +53,29 @@
 </head>
 
 <body>
-  <header class="header">
+ <!-- Updated Header with Points Counter -->
+<header class="header">
+  <div class="header-left">
     <h1><a href="./dashboard.html" class="home-link">🧰 Toolbox Suite Launcher</a></h1>
+    <div class="points-counter">⭐ Points: <span id="points-value">2340</span></div>
+  </div>
 
-    <input type="checkbox" id="menuToggle" class="menu-toggle" />
-    <label for="menuToggle" class="hamburger" aria-label="Toggle Menu">&#9776;</label>
+  <input type="checkbox" id="menuToggle" class="menu-toggle" />
+  <label for="menuToggle" class="hamburger" aria-label="Toggle Menu">&#9776;</label>
 
-    <nav class="menu">
-      <div class="actions">
-        <button id="search-toggle" aria-label="Search">🔍</button>
-        <input type="text" id="search-input" placeholder="Search tools..." aria-label="Search tools" />
-        <span id="result-count" aria-live="polite"></span>
-        <a href="./rewards.html">Rewards</a>
-        <a href="./toolHistory.html">Track Tools</a>
-        <a href="./settings.html">Settings</a>
-        <button onclick="location.href='./index.html'" id="logout-button" aria-label="Logout">Logout</button>
-      </div>
-    </nav>
-  </header>
+  <nav class="menu">
+    <div class="actions">
+      <button id="search-toggle" aria-label="Search">🔍</button>
+      <input type="text" id="search-input" placeholder="Search tools..." aria-label="Search tools" />
+      <span id="result-count" aria-live="polite"></span>
+      <a href="./rewards.html">Rewards</a>
+      <a href="./toolHistory.html">Track Tools</a>
+      <a href="./settings.html">Settings</a>
+      <button onclick="location.href='./index.html'" id="logout-button" aria-label="Logout">Logout</button>
+    </div>
+  </nav>
+</header>
+
 
   <style>
     * {
@@ -113,6 +118,22 @@
       display: none;
       user-select: none;
     }
+
+    .header-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.points-counter {
+  background-color: #0ff;
+  color: #111;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 1rem;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
 
     .hamburger:hover {
       color: #0fa;
@@ -208,7 +229,8 @@
     }
   </style>
 
-  <main>
+ <main class="dashboard-layout">
+  <section class="toolbox-section">
     <h1>Toolbox Suite Launcher</h1>
     <div id="search-results" class="suite-grid" style="display: none;"></div>
     <div class="suite-grid">
@@ -223,9 +245,9 @@
       <a href="data8/index.html" class="suite-button">🛠️ Toolbox Suite 9</a>
       <a href="data9/index.html" class="suite-button">🛠️ Toolbox Suite 10</a>
     </div>
-  </main>
+    </section>
   
-<section id="dashboard" class="futuristic-panel">
+<section  class="extra-sections">
   <h2>🧰 Toolboxes Dashboard</h2>
   <div class="dashboard-tools">
     <!-- Existing tool buttons remain intact -->
@@ -246,6 +268,7 @@
     </div>
   </div>
 </section>
+</main>
 
 <!-- Floating chatbot -->
 <div id="chatbot-toggle">🤖</div>
