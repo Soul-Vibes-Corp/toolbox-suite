@@ -274,6 +274,144 @@
     <p>© 2025 Toolbox Suite — Fast, Private, Free | No signup | Powered by: Soul Vibes Corp</p>
   </footer>
 
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
+<script>
+  // Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
+    authDomain: "chat-code-forum.firebaseapp.com",
+    projectId: "chat-code-forum",
+    storageBucket: "chat-code-forum.firebasestorage.app",
+    messagingSenderId: "496765673859",
+    appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
+    measurementId: "G-XJKWXHF8WN"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  // Redirect if not logged in
+  if (localStorage.getItem('loggedIn') !== 'true') {
+    window.location.href = 'dashboard.html';
+  }
+</script>
+
+<!-- Service Worker Registration -->
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(() => console.log('✅ Service Worker Registered'))
+      .catch(err => console.error('Service Worker registration failed:', err));
+  }
+</script>
+
+<!-- Tool List and Search Logic -->
+<script>
+  const searchToggle = document.getElementById('search-toggle');
+  const searchInput = document.getElementById('search-input');
+  const searchResults = document.getElementById('search-results');
+  const suiteGrid = document.querySelector('.suite-grid');
+
+  const tools = [
+    // Your tools array here, kept as-is for brevity...
+    { name: "🎨 Instant Brand Kit Generator", tags: ["branding", "design", "brand"], link: "./tools/brand-kit-generator/index.html" },
+    { name: "📅 Marketing Content Calendar Generator", tags: ["marketing", "calendar", "content"], link: "./tools/content-calendar-generator/index.html" },
+    // ... (all other tools)
+    { name: "🎬 Free Movies Tool", tags: ["movies", "streaming", "video"], link: "./tools/free-movies/index.html" },
+  ];
+
+  // Toggle search input expansion
+  searchToggle.addEventListener('click', () => {
+    searchInput.classList.toggle('expanded');
+    if (searchInput.classList.contains('expanded')) {
+      searchInput.focus();
+    } else {
+      searchInput.value = '';
+      searchResults.style.display = 'none';
+      suiteGrid.style.display = 'grid';
+    }
+  });
+
+  // Search input handler
+  searchInput.addEventListener('input', () => {
+    const query = searchInput.value.trim().toLowerCase();
+
+    searchResults.innerHTML = '';
+
+    if (query.length === 0) {
+      searchResults.style.display = 'none';
+      suiteGrid.style.display = 'grid';
+      return;
+    }
+
+    const matchedTools = tools.filter(tool =>
+      tool.name.toLowerCase().includes(query) ||
+      tool.tags.some(tag => tag.toLowerCase().includes(query))
+    );
+
+    if (matchedTools.length > 0) {
+      matchedTools.forEach(tool => {
+        const toolLink = document.createElement('a');
+        toolLink.href = tool.link;
+        toolLink.className = 'suite-button';
+        toolLink.textContent = tool.name;
+        searchResults.appendChild(toolLink);
+      });
+      suiteGrid.style.display = 'none';
+      searchResults.style.display = 'grid';
+    } else {
+      const noResult = document.createElement('p');
+      noResult.textContent = 'No matching tools found.';
+      noResult.style.color = 'red';
+      searchResults.appendChild(noResult);
+      suiteGrid.style.display = 'none';
+      searchResults.style.display = 'block';
+    }
+  });
+</script>
+
+<!-- Theme toggle -->
+<script>
+  const themeToggle = document.getElementById('toggle-dark');
+  const isDark = localStorage.getItem('theme') === 'dark';
+
+  if (isDark) {
+    document.body.classList.add('dark');
+    if (themeToggle) themeToggle.textContent = '☀️';
+  }
+
+  themeToggle?.addEventListener('click', () => {
+    document.body.classList.toggle('dark');
+    const theme = document.body.classList.contains('dark') ? 'dark' : 'light';
+    localStorage.setItem('theme', theme);
+    themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+  });
+</script>
+
+<!-- Logout Button -->
+<script>
+  const logoutBtn = document.getElementById('logout-button');
+  logoutBtn?.addEventListener('click', () => {
+    localStorage.removeItem('user');
+    localStorage.removeItem('loggedIn');
+    if (auth.currentUser) {
+      auth.signOut().then(() => {
+        window.location.href = 'login.html';
+      });
+    } else {
+      window.location.href = 'login.html';
+    }
+  });
+</script>
+
+<!-- External JS -->
+<script src="script.js"></script>
 
   
 </body>
