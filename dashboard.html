@@ -611,6 +611,58 @@ firebase.firestore().collection("userSettings").doc(user.uid).get().then(doc => 
   }
 });
 
+  searchInput.addEventListener('input', () => {
+  const query = searchInput.value.toLowerCase();
+  const filteredTools = tools.filter(tool =>
+    tool.name.toLowerCase().includes(query) ||
+    tool.tags.some(tag => tag.includes(query))
+  );
+
+  searchResults.innerHTML = ''; // Clear previous
+  if (query && filteredTools.length > 0) {
+    suiteGrid.style.display = 'none';
+    searchResults.style.display = 'grid';
+
+    filteredTools.forEach(tool => {
+      const a = document.createElement('a');
+      a.href = tool.link;
+      a.className = 'suite-button';
+      a.textContent = tool.name;
+      searchResults.appendChild(a);
+    });
+  } else {
+    suiteGrid.style.display = 'grid';
+    searchResults.style.display = 'none';
+  }
+});
+
+const chatInput = document.getElementById('chat-input');
+const chatMessages = document.getElementById('chat-messages');
+
+chatInput.addEventListener('keypress', function (e) {
+  if (e.key === 'Enter' && chatInput.value.trim() !== '') {
+    const message = {
+      text: chatInput.value,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    db.collection('globalChat').add(message).then(() => {
+      chatInput.value = '';
+    });
+  }
+});
+
+// Real-time listener
+db.collection('globalChat').orderBy('timestamp')
+  .onSnapshot(snapshot => {
+    chatMessages.innerHTML = '';
+    snapshot.forEach(doc => {
+      const msg = document.createElement('div');
+      msg.textContent = doc.data().text;
+      chatMessages.appendChild(msg);
+    });
+  });
+
   
 </script>
 
