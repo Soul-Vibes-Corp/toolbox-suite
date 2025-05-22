@@ -494,8 +494,8 @@ const tools = [
   };
 
   // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
+ firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
 </script>
 
 <!-- Main Tracking + UI Script -->
@@ -567,15 +567,6 @@ const tools = [
     searchResults.style.display = 'grid';
     suiteGrid.style.display = 'none';
   });
-
-firebase.auth().onAuthStateChanged(user => {
-  if (!user) {
-    // Not logged in, redirect to login page
-    window.location.href = "index.html";
-  }
-  // Otherwise, user is logged in, show dashboard content
-});
-
   
   // Optional: auto login stub if using Firebase
   auth.onAuthStateChanged(user => {
