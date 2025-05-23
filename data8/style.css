@@ -303,3 +303,36 @@ body.dark-mode .actions button:hover {
   background-color: #0077cc;
   color: #fff;
 }
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #111;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 0;
+  border-top: 1px solid #333;
+  z-index: 9999;
+}
+
+.nav-item {
+  color: #0ff;
+  text-decoration: none;
+  font-size: 1.5rem;
+  padding: 8px;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.nav-item:hover {
+  background-color: #222;
+  border-radius: 50%;
+  transform: scale(1.1);
+}
+
+.header {
+  display: none;
+}
+
