@@ -160,26 +160,7 @@
     measurementId: "G-XJKWXHF8WN"
   };
 
-  // ✅ Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-
-  // ✅ If already logged in, redirect to dashboard
-  auth.onAuthStateChanged(user => {
-    if (user) {
-      window.location.href = 'dashboard.html';
-    }
-  });
-
-  function login() {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-
-  
-      .catch(error => {
-        alert('Login failed: ' + error.message);
-      });
-  }
+ 
 
 
 </script>
