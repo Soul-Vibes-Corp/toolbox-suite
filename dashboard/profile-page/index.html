@@ -177,6 +177,37 @@
       img.src = url;
       gallery.appendChild(img);
     });
+
+firebase.auth().signInWithEmailAndPassword(email, password)
+  .then((userCredential) => {
+    // Signed in
+    const user = userCredential.user;
+    // ...
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+  });
+
+    <!-- Firebase App (the core Firebase SDK) -->
+<script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+<!-- Firebase Authentication -->
+<script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth-compat.js"></script>
+<!-- Firebase Firestore (for user profiles) -->
+<script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
+
+<script>
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+  apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
+  authDomain: "chat-code-forum.firebaseapp.com",
+  projectId: "chat-code-forum",
+  storageBucket: "chat-code-forum.firebasestorage.app",
+  messagingSenderId: "496765673859",
+  appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
+  measurementId: "G-XJKWXHF8WN"
+};
+    
   </script>
 </body>
 </html>
