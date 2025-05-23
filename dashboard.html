@@ -11,12 +11,14 @@
   <link rel="stylesheet" href="style.css" />
 
   <style>
-    main {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 2rem;
-    }
+   main {
+  flex: 1;
+  padding: 2rem;
+  padding-bottom: 100px; /* Make room for fixed footer */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
     .suite-grid {
       display: grid;
@@ -45,9 +47,6 @@
     }
 
 
-main {
-  padding-bottom: 100px; /* Adjust if your footer is taller or shorter */
-}
 
    .bottom-nav {
   position: fixed;
@@ -65,10 +64,10 @@ main {
 }
 
 .bottom-nav .nav-link {
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   color: #fff;
   text-decoration: none;
-  transition: color 0.3s;
+  transition: color 0.3s ease;
 }
 
 .bottom-nav .nav-link:hover {
@@ -116,12 +115,17 @@ body {
       box-sizing: border-box;
     }
 
-    body {
-      background-color: #121212;
-      color: #eee;
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    }
+   html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
 
+body {
+  background-color: #121212;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     .header {
       display: flex;
       justify-content: space-between;
