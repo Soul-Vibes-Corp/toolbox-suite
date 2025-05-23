@@ -654,7 +654,7 @@ db.collection('globalChat').orderBy('timestamp')
     onAuthStateChanged(auth, (user) => {
       if (user) {
         // User is logged in – redirect to forum
-        window.open("../tools/forum/index.html", "_blank");
+        window.open("../toolbox-suite/tools/forum/index.html", "_blank");
       } else {
         // User is not logged in – send to login page
         alert("Please login to access the forum.");
