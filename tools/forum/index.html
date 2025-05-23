@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CodeForum — Home</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+<header>
+  <div class="logo" onclick="window.location.href='index.html'"><strong>CodeForum</strong></div>
+  <nav>
+    <a href="index.html" class="nav-link">Home</a>
+    <a href="ask.html" class="nav-link">Ask</a>
+    <a href="profile.html" class="nav-link">Profile</a>
+    <a href="codespace.html" class="nav-link">Codespace</a>
+    <button onclick="toggleTheme()">🌓</button>
+  </nav>
+</header>
+
+<div class="container">
+  <h1>Top Questions</h1>
+
+  <!-- Search bar -->
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search questions..." oninput="filterQuestions()">
+  </div>
+
+  <!-- Questions feed -->
+  <div id="questions"></div>
+</div>
+
+<script src="app.js"></script>
+<script>
+// Load questions from localStorage
+let questions = JSON.parse(localStorage.getItem('questions') || '[]');
+
+function renderQuestions(list = questions) {
+  const box = document.getElementById('questions');
+  box.innerHTML = '';
+
+  list.forEach(q => {
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `
+      <h3>${q.title}</h3>
+      <p>${q.description}</p>
+      <small>Asked by ${q.author} — <strong>${q.answers.length}</strong> answers</small>
+      <div class="actions">
+        <button onclick="answer('${q.id}')">Answer</button>
+        <button onclick="deleteQuestion('${q.id}')">Delete</button>
+      </div>
+      <div class="answers">${renderAnswers(q)}</div>
+    `;
+    box.appendChild(div);
+  });
+}
+
+function renderAnswers(q) {
+  if (!q.answers.length) return '<p><em>No answers yet.</em></p>';
+  return q.answers.map((a, i) => `
+    <div class="card answer-card">
+      <p>${a.text}</p>
+      <small>by ${a.author}</small>
+      <div class="vote-box">
+        <span class="vote-btn" onclick="upvote('${q.id}', ${i})">⬆</span>
+        <strong>${a.votes || 0}</strong>
+        <span class="vote-btn" onclick="downvote('${q.id}', ${i})">⬇</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function answer(id) {
+  const ansText = prompt('Your answer:');
+  if (!ansText) return;
+  const idx = questions.findIndex(q => q.id === id);
+  const answerObj = { text: ansText, author: 'Anonymous', votes: 0 };
+  questions[idx].answers.push(answerObj);
+  localStorage.setItem('questions', JSON.stringify(questions));
+  renderQuestions();
+}
+
+function upvote(qId, ansIndex) {
+  const idx = questions.findIndex(q => q.id === qId);
+  questions[idx].answers[ansIndex].votes = (questions[idx].answers[ansIndex].votes || 0) + 1;
+  localStorage.setItem('questions', JSON.stringify(questions));
+  renderQuestions();
+}
+
+function downvote(qId, ansIndex) {
+  const idx = questions.findIndex(q => q.id === qId);
+  questions[idx].answers[ansIndex].votes = (questions[idx].answers[ansIndex].votes || 0) - 1;
+  localStorage.setItem('questions', JSON.stringify(questions));
+  renderQuestions();
+}
+
+function filterQuestions() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const filtered = questions.filter(q =>
+    q.title.toLowerCase().includes(search) || q.description.toLowerCase().includes(search)
+  );
+  renderQuestions(filtered);
+}
+
+function deleteQuestion(id) {
+  const adminCode = prompt("Enter admin code to delete this question:");
+  if (adminCode === '1997') {
+    questions = questions.filter(q => q.id !== id);
+    localStorage.setItem('questions', JSON.stringify(questions));
+    renderQuestions();
+    alert('Question deleted successfully.');
+  } else {
+    alert('Incorrect admin code.');
+  }
+}
+
+// Initial render
+renderQuestions();
+</script>
+
+</body>
+</html>

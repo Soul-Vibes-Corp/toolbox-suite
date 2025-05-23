@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CodeForum — Your Profile</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+<header>
+  <div class="logo" onclick="window.location.href='index.html'"><strong>CodeForum</strong></div>
+  <nav>
+    <a href="index.html" class="nav-link">Home</a>
+    <a href="ask.html" class="nav-link">Ask</a>
+    <a href="profile.html" class="nav-link">Profile</a>
+    <a href="codespace.html" class="nav-link">Codespace</a>
+    <button onclick="toggleTheme()">🌓</button>
+  </nav>
+</header>
+
+<div class="container">
+  <h1>Your Profile</h1>
+
+  <label>Your Name:</label><br>
+  <input type="text" id="username"><br><br>
+  <button onclick="saveName()">Save Name</button><br><br>
+
+  <label>Upload Profile Picture</label><br>
+  <input type="file" accept="image/*" onchange="uploadAvatar(this)"><br><br>
+  <img id="avatarImg" class="avatar"><br><br>
+
+  <div class="stats" id="statsBox"></div>
+
+  <h2>Your Questions</h2>
+  <div id="yourQuestions"></div>
+</div>
+
+<script src="app.js"></script>
+<script>
+const usernameInput = document.getElementById('username');
+const avatarImg = document.getElementById('avatarImg');
+const storedName = localStorage.getItem('username');
+const storedAvatar = localStorage.getItem('avatar');
+
+if (storedName) usernameInput.value = storedName;
+if (storedAvatar) avatarImg.src = storedAvatar;
+
+function saveName() {
+  const name = usernameInput.value.trim();
+  if (!name) return alert('Enter your name');
+  localStorage.setItem('username', name);
+  renderQuestions();
+  renderStats();
+}
+
+function uploadAvatar(input) {
+  const file = input.files[0];
+  const reader = new FileReader();
+  reader.onload = e => {
+    localStorage.setItem('avatar', e.target.result);
+    avatarImg.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function renderQuestions() {
+  const yourQ = document.getElementById('yourQuestions');
+  const name = localStorage.getItem('username');
+  const questions = JSON.parse(localStorage.getItem('questions') || '[]');
+  const mine = questions.filter(q => q.author === name);
+
+  yourQ.innerHTML = '';
+
+  if (!name) {
+    yourQ.innerHTML = '<p><em>Enter your name to see your questions.</em></p>';
+    return;
+  }
+
+  if (mine.length === 0) {
+    yourQ.innerHTML = '<p><em>No questions posted yet.</em></p>';
+    return;
+  }
+
+  mine.forEach(q => {
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `
+      <h3>${q.title}</h3>
+      <p>${q.description}</p>
+      <small><strong>${q.answers.length}</strong> answers</small>
+    `;
+    yourQ.appendChild(div);
+  });
+}
+
+function renderStats() {
+  const stats = document.getElementById('statsBox');
+  const name = localStorage.getItem('username');
+  const questions = JSON.parse(localStorage.getItem('questions') || '[]');
+  const mine = questions.filter(q => q.author === name);
+  const answers = questions.reduce((acc, q) => {
+    acc += q.answers.filter(a => a.author === name).length;
+    return acc;
+  }, 0);
+
+  stats.innerHTML = `
+    <p><strong>Questions Posted:</strong> ${mine.length}</p>
+    <p><strong>Answers Given:</strong> ${answers}</p>
+  `;
+}
+
+renderQuestions();
+renderStats();
+</script>
+
+</body>
+</html>

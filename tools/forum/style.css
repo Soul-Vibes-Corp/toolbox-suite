@@ -1,0 +1,170 @@
+/* ================= Base Styles ================= */
+:root {
+  --teal: #008080;
+  --teal-dark: #004f4f;
+  --teal-light: #e0f7f7;
+  --coral: #ff6b6b;
+  --sand: #f5f0e1;
+  --dark-bg: #20232a;
+  --accent-yellow: yellow;
+
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  background: #f5f5f5;
+  color: #333;
+  transition: background-color 0.5s ease, background-image 0.5s ease, color 0.3s ease;
+}
+
+/* ================= Theme Styles ================= */
+[data-theme="light"] {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+[data-theme="dark"] {
+  background-color: #121212;
+  color: #f0f0f0;
+}
+
+/* ================= Layout ================= */
+.container {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+}
+
+/* ================= Header & Navigation ================= */
+header, nav {
+  background-color: var(--dark-bg);
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  margin-right: 15px;
+}
+
+.nav-link.active {
+  border-bottom: 2px solid var(--accent-yellow);
+}
+
+nav button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+/* ================= Card Component ================= */
+.card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+/* ================= Buttons ================= */
+button {
+  background: #0077ff;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #005dd1;
+}
+
+.vote-btn {
+  background: #eee;
+  color: #333;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.vote-btn:hover {
+  background: #ddd;
+}
+
+/* ================= Forms ================= */
+input,
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+/* ================= Utility Classes ================= */
+.vote-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 5px;
+}
+
+.search-bar {
+  margin-bottom: 20px;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.stats {
+  margin-top: 10px;
+}
+
+/* ================= App Backgrounds ================= */
+.app-background {
+  background-color: var(--teal-light);
+  background-image: url('/patterns/noise.png');
+  background-repeat: repeat;
+  background-size: auto;
+}
+
+/* ================= Section Backgrounds ================= */
+.page-home {
+  background-color: var(--teal);
+  background-image: url('/patterns/waves.png');
+  background-repeat: repeat;
+  background-size: auto;
+}
+
+.page-ask {
+  background-color: var(--coral);
+  background-image: url('/patterns/dots.png');
+  background-repeat: repeat;
+  background-size: auto;
+}
+
+.page-profile {
+  background-color: var(--sand);
+  background-image: url('/patterns/linen.png');
+  background-repeat: repeat;
+  background-size: auto;
+}
+
+.page-codespace {
+  background-color: var(--teal-dark);
+  background-image: url('/patterns/grid.png');
+  background-repeat: repeat;
+  background-size: auto;
+}
