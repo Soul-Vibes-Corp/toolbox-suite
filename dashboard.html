@@ -262,52 +262,61 @@ main {
     }
   </style>
 
- <main class="dashboard-layout">
-     <h1>Toolbox Launcher</h1>
+<main class="dashboard-layout">
+  <h1>Toolbox Launcher</h1>
+
+  <!-- Search results -->
   <div id="search-results" class="suite-grid" style="display: none;"></div>
+
+  <!-- Toolbox Suites -->
   <div class="suite-grid">
-       <a href="data/index.html" class="suite-button">Marketing Hub</a>
-      <a href="data1/index.html" class="suite-button">Business Suite</a>
-      <a href="data2/index.html" class="suite-button">CRM & Service Hub</a>
-      <a href="data3/index.html" class="suite-button"> HR & Team Management Suite</a>
-      <a href="data4/index.html" class="suite-button">Customer Growth Kit</a>
-      <a href="data5/index.html" class="suite-button">Smart Daily Tools</a>
-      <a href="data6/index.html" class="suite-button">🛠️ Toolbox Suite 7</a>
-      <a href="data7/index.html" class="suite-button">🛠️ Toolbox Suite 8</a>
-      <a href="data8/index.html" class="suite-button">🛠️ Toolbox Suite 9</a>
-      <a href="data9/index.html" class="suite-button">🛠️ Toolbox Suite 10</a>
-    </div>
-    </section>
-
-<section id="dashboard2" class="futuristic-panel">
-   
-  <div class="extra-sections">
-    <div class="live-chat">
-      <h3>💬 Global Chat</h3>
-      <div id="chat-window">
-        <div id="chat-messages"></div>
-        <input type="text" id="chat-input" placeholder="Type a message..." />
-      </div>
-    </div>
-
-    <div class="forum-link">
-      <h3> Forum</h3>
-      <a href="../toolbox-suite/tools/forum/index.html" target="_blank" class="forum-button">Enter the Forum</a>
-    </div>
+    <a href="data/index.html" class="suite-button">Marketing Hub</a>
+    <a href="data1/index.html" class="suite-button">Business Suite</a>
+    <a href="data2/index.html" class="suite-button">CRM & Service Hub</a>
+    <a href="data3/index.html" class="suite-button">HR & Team Management Suite</a>
+    <a href="data4/index.html" class="suite-button">Customer Growth Kit</a>
+    <a href="data5/index.html" class="suite-button">Smart Daily Tools</a>
+    <a href="data6/index.html" class="suite-button">🛠️ Toolbox Suite 7</a>
+    <a href="data7/index.html" class="suite-button">🛠️ Toolbox Suite 8</a>
+    <a href="data8/index.html" class="suite-button">🛠️ Toolbox Suite 9</a>
+    <a href="data9/index.html" class="suite-button">🛠️ Toolbox Suite 10</a>
   </div>
-</section>
+
+  <!-- Extra Dashboard Features -->
+  <section id="dashboard2" class="futuristic-panel">
+    <div class="extra-sections">
+
+      <!-- Global Chat -->
+      <div class="live-chat">
+        <h3>💬 Global Chat</h3>
+        <div id="chat-window">
+          <div id="chat-messages"></div>
+          <input type="text" id="chat-input" placeholder="Type a message..." />
+        </div>
+      </div>
+
+      <!-- Forum Link -->
+      <div class="forum-link">
+        <h3>Forum</h3>
+        <a href="../toolbox-suite/tools/forum/index.html" target="_blank" class="forum-button">Enter the Forum</a>
+      </div>
+
+    </div>
+  </section>
 </main>
 
-<!-- Floating chatbot -->
+<!-- Floating Chatbot -->
 <div id="chatbot-toggle">🤖</div>
 
-  <footer class="bottom-nav">
+<!-- Persistent Bottom Navigation -->
+<footer class="bottom-nav">
   <a href="index.html" class="nav-link" aria-label="Home">🏠</a>
   <a href="#search" class="nav-link" aria-label="Search">🔍</a>
   <a href="#add" class="nav-link" aria-label="Add">➕</a>
   <a href="#messages" class="nav-link" aria-label="Messages">💬</a>
   <a href="#profile" class="nav-link" aria-label="Profile">👤</a>
 </footer>
+
 
 <!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
