@@ -590,15 +590,6 @@ const tools = [
     suiteGrid.style.display = 'none';
   });
   
-  // Optional: auto login stub if using Firebase
-  auth.onAuthStateChanged(user => {
-    if (user) {
-      console.log('✅ Logged in as:', user.email);
-      localStorage.setItem('user', user.email);
-    } else {
-      localStorage.removeItem('user');
-    }
-  });
 
 function saveUserSettings(settingsObject) {
   const user = firebase.auth().currentUser;
