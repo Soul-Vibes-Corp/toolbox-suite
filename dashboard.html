@@ -312,13 +312,7 @@
       .catch(err => console.error('Service Worker registration failed:', err));
   }
 
-// ✅ Check auth state
-  auth.onAuthStateChanged(user => {
-    if (!user) {
-      // Not logged in
-      localStorage.removeItem('loggedIn');
-      window.location.href = 'index.html'; // or 'login.html'
-    }
+
   });
 
   // ✅ Logout handler
