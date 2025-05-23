@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <link rel="stylesheet" href="style.css" />
+  <title>Explore Tools - Toolbox Suite</title>
+  <style>
+    body {
+      margin: 0;
+      background: #121212;
+      color: #fff;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+    }
+
+    header, footer {
+      text-align: center;
+      padding: 1rem;
+      background: #1f1f1f;
+      color: #0ff;
+    }
+
+    .search-container {
+      display: flex;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .search-container input {
+      width: 80%;
+      max-width: 600px;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+    }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 16px;
+      padding: 1rem;
+    }
+
+    .tool-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #222;
+      color: #0ff;
+      padding: 16px;
+      border-radius: 16px;
+      font-size: 0.9rem;
+      text-decoration: none;
+      text-align: center;
+      transition: background 0.3s;
+    }
+
+    .tool-card:hover {
+      background: #0ff;
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+  <header><h1>🔍 Explore Toolbox Tools</h1></header>
+  <div class="search-container">
+    <input type="text" id="toolSearch" placeholder="Search tools..." onkeyup="filterTools()" />
+  </div>
+
+  <main>
+    <div class="tool-grid" id="toolGrid">
+    <a href="/tools/brand-kit-generator/index.html" class="tool-card">🎨 Instant Brand Kit Creator</a>
+    <a href="/tools/marketing-content-calendar-generator/index.html" class="tool-card">📅 Marketing Content Calendar Generator</a>
+    <a href="/tools/lead-magnet-creator/index.html" class="tool-card">📚 Lead Magnet Creator</a>
+    <a href="/tools/social-media-analytics-snapshot/index.html" class="tool-card">📊 Social Media Analytics Snapshot</a>
+    <a href="/tools/smart-business-name-domain-finder/index.html" class="tool-card">🔍 Smart Business Name & Domain Finder</a>
+    <a href="/tools/find-gigs/index.html" class="tool-card">🏢Find Gigs</a>
+    <a href="/tools/job-search-tools/index.html" class="tool-card">🔐Job Search Tools</a>
+    <a href="/tools/resume-builder/index.html" class="tool-card">📄 Resume Builder</a>
+    <a href="/tools/interview-prep-tools/index.html" class="tool-card">🗣️ Interview Prep Tools</a>
+    <a href="/tools/work-chedule-mamagement/index.html" class="tool-card">🏢Work Schedule Management</a>
+    <a href="/tools/salary-calculator/index.html" class="tool-card">📄Salary Calculator</a>
+    <a href="/tools/time-tracking/index.html" class="tool-card">⏱️Time Tracking Tool</a>
+    <a href="/tools/one-page-business-plan-generator/index.html" class="tool-card">📝 One-Page Business Plan Generator</a>
+    <a href="/tools/instant-swot-analysis-generator/index.html" class="tool-card">⚖️ Instant SWOT Analysis Generator</a>
+    <a href="/tools/profit-investment-calculator/index.html" class="tool-card">💲 Profit & Investment Calculator</a>
+    <a href="/tools/smart-kpi-dashboard/index.html" class="tool-card">📊 Smart KPI Dashboard</a>
+    <a href="/tools/smart-cost-cutting-analyzer/index.html" class="tool-card">🔧 Smart Cost-Cutting Analyzer</a>
+    <a href="/tools/expense-tracking/index.html" class="tool-card">🖲️ Expense Tracking</a>
+    <a href="/tools/smart-proposal-generator/index.html" class="tool-card">📑 Smart Proposal Generator</a>
+    <a href="/tools/invoice-bill-payment-services/index.html" class="tool-card">🧾 Invoice + Bill Payment Services</a>
+    <a href="/tools/client-contract-generator/index.html" class="tool-card">📝 Client Contract Generator</a>
+    <a href="/tools/automated-nda-signer-tool/index.html" class="tool-card">🖋️ Automated NDA Signer Tool</a>
+    <a href="/tools/meeting-agenda-summary-maker/index.html" class="tool-card">📅 Meeting Agenda + Summary Maker</a>
+    <a href="/tools/invoice-generator/index.html" class="tool-card">🧾 Invoice Generator</a>
+    <a href="/tools/employee-onboarding-kit-generator/index.html" class="tool-card">📋 Employee Onboarding Kit Generator</a>
+    <a href="/tools/team-taskboard-generator/index.html" class="tool-card">🗂️ Team Taskboard Generator</a>
+    <a href="/tools/proffessional-networking/index.html" class="tool-card">📏 Proffessional Networking</a>
+    <a href="/tools/customer-avatar-builder/index.html" class="tool-card">👥 Customer Avatar Builder</a>
+    <a href="/tools/smart-email-sequence-generator/index.html" class="tool-card">📧 Smart Email Sequence Generator</a>
+     <a href="/tools/pdf-merger/index.html" class="tool-card">📎 PDF Merger Tool</a>
+    <a href="/tools/image-compressor-converter/index.html" class="tool-card">🖼️ Image Compressor</a>
+    <a href="/tools/qr-code-generator/index.html" class="tool-card">🔗 QR Code Generator</a>
+    <a href="/tools/document-scanner/index.html" class="tool-card">📄 Document Scanner</a>
+    <a href="/tools/Qoute-box/index.html" class="tool-card">💬 Quote Box</a>
+    <a href="/tools/currency-converter/index.html" class="tool-card">💱 Currency Converter</a>
+    <a href="/tools/fitness-tracker/index.html" class="tool-card">🏋️‍♂️ Fitness Tracker</a>
+    <a href="/tools/image-editor/index.html" class="tool-card">🖌️ Image Editor</a>
+    <a href="/tools/json-formatter/index.html" class="tool-card">🗄️ JSON Formatter</a>
+    <a href="/tools/meditation-timer/index.html" class="tool-card">🧘 Meditation Timer</a>
+    <a href="/tools/password-generator/index.html" class="tool-card">🔐 Password Generator</a>
+    <a href="/tools/resume-builder/index.html" class="tool-card">📄 Resume Builder</a>
+    <a href="/tools/text-to-speech/index.html" class="tool-card">🗣️ Text to Speech</a>
+    <a href="/tools/unit-converter/index.html" class="tool-card">📏 Unit Converter</a>
+    <a href="/tools/drum-pad/index.html" class="tool-card">🥁 Drum Pad</a>
+     <a href="../tools/free-movies/index.html" class="suite-button">🎬 Free Movies Tool</a>
+      <!-- Add the rest of your tool links here from the main template -->
+    </div>
+  </main>
+
+  <footer>© 2025 Toolbox Suite — Explore All Tools 🚀</footer>
+
+  <script>
+    function filterTools() {
+      const input = document.getElementById('toolSearch').value.toLowerCase();
+      const cards = document.querySelectorAll('.tool-card');
+      cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        card.style.display = text.includes(input) ? 'flex' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>
