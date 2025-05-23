@@ -311,6 +311,24 @@
       .then(() => console.log('✅ Service Worker Registered'))
       .catch(err => console.error('Service Worker registration failed:', err));
   }
+
+// ✅ Check auth state
+  auth.onAuthStateChanged(user => {
+    if (!user) {
+      // Not logged in
+      localStorage.removeItem('loggedIn');
+      window.location.href = 'index.html'; // or 'login.html'
+    }
+  });
+
+  // ✅ Logout handler
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    auth.signOut().then(() => {
+      localStorage.removeItem('loggedIn');
+      window.location.href = 'index.html';
+    });
+  });
+  
 </script>
 
 <script>
