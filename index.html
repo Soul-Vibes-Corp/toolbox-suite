@@ -141,6 +141,12 @@
       });
   });
   
+  firebase.auth().signInWithEmailAndPassword(email, password)
+  .then(() => {
+    localStorage.setItem('loggedIn', 'true'); // optional local tracking
+    window.location.href = 'dashboard.html'; // redirect
+  })
+
 </script>
 
 
