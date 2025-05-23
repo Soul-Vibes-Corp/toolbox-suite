@@ -149,12 +149,7 @@
     <div class="story"></div>
   </div>
 
-  <div class="gallery" id="gallery">
-    <div class="gallery"></div>
-    <div class="gallery"></div>
-    <div class="gallery"></div>
-    <div class="gallery"></div>
-  </div>
+  <div class="gallery" id="gallery"></div>
 
   <footer>
     <a href="../index.html" class="nav-link">🏠</a>
@@ -212,7 +207,60 @@ firebase.auth().signInWithEmailAndPassword(email, password)
   appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
   measurementId: "G-XJKWXHF8WN"
 };
-    
+
+  firebase.auth().signInWithEmailAndPassword(email, password)
+  .then((userCredential) => {
+    // Signed in
+    const user = userCredential.user;
+    // ...
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+  });
+
+
+  const db = firebase.firestore();
+
+// Fetch user profile
+db.collection("users").doc(userId).get().then((doc) => {
+  if (doc.exists) {
+    const userData = doc.data();
+    // Display user data
+  }
+});
+
+// Fetch user posts
+db.collection("posts").where("userId", "==", userId)
+  .orderBy("timestamp", "desc")
+  .get()
+  .then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      const postData = doc.data();
+      // Display post data
+    });
+  });
+
+ const storageRef = firebase.storage().ref();
+const fileRef = storageRef.child('images/' + file.name);
+fileRef.put(file).then(() => {
+  fileRef.getDownloadURL().then((url) => {
+    // Save the URL to Firestore or display the image
+  });
+});
+
+  db.collection("posts").where("userId", "==", userId)
+  .orderBy("timestamp", "desc")
+  .onSnapshot((snapshot) => {
+    snapshot.docChanges().forEach((change) => {
+      if (change.type === "added") {
+        const postData = change.doc.data();
+        // Add new post to the gallery
+      }
+    });
+  });
+
+  
   </script>
 </body>
 </html>
