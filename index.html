@@ -85,7 +85,7 @@
   <div class="signup-link">
     <p>Don’t have an account? <a href="register.html">Sign Up</a></p>
      <p>Reset Password? <a href="resetpassword.html">Reset</a></p>
-     <p>Reset  <a href="dashboard/dashboard.html">Reset</a></p>
+     <p>Reset  <a href="dashboard/index.html">Reset</a></p>
   </div>
 </div>
 
@@ -134,7 +134,7 @@
         setDoc(doc(db, "userSettings", user.uid), settingsObject);
 
         // Redirect to dashboard
-        window.location.href = "dashboard/dashboard.html";
+        window.location.href = "dashboard/index.html";
       })
       .catch((error) => {
         document.getElementById("error-message").innerText = error.message;
@@ -144,7 +144,7 @@
   firebase.auth().signInWithEmailAndPassword(email, password)
   .then(() => {
     localStorage.setItem('loggedIn', 'true'); // optional local tracking
-    window.location.href = 'dashboard/dashboard.html'; // redirect
+    window.location.href = 'dashboard/index.html'; // redirect
   })
 
 </script>
