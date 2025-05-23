@@ -534,15 +534,6 @@ const tools = [
     themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
   });
 
-  // Login/Logout (if using Firebase)
-  const logoutBtn = document.getElementById('logout-button');
-  logoutBtn.addEventListener('click', () => {
-    localStorage.removeItem('user');
-    if (auth.currentUser) auth.signOut();
-    alert('Logged out!');
-    location.reload();
-  });
-
   // Simple visitor tracking
   const trackVisit = (toolName) => {
     const history = JSON.parse(localStorage.getItem('toolHistory') || '[]');
