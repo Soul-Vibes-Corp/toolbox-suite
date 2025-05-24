@@ -165,10 +165,122 @@ main {
       color: #0fa;
     }
 
-  
-  </style>
-</head>
+    .hamburger {
+      font-size: 30px;
+      color: #0ff;
+      cursor: pointer;
+      display: none;
+      user-select: none;
+    }
 
+    .header-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.points-counter {
+  background-color: #0ff;
+  color: #111;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 1rem;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+    .hamburger:hover {
+      color: #0fa;
+    }
+
+    .menu-toggle {
+      display: none;
+    }
+
+    .menu {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .actions a,
+    .actions button,
+    .actions input[type="text"] {
+      padding: 8px 14px;
+      border-radius: 6px;
+      border: none;
+      background: #222;
+      color: #0ff;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .actions a:hover,
+    .actions button:hover,
+    .actions input[type="text"]:focus {
+      background-color: #0ff;
+      color: #111;
+      outline: none;
+    }
+
+    .actions input[type="text"] {
+      min-width: 150px;
+      color: #eee;
+    }
+
+    .visually-hidden {
+      position: absolute !important;
+      height: 1px;
+      width: 1px;
+      overflow: hidden;
+      clip: rect(1px, 1px, 1px, 1px);
+      white-space: nowrap;
+    }
+
+    @media (max-width: 768px) {
+      .hamburger {
+        display: block;
+      }
+
+      .menu {
+        position: absolute;
+        top: 100%;
+        right: 24px;
+        flex-direction: column;
+        background: rgba(20, 20, 20, 0.95);
+        padding: 16px;
+        border-radius: 10px;
+        box-shadow: 0 8px 20px rgba(0, 255, 255, 0.1);
+        width: 250px;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+      }
+
+      .actions {
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+      }
+
+      .actions input[type="text"] {
+        width: 100%;
+      }
+
+      .menu-toggle:checked + .hamburger + .menu {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+      }
+    }
 <body>
   <div class="register-container">
 
