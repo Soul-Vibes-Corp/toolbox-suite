@@ -546,6 +546,17 @@ firebase.initializeApp(firebaseConfig);
     suiteGrid.style.display = 'none';
   });
 
+  
+    function filterTools() {
+      const input = document.getElementById('toolSearch').value.toLowerCase();
+      const cards = document.querySelectorAll('.tool-card');
+      cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        card.style.display = text.includes(input) ? 'flex' : 'none';
+      });
+    }
+  
+
   // Optional: auto login stub if using Firebase
   auth.onAuthStateChanged(user => {
     if (user) {
