@@ -81,22 +81,6 @@ main {
   padding-bottom: 100px; /* Adjust if your footer is taller or shorter */
 }
 
-    .back-button {
-  position: absolute;
-  top: 24px;
-  left: 24px;
-  background: transparent;
-  color: #0ff;
-  font-weight: 600;
-  text-decoration: none;
-  font-size: 1rem;
-  transition: color 0.3s ease;
-  border: none;
-}
-
-.back-button:hover {
-  color: #0fa;
-}
 
   .bottom-nav {
   position: fixed;
@@ -144,34 +128,7 @@ main {
       border: none;
       font-size: 1rem;
     }
-    
-  </style>
-</head>
 
-<body>
-  <div class="register-container">
-
-<header class="header">
-   <h1><a href="../dashboard/index.html" class="home-link">🧰 Toolbox Suite</a></h1>
-
-  <!-- Hidden checkbox to toggle the menu -->
-  <input type="checkbox" id="menuToggle" class="menu-toggle" />
-  <label for="menuToggle" class="hamburger" aria-label="Toggle Menu">&#9776;</label>
-
-    <nav class="menu">
-  <div class="actions">
-      <button id="search-toggle" aria-label="Search"> 🔍</button>
-    <input type="text" id="search-input" placeholder="Search tools..." aria-label="Search tools" />
-    <span id="result-count" aria-live="polite"></span>
-      <a href="../dashboard/index.html">Dashboard</a>
-     <a href="../toolHistory.html">Track Tools</a>
-      <a href="../settings.html">Settings</a>
-     <button onclick="location.href='../index.html'" id="logout-button" aria-label="Logout">Logout</button>
-  </div>
- </nav>
-</header>
-
-  <style>
   /* Basic Reset */
   * {
     margin: 0;
@@ -313,8 +270,32 @@ main {
       transform: translateY(0);
     }
   }
-</style>
 
+  </style>
+</head>
+
+<body>
+  <div class="register-container">
+
+<header class="header">
+   <h1><a href="../dashboard/index.html" class="home-link">🧰 Toolbox Suite</a></h1>
+
+  <!-- Hidden checkbox to toggle the menu -->
+  <input type="checkbox" id="menuToggle" class="menu-toggle" />
+  <label for="menuToggle" class="hamburger" aria-label="Toggle Menu">&#9776;</label>
+
+    <nav class="menu">
+  <div class="actions">
+      <button id="search-toggle" aria-label="Search"> 🔍</button>
+    <input type="text" id="search-input" placeholder="Search tools..." aria-label="Search tools" />
+    <span id="result-count" aria-live="polite"></span>
+      <a href="../dashboard/index.html">Dashboard</a>
+     <a href="../toolHistory.html">Track Tools</a>
+      <a href="../settings.html">Settings</a>
+     <button onclick="location.href='../index.html'" id="logout-button" aria-label="Logout">Logout</button>
+  </div>
+ </nav>
+</header>
  <h2 id="utility-tools-heading">🛠️ Everyday Utility Tools</h2>
 <div class="search-container">
     <input type="text" id="toolSearch" placeholder="Search tools..." onkeyup="filterTools()" />
