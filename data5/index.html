@@ -89,7 +89,6 @@
 </head>
 
 <body>
-  <a href="dashboard.html" class="back-button">← Back to Login</a>
   <div class="register-container">
 
 <header class="header">
@@ -256,9 +255,12 @@
   }
 </style>
 
-
+ <h2 id="utility-tools-heading">🛠️ Everyday Utility Tools</h2>
+<div class="search-container">
+    <input type="text" id="toolSearch" placeholder="Search tools..." onkeyup="filterTools()" />
+  </div>
+    
 <main>
-    <h2 id="utility-tools-heading">🛠️ Everyday Utility Tools</h2>
   <div id="search-results" class="suite-grid" style="display: none;"></div>
   <div class="suite-grid">
     <a href="../tools/pdf-merger/index.html" class="tool-card">📎 PDF Merger Tool</a>
