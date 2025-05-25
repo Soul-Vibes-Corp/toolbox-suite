@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <link rel="stylesheet" href="style.css" />
+  <title>Explore Tools - Toolbox Suite</title>
+  <style>
+    body {
+      margin: 0;
+      background: #121212;
+      color: #fff;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+    }
+
+    header, footer {
+      text-align: center;
+      padding: 1rem;
+      background: #1f1f1f;
+      color: #0ff;
+    }
+
+    .search-container {
+      display: flex;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .search-container input {
+      width: 80%;
+      max-width: 600px;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+    }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 16px;
+      padding: 1rem;
+    }
+
+    .tool-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #222;
+      color: #0ff;
+      padding: 16px;
+      border-radius: 16px;
+      font-size: 0.9rem;
+      text-decoration: none;
+      text-align: center;
+      transition: background 0.3s;
+    }
+
+    .tool-card:hover {
+      background: #0ff;
+      color: #000;
+    }
+
+     footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #222;
+  color: #bbb;
+  font-size: 0.9rem;
+  border-top: 1px solid #444;
+  box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  padding: 1rem;
+  z-index: 1000;
+}
+
+main {
+  padding-bottom: 100px; /* Adjust if your footer is taller or shorter */
+}
+
+    .bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background-color: #111;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-top: 1px solid #333;
+  z-index: 1000;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.bottom-nav .nav-link {
+  color: #e0e0e0;
+  font-size: 1.5rem;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.bottom-nav .nav-link:hover,
+.bottom-nav .nav-link:focus {
+  color: #00ffaa;
+}
+
+/* Ensure content is not hidden under the nav */
+main {
+  padding-bottom: 80px; /* Slightly more than footer height */
+}
+
+
+    
+  </style>
+</head>
+<body>
+  <header><h1>🔍 Explore Toolbox Tools</h1></header>
+  <div class="search-container">
+    <input type="text" id="toolSearch" placeholder="Search tools..." onkeyup="filterTools()" />
+  </div>
+
+  <main>
+    <div class="tool-grid" id="toolGrid">
+     <a href="../data/index.html" class="suite-button">Marketing Hub</a>
+    <a href="../data1/index.html" class="suite-button">Business Suite</a>
+    <a href="../data2/index.html" class="suite-button">CRM & Service Hub</a>
+    <a href="../data3/index.html" class="suite-button">HR & Team Management Suite</a>
+    <a href="../data4/index.html" class="suite-button">Customer Growth Kit</a>
+    <a href="../data5/index.html" class="suite-button">Smart Daily Tools</a>
+    <a href="../data6/index.html" class="suite-button">🛠️ Toolbox Suite 7</a>
+    <a href="../data7/index.html" class="suite-button">🛠️ Toolbox Suite 8</a>
+    <a href="../data8/index.html" class="suite-button">🛠️ Toolbox Suite 9</a>
+    <a href="../data9/index.html" class="suite-button">🛠️ Toolbox Suite 10</a>
+      <!-- Add the rest of your tool links here from the main template -->
+    </div>
+  </main>
+
+  <footer class="bottom-nav">
+  <a href="../index.html" class="nav-link" aria-label="Home">🏠</a>
+  <a href="../explore-page/index.html" class="nav-link" aria-label="Search">🔍</a>
+  <a href="#add" class="nav-link" aria-label="Add">➕</a>
+  <a href="#messages" class="nav-link" aria-label="Messages">💬</a>
+  <a href="../profile-page/index.html" class="nav-link" aria-label="Profile">👤</a>
+</footer>
+
+  <script>
+    function filterTools() {
+      const input = document.getElementById('toolSearch').value.toLowerCase();
+      const cards = document.querySelectorAll('.tool-card');
+      cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        card.style.display = text.includes(input) ? 'flex' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>
