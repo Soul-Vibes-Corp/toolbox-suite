@@ -916,20 +916,7 @@ db.collection('globalChat').orderBy('timestamp')
 </script>
 
  <script>
-  const searchInput = document.getElementById('search-input');
-  const enterButton = document.getElementById('enter-button');
-  const menu = document.getElementById('menuToggle'); // Assuming your menu has this ID
-
-  function performSearch() {
-    const query = searchInput.value.trim();
-    if (query !== '') {
-      console.log('Searching for:', query); // Replace with actual search logic
-      searchInput.value = '';
-      searchInput.dispatchEvent(new Event('input'));
-      closeMenu(); // Close the menu after search
-    }
-  }
-
+  
   function closeMenu() {
     if (menuToggle) {
       menuToggle.classList.add('hidden'); // or menu.classList.remove('open');
