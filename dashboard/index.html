@@ -915,6 +915,37 @@ db.collection('globalChat').orderBy('timestamp')
   
 </script>
 
+  <script>
+  const searchInput = document.getElementById('search-input');
+  const enterButton = document.getElementById('enter-button');
+
+    // Function to handle search action
+  function performSearch() {
+    const query = searchInput.value.trim();
+    if (query !== '') {
+      console.log('Searching for:', query); // Replace with actual search logic
+      searchInput.value = '';
+      searchInput.dispatchEvent(new Event('input'));
+    }
+  }
+
+  // Pressing Enter key triggers search
+  searchInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+      performSearch();
+    }
+  });
+
+  // Clicking Enter icon triggers search
+  enterButton.addEventListener('click', performSearch);
+
+    // Clear function
+  function clearSearch() {
+    searchInput.value = '';
+    searchInput.dispatchEvent(new Event('input'));
+  }
+    
+</script>
 
   
 </body>
