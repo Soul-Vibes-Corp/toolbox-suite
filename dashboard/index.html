@@ -918,7 +918,7 @@ db.collection('globalChat').orderBy('timestamp')
  <script>
   const searchInput = document.getElementById('search-input');
   const enterButton = document.getElementById('enter-button');
-  const menu = document.getElementById('menu'); // Assuming your menu has this ID
+  const menu = document.getElementById('menuToggle'); // Assuming your menu has this ID
 
   function performSearch() {
     const query = searchInput.value.trim();
@@ -931,8 +931,8 @@ db.collection('globalChat').orderBy('timestamp')
   }
 
   function closeMenu() {
-    if (menu) {
-      menu.classList.add('hidden'); // or menu.classList.remove('open');
+    if (menuToggle) {
+      menuToggle.classList.add('hidden'); // or menu.classList.remove('open');
     }
   }
 
@@ -945,7 +945,6 @@ db.collection('globalChat').orderBy('timestamp')
 
   // Clicking ⏎ icon triggers search
   enterButton.addEventListener('click', performSearch);
-</script>
 
     // Clear function
   function clearSearch() {
