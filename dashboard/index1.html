@@ -455,10 +455,10 @@ main {
   </script>
 
 <script>
-  const searchToggle = document.getElementById('search-toggle');
-  const searchInput = document.getElementById('search-input');
+  const toolSearch = document.getElementById('toolSearch');
+  const toolSearch = document.getElementById('toolSearch');
   const searchResults = document.getElementById('search-results');
-  const suiteGrid = document.querySelector('.suite-grid');
+  const toolGrid = document.querySelector('.tool-grid');
 
 const tools = [
   // 🛠️ Freelance Marketing, Branding & Employment
@@ -523,22 +523,22 @@ const tools = [
 
   
 
-  searchToggle.addEventListener('click', () => {
-    searchInput.classList.toggle('expanded');
-    if (searchInput.classList.contains('expanded')) {
-      searchInput.focus();
+    toolSearch.addEventListener('click', () => {
+    toolSearch.classList.toggle('expanded');
+    if (toolSearch.classList.contains('expanded')) {
+      toolSearch.focus();
     } else {
-      searchInput.value = '';
+      toolSearch.value = '';
       searchResults.style.display = 'none';
-      suiteGrid.style.display = 'grid';
+      toolGrid.style.display = 'grid';
     }
   });
 
-  searchInput.addEventListener('input', () => {
-    const query = searchInput.value.toLowerCase();
+  toolSearch.addEventListener('input', () => {
+    const query = toolSearch.value.toLowerCase();
     if (query === '') {
       searchResults.style.display = 'none';
-      suiteGrid.style.display = 'grid';
+       toolGrid.style.display = 'grid';
       return;
     }
 
@@ -551,37 +551,37 @@ const tools = [
   filteredTools.forEach(tool => {
    const toolElement = document.createElement('a');
    toolElement.href = tool.link;
-   toolElement.className = 'suite-button';
+   toolElement.className = 'tool-card';
    toolElement.textContent = tool.name;
   searchResults.appendChild(toolElement);
 });
 
 
-    suiteGrid.style.display = 'none';
+    toolGrid.style.display = 'none';
     searchResults.style.display = 'grid';
   });
 </script>
 
   <script>
-  const searchToggle = document.getElementById('search-toggle');
-  const searchInput = document.getElementById('search-input');
+  const toolSearch = document.getElementById('toolSearch');
+  const toolSearch = document.getElementById('toolSearch');
 
   searchToggle.addEventListener('click', () => {
-    searchInput.classList.toggle('expanded');
-    if (searchInput.classList.contains('expanded')) {
-      searchInput.focus();
+    toolSearch.classList.toggle('expanded');
+    if (toolSearch.classList.contains('expanded')) {
+      toolSearch.focus();
     }
   });
 </script>
 
 <script>
-  searchInput.addEventListener('input', () => {
-    const query = searchInput.value.trim().toLowerCase();
+  toolSearch.addEventListener('input', () => {
+    const query = toolSearch.value.trim().toLowerCase();
     searchResults.innerHTML = '';
 
     if (query.length === 0) {
       searchResults.style.display = 'none';
-      suiteGrid.style.display = 'grid';
+      toolGrid.style.display = 'grid';
       return;
     }
 
@@ -594,19 +594,19 @@ const tools = [
       matchedTools.forEach(tool => {
         const toolLink = document.createElement('a');
         toolLink.href = tool.link;
-        toolLink.className = 'suite-button';
+        toolLink.className = 'tool-card';
         toolLink.textContent = tool.name;
         searchResults.appendChild(toolLink);
       });
 
-      suiteGrid.style.display = 'none';
+      toolGrid.style.display = 'none';
       searchResults.style.display = 'grid';
     } else {
       const noResult = document.createElement('p');
       noResult.textContent = 'No matching tools found.';
       noResult.style.color = 'red';
       searchResults.appendChild(noResult);
-      suiteGrid.style.display = 'none';
+      toolGrid.style.display = 'none';
       searchResults.style.display = 'block';
     }
   });
