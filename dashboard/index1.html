@@ -72,11 +72,13 @@
     }
 
      .tool-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-      gap: 16px;
-      padding: 1rem;
-    }
+     display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    width: 100%;
+    max-width: 800px;
+    padding: 1rem; 
+  }
 
      .tool-card {
       display: flex;
