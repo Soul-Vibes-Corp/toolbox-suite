@@ -1,0 +1,649 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <link rel="stylesheet" href="style.css" />
+  <title>Explore Tools - Toolbox Suite</title>
+  <style>
+
+     body { 
+  margin: 0;
+  background: #121212;
+  color: #fff;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-image:
+    linear-gradient(45deg, #1a1a1a 25%, transparent 25%),
+    linear-gradient(-45deg, #1a1a1a 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #1a1a1a 75%),
+    linear-gradient(-45deg, transparent 75%, #1a1a1a 75%);
+  background-size: 60px 60px;
+  background-position: 0 0, 0 30px, 30px -30px, -30px 0;
+}
+
+      /* Animated floating effect */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:
+      radial-gradient(circle, rgba(0, 255, 170, 0.1), transparent 70%),
+      radial-gradient(circle at bottom right, rgba(255, 100, 200, 0.08), transparent 80%);
+    z-index: -1;
+    transform: translateZ(-200px) scale(1.1);
+    animation: float 10s linear infinite;
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0) translateZ(-200px);
+    }
+    50% {
+      transform: translateY(-30px) translateZ(-200px);
+    }
+  }
+
+
+
+    header, footer {
+      text-align: center;
+      padding: 1rem;
+      background: #1f1f1f;
+      color: #0ff;
+    }
+
+    .search-container {
+      display: flex;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .search-container input {
+      width: 80%;
+      max-width: 600px;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+    }
+
+     .tool-grid {
+    display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 16px;
+      padding: 1rem;
+    }
+
+    .tool-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #222;
+      color: #0ff;
+      padding: 16px;
+      border-radius: 16px;
+      font-size: 0.9rem;
+      text-decoration: none;
+      text-align: center;
+      transition: background 0.3s;
+    }
+    
+    .tool-card:hover {
+      background: #0ff;
+      color: #000;
+    }
+
+     footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #222;
+  color: #bbb;
+  font-size: 0.9rem;
+  border-top: 1px solid #444;
+  box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  padding: 1rem;
+  z-index: 1000;
+}
+
+main {
+  padding-bottom: 100px; /* Adjust if your footer is taller or shorter */
+}
+
+    .bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background-color: #111;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-top: 1px solid #333;
+  z-index: 1000;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.bottom-nav .nav-link {
+  color: #e0e0e0;
+  font-size: 1.5rem;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.bottom-nav .nav-link:hover,
+.bottom-nav .nav-link:focus {
+  color: #00ffaa;
+}
+
+/* Ensure content is not hidden under the nav */
+main {
+  padding-bottom: 80px; /* Slightly more than footer height */
+}
+
+/* Floating Chatbot */
+#chatbot-toggle {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  background: #0ff;
+  color: #000;
+  padding: 0.8rem 1rem;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 0 15px #0ff;
+  z-index: 100;
+}
+
+/* Utility */
+.clip-hexagon {
+  clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0% 50%);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Forum Section */
+.futuristic-panel {
+  margin-top: 3rem;
+  align-items: center;
+  padding: 2rem;
+  border-radius: 16px;
+  background: radial-gradient(circle at top left, #0ff2, #000);
+  box-shadow: 0 0 30px #0ff8;
+  color: #0ff;
+}
+
+.extra-sections {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-top: 2rem;
+  justify-content: space-between;
+}
+
+.live-chat {
+  flex: 1;
+  min-width: 280px;
+  background: #111;
+  padding: 1rem;
+  border: 1px solid #0ff5;
+  border-radius: 10px;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+#chat-window {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+#chat-messages {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 0.5rem;
+  border-bottom: 1px solid #0ff4;
+  margin-bottom: 0.5rem;
+}
+
+#chat-input {
+  padding: 0.5rem;
+  background: #000;
+  border: 1px solid #0ff6;
+  border-radius: 6px;
+  color: #0ff;
+}
+
+.forum-link {
+  flex: 1;
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.forum-button {
+  padding: 1rem 2rem;
+  background-color: #0ff;
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.2rem;
+  box-shadow: 0 0 15px #0ff8;
+  transition: all 0.3s ease-in-out;
+}
+
+.forum-button:hover {
+  background-color: #0fa;
+  box-shadow: 0 0 25px #0fa;
+}
+    
+  </style>
+ <style>
+   
+   * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      background-color: rgba(20, 20, 20, 0.9);
+      border-bottom: 1px solid #333;
+      position: relative;
+      z-index: 10;
+    }
+
+    .home-link {
+      color: #0ff;
+      text-decoration: none;
+      font-size: 1.8rem;
+    }
+
+    .home-link:hover {
+      color: #0fa;
+    }
+
+    .hamburger {
+      font-size: 30px;
+      color: #0ff;
+      cursor: pointer;
+      display: none;
+      user-select: none;
+    }
+
+    .header-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+    .header2-center {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.points-counter {
+  background-color: #0ff;
+  color: #111;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 1rem;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+    .hamburger:hover {
+      color: #0fa;
+    }
+
+    .menu-toggle {
+      display: none;
+    }
+
+    .menu {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .actions a,
+    .actions button,
+    .actions input[type="text"] {
+      padding: 8px 14px;
+      border-radius: 6px;
+      border: none;
+      background: #222;
+      color: #0ff;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .actions a:hover,
+    .actions button:hover,
+    .actions input[type="text"]:focus {
+      background-color: #0ff;
+      color: #111;
+      outline: none;
+    }
+
+    .actions input[type="text"] {
+      min-width: 150px;
+      color: #eee;
+    }
+
+    .visually-hidden {
+      position: absolute !important;
+      height: 1px;
+      width: 1px;
+      overflow: hidden;
+      clip: rect(1px, 1px, 1px, 1px);
+      white-space: nowrap;
+    }
+
+    @media (max-width: 768px) {
+      .hamburger {
+        display: block;
+      }
+
+      .menu {
+        position: absolute;
+        top: 100%;
+        right: 24px;
+        flex-direction: column;
+        background: rgba(20, 20, 20, 0.95);
+        padding: 16px;
+        border-radius: 10px;
+        box-shadow: 0 8px 20px rgba(0, 255, 255, 0.1);
+        width: 250px;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+      }
+
+      .actions {
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+      }
+
+      .actions input[type="text"] {
+        width: 100%;
+      }
+
+      .menu-toggle:checked + .hamburger + .menu {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+      }
+    }
+  </style>
+  
+</head>
+<body>
+ 
+
+<header class="header">
+  <h1><a href="index.html" class="home-link">Dashboard</a></h1>
+  
+  <input type="checkbox" id="menuToggle" class="menu-toggle" />
+  <label for="menuToggle" class="hamburger" aria-label="Toggle Menu">&#9776;</label>
+
+  <nav class="menu">
+    <div class="actions">
+      <div class="points-counter">⭐ Points: <span id="points-value">2340</span></div>
+      <a href="../dashboard/setting/rewards.html">Rewards</a>
+      <a href="../dashboard/setting/toolHistory.html">Track Tools</a>
+      <a href="../dashboard/setting/index.html">Settings</a>
+  </div>
+  </nav>
+</header>
+  
+  <div class="search-container">
+    <input type="text" id="toolSearch" placeholder="Search tools..." onkeyup="filterTools()" />
+  </div>
+
+ <main>
+    <div class="tool-grid" id="toolGrid">
+     <a href="../data/index.html" class="tool-card">Marketing Hub</a>
+    <a href="../data1/index.html" class="tool-card">Business Suite</a>
+    <a href="../data2/index.html" class="tool-card">Service Hub</a>
+    <a href="../data3/index.html" class="tool-card">Management Suite</a>
+    <a href="../data4/index.html" class="tool-card">Customer Growth Kit</a>
+    <a href="../data5/index.html" class="tool-card">Smart Daily Tools</a>
+      <!-- Add the rest of your tool links here from the main template -->
+    </div>
+  
+ <section id="dashboard2" class="futuristic-panel">
+    <div class="extra-sections">
+      <div class="live-chat">
+        <h3>💬 Global Chat</h3>
+        <div id="chat-window">
+          <div id="chat-messages"></div>
+          <input type="text" id="chat-input" placeholder="Type a message..." />
+        </div>
+      </div>
+
+      <div class="forum-link">
+        <h3>Forum</h3>
+        <a href="../toolbox-suite/tools/forum/index.html" target="_blank" class="forum-button">Enter the Forum</a>
+      </div>
+    </div>
+  </section>
+  </main>
+
+  <footer class="bottom-nav">
+  <a href="../index.html" class="nav-link" aria-label="Home">🏠</a>
+  <a href="../explore-page/index.html" class="nav-link" aria-label="Search">🔍</a>
+  <a href="#add" class="nav-link" aria-label="Add">➕</a>
+  <a href="#messages" class="nav-link" aria-label="Messages">💬</a>
+  <a href="../profile-page/index.html" class="nav-link" aria-label="Profile">👤</a>
+</footer>
+
+  <script>
+    function filterTools() {
+      const input = document.getElementById('toolSearch').value.toLowerCase();
+      const cards = document.querySelectorAll('.tool-card');
+      cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        card.style.display = text.includes(input) ? 'flex' : 'none';
+      });
+    }
+  </script>
+
+<script>
+  const toolSearch = document.getElementById('toolSearch');
+  const toolSearch = document.getElementById('toolSearch');
+  const searchResults = document.getElementById('search-results');
+  const toolGrid = document.querySelector('.tool-grid');
+
+const tools = [
+  // 🛠️ Freelance Marketing, Branding & Employment
+  { name: "🎨 Instant Brand Kit Generator", tags: ["branding", "design", "brand"], link: "./tools/brand-kit-generator/index.html" },
+  { name: "📅 Marketing Content Calendar Generator", tags: ["marketing", "calendar", "content"], link: "./tools/content-calendar-generator/index.html" },
+  { name: "📚 Lead Magnet Creator", tags: ["lead", "magnet", "conversion"], link: "./tools/lead-magnet-creator/index.html" },
+  { name: "📊 Social Media Analytics Snapshot", tags: ["social", "analytics", "media"], link: "./tools/social-media-analytics-snapshot/index.html" },
+  { name: "🔍 Smart Business Name & Domain Finder", tags: ["business", "domain", "name"], link: "./tools/business-name-domain-finder/index.html" },
+  { name: "🏢 Find Gigs", tags: ["jobs", "gigs", "freelance"], link: "./tools/find-gigs/index.html" },
+  { name: "🔐 Job Search Tools", tags: ["job", "search", "career"], link: "./tools/job-search-tools/index.html" },
+  { name: "📄 Resume Builder", tags: ["resume", "cv", "builder"], link: "./tools/resume-builder/index.html" },
+  { name: "🗣️ Interview Prep Tools", tags: ["interview", "preparation", "job"], link: "./tools/interview-prep-tools/index.html" },
+  { name: "🏢 Work Schedule Management", tags: ["schedule", "work", "management"], link: "./tools/work-schedule-management/index.html" },
+  { name: "📄 Salary Calculator", tags: ["salary", "finance", "calculator"], link: "./tools/salary-calculator/index.html" },
+  { name: "⏱️ Time Tracking Tool", tags: ["time", "tracking", "productivity"], link: "./tools/time-tracking-tool/index.html" },
+
+  // 📈 Business Strategy & Financial Planning
+  { name: "📝 One-Page Business Plan Generator", tags: ["business", "plan", "strategy"], link: "./tools/business-plan-generator/index.html" },
+  { name: "⚖️ Instant SWOT Analysis Generator", tags: ["swot", "analysis", "strategy"], link: "./tools/swot-analysis-generator/index.html" },
+  { name: "💲 Profit & Investment Calculator", tags: ["profit", "investment", "finance"], link: "./tools/profit-investment-calculator/index.html" },
+  { name: "📊 Smart KPI Dashboard", tags: ["kpi", "dashboard", "metrics"], link: "./tools/kpi-dashboard/index.html" },
+  { name: "🔧 Smart Cost-Cutting Analyzer", tags: ["cost", "cutting", "savings"], link: "./tools/cost-cutting-analyzer/index.html" },
+  { name: "🖲️ Expense Tracking", tags: ["expense", "tracking", "finance"], link: "./tools/expense-tracking/index.html" },
+
+  // 📊 Sales & Client Management
+  { name: "📑 Smart Proposal Generator", tags: ["proposal", "sales", "client"], link: "./tools/proposal-generator/index.html" },
+  { name: "🧾 Invoice + Bill Payment Services", tags: ["invoice", "payment", "billing"], link: "./tools/invoice-bill-payment/index.html" },
+  { name: "📝 Client Contract Generator", tags: ["contract", "client", "agreement"], link: "./tools/client-contract-generator/index.html" },
+  { name: "🖋️ Automated NDA Signer Tool", tags: ["nda", "signer", "legal"], link: "./tools/nda-signer/index.html" },
+  { name: "📅 Meeting Agenda + Summary Maker", tags: ["meeting", "agenda", "summary"], link: "./tools/meeting-agenda-summary/index.html" },
+  { name: "🧾 Invoice Generator", tags: ["invoice", "generator", "billing"], link: "./tools/invoice-generator/index.html" },
+
+  // 🧑‍💼 Operations & Team Management
+  { name: "📋 Employee Onboarding Kit Generator", tags: ["employee", "onboarding", "hr"], link: "./tools/employee-onboarding-kit/index.html" },
+  { name: "🗂️ Team Taskboard Generator", tags: ["team", "taskboard", "management"], link: "./tools/team-taskboard/index.html" },
+  { name: "📏 Professional Networking", tags: ["networking", "professional", "connections"], link: "./tools/professional-networking/index.html" },
+
+  // 🤝 Customer & Audience Building
+  { name: "👥 Customer Avatar Builder", tags: ["customer", "avatar", "persona"], link: "./tools/customer-avatar-builder/index.html" },
+  { name: "📧 Smart Email Sequence Generator", tags: ["email", "sequence", "marketing"], link: "./tools/email-sequence-generator/index.html" },
+
+  // 🛠️ Everyday Utility Tools
+  { name: "📎 PDF Merger Tool", tags: ["pdf", "merge", "documents"], link: "./tools/pdf-merger/index.html" },
+  { name: "🖼️ Image Compressor", tags: ["image", "compressor", "optimize"], link: "./tools/image-compressor/index.html" },
+  { name: "🔗 QR Code Generator", tags: ["qr", "code", "generator"], link: "./tools/qr-code-generator/index.html" },
+  { name: "📄 Document Scanner", tags: ["document", "scanner", "pdf"], link: "./tools/document-scanner/index.html" },
+  { name: "💬 Quote Box", tags: ["quote", "box", "inspiration"], link: "./tools/quote-box/index.html" },
+  { name: "💱 Currency Converter", tags: ["currency", "converter", "exchange"], link: "./tools/currency-converter/index.html" },
+  { name: "🏋️‍♂️ Fitness Tracker", tags: ["fitness", "tracker", "health"], link: "./tools/fitness-tracker/index.html" },
+  { name: "🖌️ Image Editor", tags: ["image", "editor", "design"], link: "./tools/image-editor/index.html" },
+  { name: "🗄️ JSON Formatter", tags: ["json", "formatter", "code"], link: "./tools/json-formatter/index.html" },
+  { name: "🧘 Meditation Timer", tags: ["meditation", "timer", "relaxation"], link: "./tools/meditation-timer/index.html" },
+  { name: "🔐 Password Generator", tags: ["password", "generator", "security"], link: "./tools/password-generator/index.html" },
+  { name: "🗣️ Text to Speech", tags: ["text", "speech", "audio"], link: "./tools/text-to-speech/index.html" },
+  { name: "📏 Unit Converter", tags: ["unit", "converter", "measurement"], link: "./tools/unit-converter/index.html" },
+  { name: "🥁 Drum Pad", tags: ["drum", "pad", "music"], link: "./tools/drum-pad/index.html" },
+  { name: "🎬 Free Movies Tool", tags: ["movies", "streaming", "video"], link: "./tools/free-movies/index.html" },
+  // ✅ All tools now included
+];
+
+
+
+  
+
+    toolSearch.addEventListener('click', () => {
+    toolSearch.classList.toggle('expanded');
+    if (toolSearch.classList.contains('expanded')) {
+      toolSearch.focus();
+    } else {
+      toolSearch.value = '';
+      searchResults.style.display = 'none';
+      toolGrid.style.display = 'grid';
+    }
+  });
+
+  toolSearch.addEventListener('input', () => {
+    const query = toolSearch.value.toLowerCase();
+    if (query === '') {
+      searchResults.style.display = 'none';
+       toolGrid.style.display = 'grid';
+      return;
+    }
+
+    const filteredTools = tools.filter(tool =>
+      tool.name.toLowerCase().includes(query) ||
+      tool.tags.some(tag => tag.includes(query))
+    );
+
+ searchResults.innerHTML = '';
+  filteredTools.forEach(tool => {
+   const toolElement = document.createElement('a');
+   toolElement.href = tool.link;
+   toolElement.className = 'tool-card';
+   toolElement.textContent = tool.name;
+  searchResults.appendChild(toolElement);
+});
+
+
+    toolGrid.style.display = 'none';
+    searchResults.style.display = 'grid';
+  });
+</script>
+
+  <script>
+  const toolSearch = document.getElementById('toolSearch');
+  const toolSearch = document.getElementById('toolSearch');
+
+  searchToggle.addEventListener('click', () => {
+    toolSearch.classList.toggle('expanded');
+    if (toolSearch.classList.contains('expanded')) {
+      toolSearch.focus();
+    }
+  });
+</script>
+
+<script>
+  toolSearch.addEventListener('input', () => {
+    const query = toolSearch.value.trim().toLowerCase();
+    searchResults.innerHTML = '';
+
+    if (query.length === 0) {
+      searchResults.style.display = 'none';
+      toolGrid.style.display = 'grid';
+      return;
+    }
+
+    const matchedTools = tools.filter(tool =>
+      tool.name.toLowerCase().includes(query) ||
+      tool.tags.some(tag => tag.toLowerCase().includes(query))
+    );
+
+    if (matchedTools.length > 0) {
+      matchedTools.forEach(tool => {
+        const toolLink = document.createElement('a');
+        toolLink.href = tool.link;
+        toolLink.className = 'tool-card';
+        toolLink.textContent = tool.name;
+        searchResults.appendChild(toolLink);
+      });
+
+      toolGrid.style.display = 'none';
+      searchResults.style.display = 'grid';
+    } else {
+      const noResult = document.createElement('p');
+      noResult.textContent = 'No matching tools found.';
+      noResult.style.color = 'red';
+      searchResults.appendChild(noResult);
+      toolGrid.style.display = 'none';
+      searchResults.style.display = 'block';
+    }
+  });
+</script>
+
+  
+</body>
+</html>
