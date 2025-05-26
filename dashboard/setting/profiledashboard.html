@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Professional Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --background:  radial-gradient(circle, rgba(0, 255, 170, 0.15), transparent 70%),
+              radial-gradient(circle at bottom right, rgba(255, 100, 200, 0.1), transparent 80%);
+      --card-bg: #1f1f1f;
+      --text: #b4d9c0;
+      --accent: #a1db6e;
+      --icon: #7ec795;
+    }
+
+    body { 
+  margin: 0;
+  background: #121212;
+  color: #fff;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-image:
+    linear-gradient(45deg, #1a1a1a 25%, transparent 25%),
+    linear-gradient(-45deg, #1a1a1a 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #1a1a1a 75%),
+    linear-gradient(-45deg, transparent 75%, #1a1a1a 75%);
+  background-size: 60px 60px;
+  background-position: 0 0, 0 30px, 30px -30px, -30px 0;
+}
+
+      /* Animated floating effect */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:
+      radial-gradient(circle, rgba(0, 255, 170, 0.1), transparent 70%),
+      radial-gradient(circle at bottom right, rgba(255, 100, 200, 0.08), transparent 80%);
+    z-index: -1;
+    transform: translateZ(-200px) scale(1.1);
+    animation: float 10s linear infinite;
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0) translateZ(-200px);
+    }
+    50% {
+      transform: translateY(-30px) translateZ(-200px);
+    }
+  }
+
+
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem;
+      background-color: var(--card-bg);
+      border-bottom: 1px solid var(--accent);
+    }
+
+    header h1 {
+      font-size: 1.2rem;
+      margin: 0;
+    }
+
+    .back-button,
+    .settings-icon {
+      font-size: 1.5rem;
+      color: var(--accent);
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .dashboard-section {
+      padding: 1rem;
+    }
+
+    .section-title {
+      font-weight: bold;
+      font-size: 1rem;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      color: #00ffaa;
+      text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .tool-item {
+      display: block;
+  text-align: center;
+  padding: 20px;
+  background: rgba(30, 30, 30, 0.9);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 10px;
+  border: 1px solid #444;
+  transition: background 0.3s, transform 0.3s;
+  font-size: 1.1rem;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+}
+  
+    .tool-item:hover {
+     background: linear-gradient(135deg, #00ffaa, #ff00cc);
+  color: #0d0d0d;
+  transform: translateY(-5px);
+  box-shadow: 0px 6px 12px rgba(0, 255, 170, 0.4);
+}
+    .tool-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .tool-item i {
+      margin-right: 1rem;
+      color: var(--icon);
+    }
+
+    .tool-item span {
+      font-size: 0.95rem;
+    }
+
+    .new-tag {
+      background: var(--accent);
+      color: var(--background);
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 6px;
+      margin-left: 8px;
+    }
+
+    .metrics {
+      display: flex;
+      justify-content: space-between;
+      text-align: center;
+      margin: 1rem 0;
+    }
+
+    .metric {
+      flex: 1;
+      padding: 1rem;
+      background-color: var(--card-bg);
+      margin: 0 0.3rem;
+      border-radius: 8px;
+    }
+
+    .metric-value {
+      font-size: 1.4rem;
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    .metric-label {
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+    }
+
+    .callout {
+      background-color: #1d3828;
+      padding: 1rem;
+      margin: 1.5rem 0;
+      border-radius: 10px;
+      font-size: 0.9rem;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background-color: var(--card-bg);
+      display: flex;
+      justify-content: space-around;
+      padding: 0.6rem 0;
+      border-top: 1px solid var(--accent);
+    }
+
+    footer i {
+      color: var(--text);
+      font-size: 1.4rem;
+    }
+  </style>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<header>
+  <button class="back-button" aria-label="Back"><i class="fas fa-arrow-left"></i></button>
+  <h1>Professional Dashboard</h1>
+  <button class="settings-icon" aria-label="Settings"><i class="fas fa-cog"></i></button>
+</header>
+
+<div class="dashboard-section">
+  <!-- Metrics -->
+  <div class="metrics">
+    <div class="metric">
+      <div class="metric-value">307</div>
+      <div class="metric-label">Views</div>
+    </div>
+    <div class="metric">
+      <div class="metric-value">6</div>
+      <div class="metric-label">Interactions</div>
+    </div>
+    <div class="metric">
+      <div class="metric-value">34</div>
+      <div class="metric-label">New Followers</div>
+    </div>
+    <div class="metric">
+      <div class="metric-value">13</div>
+      <div class="metric-label">Content Shared</div>
+    </div>
+  </div>
+
+  <!-- Callout Section -->
+  <div class="callout">
+    <strong>Next Steps:</strong><br />
+    Level up your videos with edits. Get tailored advice and explore new creative tools from an expert.
+  </div>
+
+  <!-- Your Tools -->
+  <div class="section-title">Your Tools</div>
+  <div class="tool-item"><div class="tool-left"><i class="fas fa-star"></i><span>Best Practices</span></div></div>
+  <div class="tool-item"><div class="tool-left"><i class="fas fa-lightbulb"></i><span>Inspiration <span class="new-tag">New</span></span></div></div>
+  <div class="tool-item"><div class="tool-left"><i class="fas fa-bullhorn"></i><span>Ad Tools <span class="new-tag">New</span></span></div></div>
+  <div class="tool-item"><div class="tool-left"><i class="fas fa-crown"></i><span>Subscriptions</span></div></div>
+  <div class="tool-item"><div class="tool-left"><i class="fas fa-gift"></i><span>Bonuses</span></div></div>
+  <div class="tool-item"><div class="tool-left"><i class="fas fa-handshake"></i><span>Branded Content</span></div><span>›</span></div>
+  <div class="tool-item"><div class="tool-left"><i class="fas fa-handshake"></i><span>Partnership Ads</span></div></div>
+  <div class="tool-item"><div class="tool-left"><i class="fas fa-badge-check"></i><span>Badges</span></div><span>›</span></div>
+  <div class="tool-item"><div class="tool-left"><i class="fas fa-gift"></i><span>Gifts</span></div></div>
+  <div class="tool-item"><div class="tool-left"><i class="fas fa-dollar-sign"></i><span>Payouts</span></div></div>
+  <div class="tool-item"><div class="tool-left"><i class="fas fa-chart-line"></i><span>Monetization Activity</span></div></div>
+
+  <!-- Your AIs -->
+  <div class="section-title">Your AIs</div>
+  <div class="tool-item"><div class="tool-left"><i class="fas fa-robot"></i><span>AI Assistant</span></div></div>
+
+  <!-- Tools to Set Up -->
+  <div class="section-title">Tools to Set Up</div>
+  <div class="tool-item"><div class="tool-left"><i class="fas fa-money-bill"></i><span>Monetization</span></div></div>
+  <div class="tool-item"><div class="tool-left"><i class="fas fa-briefcase"></i><span>More Tools</span></div></div>
+
+  <!-- Tips and Resources -->
+  <div class="section-title">Tips and Resources</div>
+  <div class="tool-item"><div class="tool-left"><i class="fas fa-music"></i><span>Trending Audio</span></div><span>›</span></div>
+  <div class="tool-item"><div class="tool-left"><i class="fas fa-link"></i><span>Other Helpful Resources</span></div></div>
+</div>
+
+<!-- Footer Navigation -->
+<footer>
+  <i class="fas fa-home" aria-label="Home"></i>
+  <i class="fas fa-search" aria-label="Search"></i>
+  <i class="fas fa-plus-square" aria-label="Create"></i>
+  <i class="fas fa-video" aria-label="Videos"></i>
+  <i class="fas fa-user-circle" aria-label="Profile"></i>
+</footer>
+
+</body>
+</html>
