@@ -2,262 +2,541 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Professional Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>Toolbox Suite Launcher</title>
+
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="assets/favicon.png" type="image/png" />
+
   <style>
-    :root {
-      --background:  radial-gradient(circle, rgba(0, 255, 170, 0.15), transparent 70%),
-              radial-gradient(circle at bottom right, rgba(255, 100, 200, 0.1), transparent 80%);
-      --card-bg: #1f1f1f;
-      --text: #b4d9c0;
-      --accent: #a1db6e;
-      --icon: #7ec795;
+    /* Reset & base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #fff;
+      color: #111;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    button {
+      cursor: pointer;
+      border: none;
+      background: none;
+      font-family: inherit;
     }
 
-    body { 
-  margin: 0;
-  background: #121212;
-  color: #fff;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background-image:
-    linear-gradient(45deg, #1a1a1a 25%, transparent 25%),
-    linear-gradient(-45deg, #1a1a1a 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, #1a1a1a 75%),
-    linear-gradient(-45deg, transparent 75%, #1a1a1a 75%);
-  background-size: 60px 60px;
-  background-position: 0 0, 0 30px, 30px -30px, -30px 0;
-}
-
-      /* Animated floating effect */
-  body::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background:
-      radial-gradient(circle, rgba(0, 255, 170, 0.1), transparent 70%),
-      radial-gradient(circle at bottom right, rgba(255, 100, 200, 0.08), transparent 80%);
-    z-index: -1;
-    transform: translateZ(-200px) scale(1.1);
-    animation: float 10s linear infinite;
-  }
-
-  @keyframes float {
-    0%, 100% {
-      transform: translateY(0) translateZ(-200px);
+    /* Layout containers */
+    #app-wrapper {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
     }
-    50% {
-      transform: translateY(-30px) translateZ(-200px);
+
+    /* Sidebar (Left Column) */
+    nav.sidebar {
+      width: 72px;
+      background: #f8f9fa;
+      border-right: 1px solid #ddd;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 0;
+      box-shadow: 2px 0 8px rgb(0 0 0 / 0.05);
+      user-select: none;
+      position: relative;
+      z-index: 100;
     }
-  }
+    nav.sidebar .nav-icon {
+      font-size: 24px;
+      margin: 16px 0;
+      color: #6a6a6a;
+      transition: color 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+    nav.sidebar .nav-icon:hover {
+      color: #ff4500; /* Reddit orange highlight */
+    }
+    nav.sidebar .nav-icon.active {
+      color: #ff4500;
+    }
 
+    /* Moderation expandable */
+    .moderation-section {
+      margin-top: 32px;
+      width: 100%;
+      text-align: center;
+      border-top: 1px solid #ddd;
+      padding-top: 12px;
+    }
+    .moderation-toggle {
+      cursor: pointer;
+      font-size: 14px;
+      color: #444;
+      font-weight: 600;
+      user-select: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+    }
+    .moderation-toggle:hover {
+      color: #ff4500;
+    }
+    .moderation-submenu {
+      margin-top: 8px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .moderation-submenu a {
+      font-size: 13px;
+      color: #666;
+      padding: 4px 0;
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.2s ease;
+    }
+    .moderation-submenu a:hover {
+      color: #ff4500;
+    }
+    .moderation-submenu.show {
+      display: flex;
+    }
 
-
-    header {
+    /* Top Navigation Bar */
+    header.topbar {
+      position: fixed;
+      top: 0;
+      left: 72px; /* sidebar width */
+      right: 0;
+      height: 56px;
+      background: #fff;
+      border-bottom: 1px solid #ddd;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 1rem;
-      background-color: var(--card-bg);
-      border-bottom: 1px solid var(--accent);
+      padding: 0 16px;
+      box-shadow: 0 1px 4px rgb(0 0 0 / 0.1);
+      z-index: 200;
     }
 
-    header h1 {
-      font-size: 1.2rem;
-      margin: 0;
+    /* Reddit logo on left */
+    header.topbar .logo {
+      font-weight: 800;
+      font-size: 24px;
+      color: #ff4500;
+      margin-right: 24px;
+      user-select: none;
+      cursor: pointer;
+    }
+    header.topbar .logo:hover {
+      opacity: 0.8;
     }
 
-    .back-button,
-    .settings-icon {
-      font-size: 1.5rem;
-      color: var(--accent);
+    /* Search bar center */
+    header.topbar .search-wrapper {
+      flex: 1;
+      max-width: 600px;
+      position: relative;
+    }
+    header.topbar #search-input {
+      width: 100%;
+      padding: 8px 40px 8px 12px;
+      border-radius: 16px;
+      border: 1.5px solid #ccc;
+      font-size: 15px;
+      color: #333;
+      outline-offset: 2px;
+      transition: border-color 0.3s ease;
+    }
+    header.topbar #search-input:focus {
+      border-color: #ff4500;
+    }
+    header.topbar .enter-icon {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #ff4500;
+      font-size: 18px;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+    header.topbar .enter-icon:hover {
+      color: #e03e00;
+    }
+
+    /* User icons right */
+    header.topbar .user-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-left: 24px;
+    }
+    header.topbar .user-actions button,
+    header.topbar .user-actions .icon-btn {
+      font-size: 20px;
+      color: #666;
       background: none;
       border: none;
       cursor: pointer;
+      transition: color 0.3s ease;
+      position: relative;
+    }
+    header.topbar .user-actions button:hover,
+    header.topbar .user-actions .icon-btn:hover {
+      color: #ff4500;
+    }
+    header.topbar .create-btn {
+      background: #ff4500;
+      color: white;
+      padding: 6px 14px;
+      border-radius: 16px;
+      font-weight: 700;
+      font-size: 14px;
+      box-shadow: 0 2px 6px rgb(255 69 0 / 0.4);
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+    header.topbar .create-btn:hover {
+      background-color: #e03e00;
     }
 
-    .dashboard-section {
-      padding: 1rem;
+    /* Main content feed */
+    main.feed {
+      margin-top: 56px; /* height of topbar */
+      margin-left: 72px; /* width of sidebar */
+      padding: 24px;
+      background: #fff;
+      height: calc(100vh - 56px);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
-    .section-title {
-      font-weight: bold;
-      font-size: 1rem;
-      margin-top: 2rem;
-      margin-bottom: 1rem;
-      color: #00ffaa;
-      text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+    main.feed h1 {
+      margin-bottom: 24px;
+      font-weight: 700;
+      font-size: 28px;
+      color: #222;
     }
 
-    .tool-item {
-      display: block;
-  text-align: center;
-  padding: 20px;
-  background: rgba(30, 30, 30, 0.9);
-  color: #fff;
-  text-decoration: none;
-  border-radius: 10px;
-  border: 1px solid #444;
-  transition: background 0.3s, transform 0.3s;
-  font-size: 1.1rem;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
-}
-  
-    .tool-item:hover {
-     background: linear-gradient(135deg, #00ffaa, #ff00cc);
-  color: #0d0d0d;
-  transform: translateY(-5px);
-  box-shadow: 0px 6px 12px rgba(0, 255, 170, 0.4);
-}
-    .tool-left {
+    /* Suite grid (cards) */
+    .suite-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-bottom: 48px;
+    }
+    .suite-button {
+      background: #f6f7f8;
+      color: #111;
+      padding: 1.4rem 1.2rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
+      text-align: center;
+      transition: box-shadow 0.3s ease, background-color 0.3s ease;
       display: flex;
       align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+    .suite-button:hover {
+      background-color: #ffefea;
+      box-shadow: 0 4px 12px rgb(255 69 0 / 0.25);
+      color: #ff4500;
     }
 
-    .tool-item i {
-      margin-right: 1rem;
-      color: var(--icon);
-    }
-
-    .tool-item span {
-      font-size: 0.95rem;
-    }
-
-    .new-tag {
-      background: var(--accent);
-      color: var(--background);
-      font-size: 0.7rem;
-      padding: 2px 6px;
-      border-radius: 6px;
-      margin-left: 8px;
-    }
-
-    .metrics {
+    /* Posts area (for future expansion) */
+    .posts-feed {
       display: flex;
-      justify-content: space-between;
-      text-align: center;
-      margin: 1rem 0;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .post-card {
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 1px 4px rgb(0 0 0 / 0.05);
+      background: #fff;
+      color: #222;
+    }
+    .post-meta {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 8px;
+      user-select: none;
+    }
+    .post-title {
+      font-weight: 700;
+      font-size: 18px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      color: #ff4500;
+    }
+    .post-content {
+      font-size: 15px;
+      line-height: 1.4;
+      margin-bottom: 12px;
+      color: #333;
+    }
+    .post-actions {
+      display: flex;
+      gap: 24px;
+      font-size: 14px;
+      color: #666;
+      user-select: none;
+    }
+    .post-actions span:hover {
+      color: #ff4500;
+      cursor: pointer;
     }
 
-    .metric {
+    /* Futuristic panel (chat + forum) - adjusted for light theme */
+    .futuristic-panel {
+      margin-top: 48px;
+      padding: 20px;
+      border-radius: 16px;
+      background: #fefefe;
+      box-shadow: 0 0 30px rgb(255 69 0 / 0.15);
+      color: #ff4500;
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .live-chat, .forum-link {
       flex: 1;
-      padding: 1rem;
-      background-color: var(--card-bg);
-      margin: 0 0.3rem;
-      border-radius: 8px;
-    }
-
-    .metric-value {
-      font-size: 1.4rem;
-      color: var(--accent);
-      font-weight: bold;
-    }
-
-    .metric-label {
-      font-size: 0.85rem;
-      margin-top: 0.5rem;
-    }
-
-    .callout {
-      background-color: #1d3828;
-      padding: 1rem;
-      margin: 1.5rem 0;
-      border-radius: 10px;
-      font-size: 0.9rem;
-    }
-
-    footer {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      background-color: var(--card-bg);
+      min-width: 280px;
+      background: #fff7f5;
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid #ffb1a1;
+      color: #333;
       display: flex;
-      justify-content: space-around;
-      padding: 0.6rem 0;
-      border-top: 1px solid var(--accent);
+      flex-direction: column;
+      box-shadow: 0 2px 8px rgb(255 69 0 / 0.2);
+    }
+    .live-chat h3, .forum-link h3 {
+      margin-bottom: 12px;
+      font-weight: 700;
+      font-size: 18px;
+      color: #ff4500;
+    }
+    #chat-window {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    #chat-messages {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: 0.5rem;
+      border-bottom: 1px solid #ffb1a1;
+      margin-bottom: 0.5rem;
+      background: #fff0f0;
+      border-radius: 8px;
+      color: #b3402c;
+      font-size: 14px;
+    }
+    #chat-input {
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ffb1a1;
+      color: #b3402c;
+      font-weight: 600;
+      font-size: 14px;
+      resize: none;
+    }
+    .forum-link a {
+      color: #ff4500;
+      font-weight: 600;
+      font-size: 16px;
+      text-align: center;
+      margin-top: auto;
+      padding: 12px 0;
+      border-radius: 12px;
+      background: #fff0f0;
+      box-shadow: inset 0 0 15px rgb(255 69 0 / 0.15);
+      user-select: none;
+    }
+    .forum-link a:hover {
+      background: #ff4500;
+      color: white;
+      box-shadow: none;
     }
 
-    footer i {
-      color: var(--text);
-      font-size: 1.4rem;
+    /* Responsive tweaks */
+    @media (max-width: 768px) {
+      #app-wrapper {
+        flex-direction: column;
+      }
+      nav.sidebar {
+        width: 100%;
+        height: 56px;
+        flex-direction: row;
+        justify-content: space-around;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+      }
+      header.topbar {
+        left: 0;
+        top: 56px;
+      }
+      main.feed {
+        margin-left: 0;
+        margin-top: 112px;
+        padding: 16px 12px;
+      }
+      .futuristic-panel {
+        flex-direction: column;
+      }
     }
   </style>
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
+  <div id="app-wrapper">
 
-<header>
-  <button class="back-button" aria-label="Back"><i class="fas fa-arrow-left"></i></button>
-  <h1>Professional Dashboard</h1>
-  <button class="settings-icon" aria-label="Settings"><i class="fas fa-cog"></i></button>
-</header>
+    <!-- Sidebar left -->
+    <nav class="sidebar" role="navigation" aria-label="Main navigation">
+      <div class="nav-icon active" title="Home" tabindex="0" aria-label="Home">&#x2302;</div>
+      <div class="nav-icon" title="Popular" tabindex="0" aria-label="Popular">&#x1F525;</div>
+      <div class="nav-icon" title="Explore" tabindex="0" aria-label="Explore">&#x1F50D;</div>
+      <div class="nav-icon" title="Answers" tabindex="0" aria-label="Answers">&#x2753;</div>
 
-<div class="dashboard-section">
-  <!-- Metrics -->
-  <div class="metrics">
-    <div class="metric">
-      <div class="metric-value">307</div>
-      <div class="metric-label">Views</div>
-    </div>
-    <div class="metric">
-      <div class="metric-value">6</div>
-      <div class="metric-label">Interactions</div>
-    </div>
-    <div class="metric">
-      <div class="metric-value">34</div>
-      <div class="metric-label">New Followers</div>
-    </div>
-    <div class="metric">
-      <div class="metric-value">13</div>
-      <div class="metric-label">Content Shared</div>
-    </div>
+      <div class="moderation-section" role="region" aria-label="Moderation tools">
+        <div class="moderation-toggle" tabindex="0" aria-expanded="false" aria-controls="mod-submenu">
+          Moderation &#x25BC;
+        </div>
+        <div class="moderation-submenu" id="mod-submenu" role="menu" aria-hidden="true">
+          <a href="#" role="menuitem" tabindex="-1">User Actions</a>
+          <a href="#" role="menuitem" tabindex="-1">Report Review</a>
+          <a href="#" role="menuitem" tabindex="-1">Content Filtering</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Top navigation bar -->
+    <header class="topbar" role="banner">
+      <div class="logo" aria-label="Reddit Logo" tabindex="0">reddit</div>
+
+      <div class="search-wrapper">
+        <input id="search-input" aria-label="Search" placeholder="Search Reddit..." type="search" />
+        <button aria-label="Submit search" class="enter-icon">&#128269;</button>
+      </div>
+
+      <div class="user-actions">
+        <button aria-label="Inbox">&#x2709;</button>
+        <button aria-label="Notifications">&#x1F514;</button>
+        <button class="create-btn" aria-label="Create Post">Create</button>
+      </div>
+    </header>
+
+    <!-- Main content feed -->
+    <main class="feed" role="main" aria-live="polite">
+      <h1>Toolbox Suite Launcher</h1>
+
+      <div class="suite-grid" role="list" aria-label="Toolbox suite buttons">
+        <div class="suite-button" role="listitem" tabindex="0" aria-label="Open Calculator">Calculator</div>
+        <div class="suite-button" role="listitem" tabindex="0" aria-label="Open Unit Converter">Unit Converter</div>
+        <div class="suite-button" role="listitem" tabindex="0" aria-label="Open Text Editor">Text Editor</div>
+        <div class="suite-button" role="listitem" tabindex="0" aria-label="Open Image Editor">Image Editor</div>
+        <div class="suite-button" role="listitem" tabindex="0" aria-label="Open Video Player">Video Player</div>
+        <div class="suite-button" role="listitem" tabindex="0" aria-label="Open Settings">Settings</div>
+      </div>
+
+      <section class="futuristic-panel" aria-label="Community interaction panel">
+        <div class="live-chat" aria-live="polite" aria-atomic="true" aria-relevant="additions" role="region" aria-label="Live chat">
+          <h3>Live Chat</h3>
+          <div id="chat-window">
+            <div id="chat-messages" role="log" aria-live="polite" aria-atomic="false"></div>
+            <textarea id="chat-input" aria-label="Type your message here" rows="2" placeholder="Type your message and press Enter"></textarea>
+          </div>
+        </div>
+
+        <div class="forum-link" role="region" aria-label="Community forum">
+          <h3>Community Forum</h3>
+          <a href="https://www.reddit.com/r/toolboxsuite" target="_blank" rel="noopener noreferrer" tabindex="0">Join the Discussion</a>
+        </div>
+      </section>
+    </main>
+
   </div>
 
-  <!-- Callout Section -->
-  <div class="callout">
-    <strong>Next Steps:</strong><br />
-    Level up your videos with edits. Get tailored advice and explore new creative tools from an expert.
-  </div>
+  <script>
+    // Moderation expandable submenu toggle
+    const modToggle = document.querySelector('.moderation-toggle');
+    const modSubmenu = document.querySelector('.moderation-submenu');
+    modToggle.addEventListener('click', () => {
+      const expanded = modToggle.getAttribute('aria-expanded') === 'true';
+      modToggle.setAttribute('aria-expanded', !expanded);
+      modSubmenu.classList.toggle('show');
+      modSubmenu.setAttribute('aria-hidden', expanded);
+    });
+    modToggle.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        modToggle.click();
+      }
+    });
 
-  <!-- Your Tools -->
-  <div class="section-title">Your Tools</div>
-  <div class="tool-item"><div class="tool-left"><i class="fas fa-star"></i><span>Best Practices</span></div></div>
-  <div class="tool-item"><div class="tool-left"><i class="fas fa-lightbulb"></i><span>Inspiration <span class="new-tag">New</span></span></div></div>
-  <div class="tool-item"><div class="tool-left"><i class="fas fa-bullhorn"></i><span>Ad Tools <span class="new-tag">New</span></span></div></div>
-  <div class="tool-item"><div class="tool-left"><i class="fas fa-crown"></i><span>Subscriptions</span></div></div>
-  <div class="tool-item"><div class="tool-left"><i class="fas fa-gift"></i><span>Bonuses</span></div></div>
-  <div class="tool-item"><div class="tool-left"><i class="fas fa-handshake"></i><span>Branded Content</span></div><span>›</span></div>
-  <div class="tool-item"><div class="tool-left"><i class="fas fa-handshake"></i><span>Partnership Ads</span></div></div>
-  <div class="tool-item"><div class="tool-left"><i class="fas fa-badge-check"></i><span>Badges</span></div><span>›</span></div>
-  <div class="tool-item"><div class="tool-left"><i class="fas fa-gift"></i><span>Gifts</span></div></div>
-  <div class="tool-item"><div class="tool-left"><i class="fas fa-dollar-sign"></i><span>Payouts</span></div></div>
-  <div class="tool-item"><div class="tool-left"><i class="fas fa-chart-line"></i><span>Monetization Activity</span></div></div>
+    // Chat input submit (Enter sends message)
+    const chatInput = document.getElementById('chat-input');
+    const chatMessages = document.getElementById('chat-messages');
+    chatInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        const text = chatInput.value.trim();
+        if(text) {
+          const msgDiv = document.createElement('div');
+          msgDiv.textContent = "You: " + text;
+          msgDiv.style.marginBottom = '8px';
+          chatMessages.appendChild(msgDiv);
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+          chatInput.value = '';
+        }
+      }
+    });
 
-  <!-- Your AIs -->
-  <div class="section-title">Your AIs</div>
-  <div class="tool-item"><div class="tool-left"><i class="fas fa-robot"></i><span>AI Assistant</span></div></div>
+    // Suite buttons clickable (placeholder action)
+    const suiteButtons = document.querySelectorAll('.suite-button');
+    suiteButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        alert(`Opening ${btn.textContent}...`);
+      });
+      btn.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          btn.click();
+        }
+      });
+    });
 
-  <!-- Tools to Set Up -->
-  <div class="section-title">Tools to Set Up</div>
-  <div class="tool-item"><div class="tool-left"><i class="fas fa-money-bill"></i><span>Monetization</span></div></div>
-  <div class="tool-item"><div class="tool-left"><i class="fas fa-briefcase"></i><span>More Tools</span></div></div>
-
-  <!-- Tips and Resources -->
-  <div class="section-title">Tips and Resources</div>
-  <div class="tool-item"><div class="tool-left"><i class="fas fa-music"></i><span>Trending Audio</span></div><span>›</span></div>
-  <div class="tool-item"><div class="tool-left"><i class="fas fa-link"></i><span>Other Helpful Resources</span></div></div>
-</div>
-
-<!-- Footer Navigation -->
-<footer>
-  <i class="fas fa-home" aria-label="Home"></i>
-  <i class="fas fa-search" aria-label="Search"></i>
-  <i class="fas fa-plus-square" aria-label="Create"></i>
-  <i class="fas fa-video" aria-label="Videos"></i>
-  <i class="fas fa-user-circle" aria-label="Profile"></i>
-</footer>
-
+    // Search submit
+    const searchInput = document.getElementById('search-input');
+    const searchBtn = document.querySelector('.enter-icon');
+    function doSearch() {
+      alert(`Searching for: "${searchInput.value.trim()}"`);
+    }
+    searchBtn.addEventListener('click', doSearch);
+    searchInput.addEventListener('keydown', e => {
+      if(e.key === 'Enter'){
+        doSearch();
+      }
+    });
+  </script>
 </body>
 </html>
