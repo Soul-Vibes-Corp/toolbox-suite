@@ -90,23 +90,25 @@
     }
 
     .tool-item {
-       display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #007bff;
-      color: white;
-      text-decoration: none;
-      padding: 1.5rem;
-      border-radius: 8px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      transition: background-color 0.3s ease;
-    }
-    
+      display: block;
+  text-align: center;
+  padding: 20px;
+  background: rgba(30, 30, 30, 0.9);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 10px;
+  border: 1px solid #444;
+  transition: background 0.3s, transform 0.3s;
+  font-size: 1.1rem;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+}
+  
     .tool-item:hover {
-      background-color:#0056b3;
-    }
-
+     background: linear-gradient(135deg, #00ffaa, #ff00cc);
+  color: #0d0d0d;
+  transform: translateY(-5px);
+  box-shadow: 0px 6px 12px rgba(0, 255, 170, 0.4);
+}
     .tool-left {
       display: flex;
       align-items: center;
