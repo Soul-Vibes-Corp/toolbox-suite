@@ -459,25 +459,7 @@
 <body>
   <div id="app-wrapper">
 
-    <!-- Sidebar left -->
-    <nav class="sidebar" role="navigation" aria-label="Main navigation">
-      <div class="nav-icon active" title="Home" tabindex="0" aria-label="Home">&#x2302;</div>
-      <div class="nav-icon" title="Popular" tabindex="0" aria-label="Popular">&#x1F525;</div>
-      <div class="nav-icon" title="Explore" tabindex="0" aria-label="Explore">&#x1F50D;</div>
-      <div class="nav-icon" title="Answers" tabindex="0" aria-label="Answers">&#x2753;</div>
-
-      <div class="moderation-section" role="region" aria-label="Moderation tools">
-        <div class="moderation-toggle" tabindex="0" aria-expanded="false" aria-controls="mod-submenu">
-          Moderation &#x25BC;
-        </div>
-        <div class="moderation-submenu" id="mod-submenu" role="menu" aria-hidden="true">
-          <a href="#" role="menuitem" tabindex="-1">User Actions</a>
-          <a href="#" role="menuitem" tabindex="-1">Report Review</a>
-          <a href="#" role="menuitem" tabindex="-1">Content Filtering</a>
-        </div>
-      </div>
-    </nav>
-
+   
     <!-- Top navigation bar -->
     <header class="topbar" role="banner">
       <button id="hamburger-btn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="sidebar" tabindex="0">
@@ -496,7 +478,25 @@
         <button class="create-btn" aria-label="Create Post">Create</button>
       </div>
     </header>
-    
+      <!-- Sidebar left -->
+    <nav class="sidebar" role="navigation" aria-label="Main navigation">
+      <div class="nav-icon active" title="Home" tabindex="0" aria-label="Home">&#x2302;</div>
+      <div class="nav-icon" title="Popular" tabindex="0" aria-label="Popular">&#x1F525;</div>
+      <div class="nav-icon" title="Explore" tabindex="0" aria-label="Explore">&#x1F50D;</div>
+      <div class="nav-icon" title="Answers" tabindex="0" aria-label="Answers">&#x2753;</div>
+
+      <div class="moderation-section" role="region" aria-label="Moderation tools">
+        <div class="moderation-toggle" tabindex="0" aria-expanded="false" aria-controls="mod-submenu">
+          Moderation &#x25BC;
+        </div>
+        <div class="moderation-submenu" id="mod-submenu" role="menu" aria-hidden="true">
+          <a href="#" role="menuitem" tabindex="-1">User Actions</a>
+          <a href="#" role="menuitem" tabindex="-1">Report Review</a>
+          <a href="#" role="menuitem" tabindex="-1">Content Filtering</a>
+        </div>
+      </div>
+    </nav>
+
     <!-- Main content feed -->
     <main class="feed" role="main" aria-live="polite">
       <h1>Toolbox Suite Launcher</h1>
