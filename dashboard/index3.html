@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>Project HALO</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="favicon.png" type="image/png" />
+</head>
+<body>
+  <div id="app-wrapper">
+    <nav class="sidebar" id="sidebar">
+      <div class="nav-icon active" title="Home">&#x2302;</div>
+      <div class="nav-icon" title="Data">&#128202;</div>
+      <div class="nav-icon" title="Profile">&#128100;</div>
+      <div class="nav-icon" title="Settings">&#9881;</div>
+    </nav>
+    <header class="topbar">
+      <button id="hamburger-btn">&#9776;</button>
+      <div class="logo">Project HALO</div>
+      <div class="search-wrapper">
+        <input id="search-input" placeholder="Search..." type="search" />
+        <button class="enter-icon">&#128269;</button>
+      </div>
+      <div class="user-actions">
+        <button title="Inbox">&#x2709;</button>
+        <button title="Notifications">&#x1F514;</button>
+        <button class="create-btn">Add</button>
+      </div>
+    </header>
+    <main class="feed">
+      <h1>Digital Surveillance Dashboard</h1>
+      <div class="suite-grid">
+        <div class="suite-button">OSINT Scanner</div>
+        <div class="suite-button">Social Scraper</div>
+        <div class="suite-button">Heatmap Tracker</div>
+        <div class="suite-button">Behavior Profiler</div>
+        <div class="suite-button">Migration Flow</div>
+        <div class="suite-button">Intent Analyzer</div>
+      </div>
+      <section class="futuristic-panel">
+        <div class="live-chat">
+          <h3>Live Feed</h3>
+          <div id="chat-window">
+            <div id="chat-messages"></div>
+            <textarea id="chat-input" placeholder="Enter command..."></textarea>
+          </div>
+        </div>
+        <div class="forum-link">
+          <h3>Logs</h3>
+          <a href="https://console.firebase.google.com/" target="_blank">Firebase Console</a>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
+'''
+
+<style>
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  background: #fff;
+  color: #111;
+}
+#app-wrapper { display: flex; height: 100vh; overflow: hidden; }
+nav.sidebar {
+  width: 72px;
+  background: #f8f9fa;
+  border-right: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 0;
+}
+.nav-icon {
+  font-size: 24px;
+  margin: 16px 0;
+  color: #6a6a6a;
+  cursor: pointer;
+}
+.nav-icon.active, .nav-icon:hover { color: #ff4500; }
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 72px;
+  right: 0;
+  height: 56px;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+.logo { font-weight: 800; font-size: 24px; color: #ff4500; }
+.search-wrapper { flex: 1; margin: 0 16px; position: relative; }
+#search-input {
+  width: 100%;
+  padding: 8px 40px 8px 12px;
+  border-radius: 16px;
+  border: 1.5px solid #ccc;
+}
+.enter-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #ff4500;
+  background: none;
+  border: none;
+}
+.user-actions { display: flex; gap: 16px; }
+.create-btn {
+  background: #ff4500;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 16px;
+}
+main.feed {
+  margin-top: 56px;
+  margin-left: 72px;
+  padding: 24px;
+  overflow-y: auto;
+}
+.suite-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+}
+.suite-button {
+  background: #f6f7f8;
+  padding: 1.4rem;
+  border-radius: 12px;
+  font-weight: 700;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+.futuristic-panel {
+  margin-top: 24px;
+  display: flex;
+  gap: 24px;
+}
+.live-chat, .forum-link {
+  flex: 1;
+  min-width: 300px;
+  background: #fff7f5;
+  border: 1px solid #ffb1a1;
+  padding: 16px;
+  border-radius: 12px;
+}
+#chat-messages {
+  min-height: 150px;
+  max-height: 200px;
+  overflow-y: auto;
+  background: #fff0f0;
+  padding: 0.5rem;
+}
+#chat-input {
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ffb1a1;
+}
+</style>
+<script>
+script_js_content = """
+document.querySelectorAll('.suite-button').forEach(btn => {
+  btn.addEventListener('click', () => alert(`Launching ${btn.textContent}...`));
+});
+const chatInput = document.getElementById('chat-input');
+const chatMessages = document.getElementById('chat-messages');
+chatInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    const msg = chatInput.value.trim();
+    if (msg) {
+      const div = document.createElement('div');
+      div.textContent = "Command: " + msg;
+      chatMessages.appendChild(div);
+      chatInput.value = '';
+    }
+  }
+});
+</script>
