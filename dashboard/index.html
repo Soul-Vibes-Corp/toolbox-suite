@@ -510,6 +510,17 @@ main {
 
 <!-- Floating chatbot -->
 <div id="chatbot-toggle">🤖</div>
+  <button id="chatbot-toggle" aria-label="Toggle Chatbot">🤖</button>
+
+<div id="chat-window" role="dialog" aria-modal="true" aria-labelledby="chat-header">
+  <div id="chat-header">Chatbot
+    <button id="chat-close" aria-label="Close Chat">&times;</button>
+  </div>
+  <div id="chat-messages" tabindex="0" aria-live="polite">
+    <p>Welcome! How can I assist you today?</p>
+  </div>
+  <input type="text" id="chat-input" aria-label="Type your message" placeholder="Type a message..." />
+</div>
 
 <footer class="bottom-nav">
   <a href="index.html" class="nav-link" aria-label="Home">🏠</a>
