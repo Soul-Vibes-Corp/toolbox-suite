@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project HALO - Digital Insight Analyzer</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: #f9f9fb;
+      color: #111;
+    }
+    .hidden { display: none; }
+
+    .login-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: #0b0f1a;
+      color: white;
+    }
+    .login-screen input {
+      margin: 8px 0;
+      padding: 10px;
+      width: 240px;
+      border: none;
+      border-radius: 6px;
+    }
+    .login-screen button {
+      padding: 10px 20px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 6px;
+      background: #0051ff;
+      color: white;
+      font-weight: bold;
+    }
+
+    .app {
+      display: flex;
+      height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 72px;
+      background: #1c1e22;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 0;
+    }
+    .sidebar .avatar,
+    .profile-pic {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #ccc;
+      margin: 12px 0;
+    }
+    .sidebar .icon {
+      width: 24px;
+      height: 24px;
+      margin: 16px 0;
+      background: white;
+      border-radius: 4px;
+    }
+    .sidebar .stealth {
+      margin-top: auto;
+      text-align: center;
+      font-size: 12px;
+      color: #aaa;
+    }
+
+    /* Dashboard */
+    .dashboard {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      background: white;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+    }
+    .tab {
+      padding: 6px 12px;
+      background: #f1f1f5;
+      border: none;
+      border-radius: 6px;
+    }
+    .tab.active {
+      background: #e6edff;
+      color: #0051ff;
+    }
+
+    .user-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .content {
+      display: flex;
+      flex: 1;
+      padding: 24px;
+      gap: 24px;
+    }
+
+    .feed {
+      flex: 3;
+    }
+
+    .feed-card {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 0 6px rgba(0,0,0,0.1);
+    }
+
+    .feed-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .feed-header .profile-pic.small {
+      width: 36px;
+      height: 36px;
+    }
+
+    .feed-body {
+      margin-top: 12px;
+    }
+
+    .media-grid {
+      display: flex;
+      gap: 12px;
+    }
+
+    .media-grid img {
+      width: 120px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+
+    .placeholder {
+      background: #f0f0f0;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .details-grid, .cards-grid {
+      margin-top: 12px;
+      display: flex;
+      gap: 12px;
+    }
+
+    .card {
+      background: #e9f3fc;
+      padding: 12px;
+      border-radius: 6px;
+      flex: 1;
+      text-align: center;
+    }
+
+    .profile-summary {
+      flex: 1;
+      background: #f3f3f7;
+      padding: 16px;
+      border-radius: 12px;
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .profile-pic.medium {
+      width: 48px;
+      height: 48px;
+    }
+
+    .risk.low {
+      background: #d2f6d0;
+      color: #217a21;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    .timeline {
+      margin-top: 16px;
+      font-size: 14px;
+    }
+
+    .timeline a {
+      display: block;
+      margin-top: 8px;
+      color: #0051ff;
+    }
+
+  </style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen" class="login-screen">
+  <h2>Galactic Access Login</h2>
+  <input type="text" id="username" placeholder="Commander ID" />
+  <input type="password" id="password" placeholder="Access Code" />
+  <button onclick="login()">Enter Command Center</button>
+</div>
+
+<!-- MAIN DASHBOARD -->
+<div id="dashboard" class="app hidden">
+  <aside class="sidebar">
+    <div class="avatar"></div>
+    <nav>
+      <button class="icon home" title="Home"></button>
+      <button class="icon search" title="Search"></button>
+      <button class="icon network" title="Network"></button>
+      <button class="icon check" title="Check"></button>
+    </nav>
+    <div class="stealth">
+      <p>Stealth Mode</p>
+      <ul>
+        <li>Desit</li>
+        <li>Hosrhap</li>
+        <li>Trace ID</li>
+        <li>Alles Linking</li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="dashboard">
+    <header>
+      <h1>Digital Insight Analyzer</h1>
+      <div class="tabs">
+        <button class="tab active">OSINT Scraper</button>
+        <button class="tab">Digital Behavior Tracker</button>
+        <button class="tab">ID Verification</button>
+        <button class="tab">Risk & Intent Engine</button>
+        <button class="tab">Timeline Viewer</button>
+      </div>
+      <div class="user-actions">
+        <button class="icon help" title="Help"></button>
+        <div class="profile-pic"></div>
+      </div>
+    </header>
+
+    <section class="content">
+      <div class="feed">
+        <div class="feed-card">
+          <div class="feed-header">
+            <div class="profile-pic small"></div>
+            <div>
+              <p><strong>Jane Doe</strong></p>
+              <p class="meta">Observation • TikTok</p>
+            </div>
+            <span class="time">2 hours ago</span>
+          </div>
+          <div class="feed-body">
+            <p><strong>Geotagged photos in New York City</strong></p>
+            <div class="media-grid">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Brooklyn_Bridge_Postdlf.jpg/320px-Brooklyn_Bridge_Postdlf.jpg" alt="Bridge" />
+              <div class="placeholder">Behavior Graph</div>
+            </div>
+            <div class="details-grid">
+              <p><a href="#">Visited example.com</a> — 12 hours ago</p>
+              <p>Search terms: cybersecurity, pen testing</p>
+            </div>
+            <div class="cards-grid">
+              <div class="card">Trace Choice</div>
+              <div class="card">Location heatmap</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="profile-summary">
+        <div class="profile-header">
+          <div class="profile-pic medium"></div>
+          <div>
+            <p><strong>Jane Doe</strong></p>
+            <p class="risk low">Low Risk</p>
+          </div>
+        </div>
+        <div class="timeline">
+          <p>• Profile Created</p>
+          <small>Late night activity flagged</small>
+          <p>• Late night activity</p>
+          <small>2 days ago</small>
+          <a href="#">View Full History</a>
+        </div>
+      </aside>
+    </section>
+  </main>
+</div>
+
+<!-- SCRIPTS -->
+<script>
+  function login() {
+    const user = document.getElementById("username").value;
+    const pass = document.getElementById("password").value;
+    if (user && pass) {
+      document.getElementById("login-screen").classList.add("hidden");
+      document.getElementById("dashboard").classList.remove("hidden");
+    } else {
+      alert("Access Denied: Missing credentials.");
+    }
+  }
+</script>
+</body>
+</html>
