@@ -981,9 +981,11 @@ db.collection('globalChat').orderBy('timestamp')
     display: none;
   }
 }
+  
+</script>
 
-
-   // Chatbot toggle
+<script>
+  // Chatbot toggle
   const chatbotToggle = document.getElementById('chatbot-toggle');
   const chatWindow = document.getElementById('chat-window');
   const chatClose = document.getElementById('chat-close');
@@ -1023,10 +1025,24 @@ db.collection('globalChat').orderBy('timestamp')
     }
   });
 
-  
+  // Search filter
+  const searchInput = document.getElementById('search-input');
+  const dashboardGrid = document.getElementById('dashboard-grid');
+  const cards = dashboardGrid.querySelectorAll('.card');
+
+  searchInput.addEventListener('input', () => {
+    const filter = searchInput.value.toLowerCase();
+    cards.forEach(card => {
+      const title = card.querySelector('.card-title').textContent.toLowerCase();
+      const desc = card.querySelector('.card-desc').textContent.toLowerCase();
+      if(title.includes(filter) || desc.includes(filter)){
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  });
 </script>
-
-
   
 </body>
 </html>
