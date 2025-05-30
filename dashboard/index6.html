@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#000000" />
+  <title>Toolbox Suite Launcher</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="assets/favicon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="assets/logo-192.png" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Global Reset and Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #121212;
+      color: #fff;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-image:
+        linear-gradient(45deg, #1a1a1a 25%, transparent 25%),
+        linear-gradient(-45deg, #1a1a1a 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #1a1a1a 75%),
+        linear-gradient(-45deg, transparent 75%, #1a1a1a 75%);
+      background-size: 60px 60px;
+      background-position: 0 0, 0 30px, 30px -30px, -30px 0;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background:
+        radial-gradient(circle, rgba(0, 255, 170, 0.1), transparent 70%),
+        radial-gradient(circle at bottom right, rgba(255, 100, 200, 0.08), transparent 80%);
+      z-index: -1;
+      transform: translateZ(-200px) scale(1.1);
+      animation: float 10s linear infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) translateZ(-200px); }
+      50% { transform: translateY(-30px) translateZ(-200px); }
+    }
+
+    main {
+      padding: 2rem;
+      padding-bottom: 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .suite-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      width: 100%;
+      max-width: 800px;
+      padding: 1rem;
+    }
+
+    .suite-button {
+      background: rgba(0, 255, 170, 0.1);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 0 15px rgba(0, 255, 170, 0.2);
+      color: #0ff;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: all 0.3s ease;
+      user-select: none;
+      text-decoration: none;
+    }
+
+    .suite-button:hover {
+      box-shadow: 0 0 25px #0ffa, 0 0 30px #0ff, 0 0 40px #0fa;
+      transform: translateY(-5px) scale(1.02);
+      background: rgba(0, 255, 170, 0.2);
+    }
+
+    .card-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .card-title { font-weight: 700; font-size: 1.25rem; margin-bottom: 0.5rem; }
+    .card-desc { font-weight: 400; font-size: 0.9rem; color: #a0f0f0; text-align: center; }
+
+    footer.bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background-color: #111;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      border-top: 1px solid #333;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+    }
+
+    .bottom-nav .nav-link {
+      color: #e0e0e0;
+      font-size: 1.5rem;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .bottom-nav .nav-link:hover {
+      color: #00ffaa;
+    }
+
+    @media (min-width: 768px) {
+      .bottom-nav { display: none; }
+    }
+
+    /* Additional utilities omitted here for brevity */
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <h1><a href="index.html" class="home-link">🧰</a></h1>
+  <div class="actions">
+    <div class="points-counter">⭐ Points: <span id="points-value">2340</span></div>
+  </div>
+  <input type="checkbox" id="menuToggle" class="menu-toggle" />
+  <label for="menuToggle" class="hamburger" aria-label="Toggle Menu">&#9776;</label>
+  <nav class="menu">
+    <div class="actions">
+      <button id="search-toggle" aria-label="Search">🔍</button>
+      <input type="text" id="search-input" placeholder="Search tools..." aria-label="Search tools" />
+      <button onclick="searchInput.value=''; searchInput.dispatchEvent(new Event('input'))">Clear</button>
+      <a href="../dashboard/setting/rewards.html">Rewards</a>
+      <a href="../dashboard/setting/toolHistory.html">Track Tools</a>
+      <a href="../dashboard/setting/index.html">Settings</a>
+      <button onclick="location.href='../index.html'" id="logout-button" aria-label="Logout">Logout</button>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <h1>Toolbox Launcher</h1>
+  <div id="search-results" class="suite-grid" style="display: none;"></div>
+  <div class="suite-grid" id="suite-grid" aria-live="polite">
+    <a href="../data/index.html" class="suite-button"><div class="card-title">Marketing Hub</div></a>
+    <a href="../data1/index.html" class="suite-button"><div class="card-title">Business Suite</div></a>
+    <a href="../data2/index.html" class="suite-button"><div class="card-title">CRM & Service Hub</div></a>
+    <a href="../data3/index.html" class="suite-button"><div class="card-title">HR & Team Management Suite</div></a>
+    <a href="../data4/index.html" class="suite-button"><div class="card-title">Customer Growth Kit</div></a>
+    <a href="../data5/index.html" class="suite-button"><div class="card-title">Smart Daily Tools</div></a>
+  </div>
+</main>
+
+<!-- Chatbot Button -->
+<button id="chatbot-toggle" aria-label="Toggle Chatbot">💬</button>
+<div id="chat-window" role="dialog" aria-modal="true" aria-labelledby="chat-header" style="display:none;">
+  <div id="chat-header">Chatbot <button id="chat-close" aria-label="Close Chat">&times;</button></div>
+  <div id="chat-messages"><p>Welcome! How can I assist you today?</p></div>
+  <input type="text" id="chat-input" placeholder="Type a message..." />
+</div>
+
+<footer class="bottom-nav">
+  <a href="index.html" class="nav-link">🏠</a>
+  <a href="../dashboard/explore-page/index.html" class="nav-link">🔍</a>
+  <a href="#add" class="nav-link">➕</a>
+  <a href="#messages" class="nav-link">💬</a>
+  <a href="../dashboard/profile-page/index.html" class="nav-link">👤</a>
+</footer>
+
+<!-- Firebase & Scripts -->
+<script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
+    authDomain: "chat-code-forum.firebaseapp.com",
+    projectId: "chat-code-forum",
+    storageBucket: "chat-code-forum.appspot.com",
+    messagingSenderId: "496765673859",
+    appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
+    measurementId: "G-XJKWXHF8WN"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+</script>
+
+<script>
+  // Search toggle
+  const searchToggle = document.getElementById('search-toggle');
+  const searchInput = document.getElementById('search-input');
+  const searchResults = document.getElementById('search-results');
+  const suiteGrid = document.getElementById('suite-grid');
+
+  const tools = [
+    { name: "Marketing Hub", tags: ["marketing"], link: "../data/index.html" },
+    { name: "Business Suite", tags: ["business"], link: "../data1/index.html" },
+    { name: "CRM & Service Hub", tags: ["crm"], link: "../data2/index.html" },
+    { name: "HR & Team Management Suite", tags: ["hr"], link: "../data3/index.html" },
+    { name: "Customer Growth Kit", tags: ["growth"], link: "../data4/index.html" },
+    { name: "Smart Daily Tools", tags: ["tools"], link: "../data5/index.html" },
+  ];
+
+  searchToggle.addEventListener('click', () => {
+    searchInput.classList.toggle('expanded');
+    if (searchInput.classList.contains('expanded')) {
+      searchInput.focus();
+    }
+  });
+
+  searchInput.addEventListener('input', () => {
+    const query = searchInput.value.toLowerCase().trim();
+    searchResults.innerHTML = '';
+    const filtered = tools.filter(tool =>
+      tool.name.toLowerCase().includes(query) ||
+      tool.tags.some(tag => tag.includes(query))
+    );
+
+    if (filtered.length > 0) {
+      filtered.forEach(tool => {
+        const a = document.createElement('a');
+        a.href = tool.link;
+        a.className = 'suite-button';
+        a.textContent = tool.name;
+        searchResults.appendChild(a);
+      });
+      suiteGrid.style.display = 'none';
+      searchResults.style.display = 'grid';
+    } else {
+      searchResults.innerHTML = '<p style="color:red;">No matching tools found.</p>';
+      suiteGrid.style.display = 'none';
+      searchResults.style.display = 'block';
+    }
+  });
+
+  // Chatbot logic
+  const chatbotToggle = document.getElementById('chatbot-toggle');
+  const chatWindow = document.getElementById('chat-window');
+  const chatClose = document.getElementById('chat-close');
+  const chatMessages = document.getElementById('chat-messages');
+
+  chatbotToggle.addEventListener('click', () => {
+    chatWindow.style.display = chatWindow.style.display === 'flex' ? 'none' : 'flex';
+  });
+
+  chatClose.addEventListener('click', () => {
+    chatWindow.style.display = 'none';
+  });
+</script>
+</body>
+</html>
