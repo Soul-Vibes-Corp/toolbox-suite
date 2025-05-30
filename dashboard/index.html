@@ -925,6 +925,47 @@ db.collection('globalChat').orderBy('timestamp')
   }
 }
 
+
+   // Chatbot toggle
+  const chatbotToggle = document.getElementById('chatbot-toggle');
+  const chatWindow = document.getElementById('chat-window');
+  const chatClose = document.getElementById('chat-close');
+  const chatInput = document.getElementById('chat-input');
+  const chatMessages = document.getElementById('chat-messages');
+
+  chatbotToggle.addEventListener('click', () => {
+    if(chatWindow.style.display === 'flex'){
+      chatWindow.style.display = 'none';
+    } else {
+      chatWindow.style.display = 'flex';
+      chatInput.focus();
+    }
+  });
+  chatClose.addEventListener('click', () => {
+    chatWindow.style.display = 'none';
+  });
+
+  chatInput.addEventListener('keydown', e => {
+    if(e.key === 'Enter' && chatInput.value.trim() !== '') {
+      const userMsg = document.createElement('p');
+      userMsg.textContent = "You: " + chatInput.value.trim();
+      userMsg.style.color = "#0fa";
+      chatMessages.appendChild(userMsg);
+
+      // Simulate AI response
+      setTimeout(() => {
+        const botMsg = document.createElement('p');
+        botMsg.textContent = "ShadowGrid-AI: Sorry, I’m still learning! 🤖";
+        botMsg.style.color = "#0ff";
+        chatMessages.appendChild(botMsg);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }, 800);
+
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      chatInput.value = '';
+    }
+  });
+
   
 </script>
 
