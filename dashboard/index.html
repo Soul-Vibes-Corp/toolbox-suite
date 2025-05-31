@@ -528,8 +528,11 @@
 }
 
 .profile-circle img {
-  width: 100%;
-  height: 100%;
+ width: 24px;
+  height: 24px;
+  object-fit: contain;
+  filter: brightness(0) saturate(100%) invert(26%) sepia(57%) saturate(548%) hue-rotate(176deg) brightness(94%) contrast(91%);
+  transition: filter 0.2s ease;
   object-fit: cover;
   display: block;
 }
