@@ -299,6 +299,18 @@
       transform: translateY(0);
     }
   }
+    .nav-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  filter: brightness(0) saturate(100%) invert(26%) sepia(57%) saturate(548%) hue-rotate(176deg) brightness(94%) contrast(91%);
+  transition: filter 0.2s ease;
+}
+
+.nav-link:hover .nav-icon {
+  filter: brightness(0) saturate(100%) invert(39%) sepia(84%) saturate(439%) hue-rotate(180deg) brightness(95%) contrast(104%);
+}
+
 </style>
 
 
