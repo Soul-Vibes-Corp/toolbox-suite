@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TraceCore™ W-2 Generator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="container">
+    <h1>TraceCore™ W-2 Generator</h1>
+    <form id="w2-form">
+      <fieldset>
+        <legend>Employee Info</legend>
+        <input type="text" placeholder="Full Name" id="employeeName" required />
+        <input type="text" placeholder="SSN" id="employeeSSN" required />
+        <input type="text" placeholder="Address" id="employeeAddress" required />
+      </fieldset>
+      <fieldset>
+        <legend>Employer Info</legend>
+        <input type="text" placeholder="Employer Name" id="employerName" required />
+        <input type="text" placeholder="EIN" id="employerEIN" required />
+        <input type="text" placeholder="Address" id="employerAddress" required />
+      </fieldset>
+      <fieldset>
+        <legend>Income & Withholdings</legend>
+        <input type="number" placeholder="Wages" id="wages" required />
+        <input type="number" placeholder="Federal Withheld" id="fedTax" required />
+        <input type="number" placeholder="State Withheld" id="stateTax" />
+      </fieldset>
+      <button type="submit">Generate W-2</button>
+    </form>
+    <div id="preview" class="preview"></div>
+    <button onclick="downloadPDF()">Download PDF</button>
+  </main>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
