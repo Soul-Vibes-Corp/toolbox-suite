@@ -31,94 +31,27 @@
     <button type="submit">Generate W-2</button>
   </form>
 
-  <div id="preview" class="preview" style="margin-top: 30px;">
-    <div class="w2-form" id="w2-template">
-      <h2>Form W-2 Wage and Tax Statement (2024)</h2>
-      <div class="w2-row">
-        <div><strong>1. Wages, tips, other comp:</strong><br>$<span id="out-wages"></span></div>
-        <div><strong>2. Fed income tax withheld:</strong><br>$<span id="out-fedTax"></span></div>
-      </div>
-      <div class="w2-row">
-        <div><strong>3. SS wages:</strong><br>$<span id="out-wages2"></span></div>
-        <div><strong>4. SS tax withheld:</strong><br>$<span id="out-fedTax2"></span></div>
-      </div>
-      <div class="w2-row">
-        <div><strong>5. Medicare wages:</strong><br>$<span id="out-wages3"></span></div>
-        <div><strong>6. Medicare tax withheld:</strong><br>$<span id="out-fedTax3"></span></div>
-      </div>
-      <hr>
-      <div class="w2-row">
-        <div><strong>Employee Name:</strong> <span id="out-employeeName"></span></div>
-        <div><strong>SSN:</strong> <span id="out-employeeSSN"></span></div>
-      </div>
-      <div><strong>Employee Address:</strong> <span id="out-employeeAddress"></span></div>
-      <hr>
-      <div class="w2-row">
-        <div><strong>Employer Name:</strong> <span id="out-employerName"></span></div>
-        <div><strong>EIN:</strong> <span id="out-employerEIN"></span></div>
-      </div>
-      <div><strong>Employer Address:</strong> <span id="out-employerAddress"></span></div>
-    </div>
-  </div>
+  <div id="preview" class="preview"></div>
+  <button onclick="downloadPDF()">Download PDF</button>
 
-  <button onclick="downloadPDF()" style="margin-top: 20px;">Download PDF</button>
-
-  <section id="guide" style="margin-top: 40px;">
-    <h2>📘 How to Fill Your W-2 Form</h2>
+  <section id="guide">
+    <h2>How to Fill Your W-2 Form</h2>
     <img src="assets/w2-template-1.jpg" alt="W2 Template 1" width="100%">
     <img src="assets/w2-template-2.jpg" alt="W2 Template 2" width="100%">
-    <p><strong>Tips:</strong> Double-check SSNs, ensure EIN is correct, and match wages against your pay stubs. Refer to <a href="https://www.irs.gov/forms-pubs/about-form-w-2" target="_blank">IRS Form W-2 instructions</a> if unsure.</p>
+    <p><strong>Tips:</strong> Double-check SSNs, ensure EIN is correct, and match wages against your pay stubs. Refer to IRS instructions if unsure.</p>
   </section>
 </main>
 
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
+
 <!-- PDF Tools -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-<!-- Script -->
-<script>
-document.getElementById("w2-form").addEventListener("submit", function (e) {
-  e.preventDefault();
-
-  const data = {
-    employeeName: document.getElementById("employeeName").value,
-    employeeSSN: document.getElementById("employeeSSN").value,
-    employeeAddress: document.getElementById("employeeAddress").value,
-    employerName: document.getElementById("employerName").value,
-    employerEIN: document.getElementById("employerEIN").value,
-    employerAddress: document.getElementById("employerAddress").value,
-    wages: document.getElementById("wages").value,
-    fedTax: document.getElementById("fedTax").value,
-    stateTax: document.getElementById("stateTax").value,
-  };
-
-  document.getElementById("out-wages").innerText = data.wages;
-  document.getElementById("out-fedTax").innerText = data.fedTax;
-  document.getElementById("out-wages2").innerText = data.wages;
-  document.getElementById("out-fedTax2").innerText = (data.wages * 0.062).toFixed(2);
-  document.getElementById("out-wages3").innerText = data.wages;
-  document.getElementById("out-fedTax3").innerText = (data.wages * 0.0145).toFixed(2);
-  document.getElementById("out-employeeName").innerText = data.employeeName;
-  document.getElementById("out-employeeSSN").innerText = data.employeeSSN;
-  document.getElementById("out-employeeAddress").innerText = data.employeeAddress;
-  document.getElementById("out-employerName").innerText = data.employerName;
-  document.getElementById("out-employerEIN").innerText = data.employerEIN;
-  document.getElementById("out-employerAddress").innerText = data.employerAddress;
-
-  document.getElementById("preview").style.display = "block";
-});
-
-async function downloadPDF() {
-  const { jsPDF } = window.jspdf;
-  const preview = document.getElementById("w2-template");
-  const canvas = await html2canvas(preview);
-  const imgData = canvas.toDataURL("image/png");
-
-  const pdf = new jsPDF();
-  pdf.addImage(imgData, "PNG", 10, 10, 190, 0);
-  pdf.save("W2_TraceCore.pdf");
-}
-</script>
-
+<!-- Main Script -->
+<script src="script.js"></script>
 </body>
 </html>
