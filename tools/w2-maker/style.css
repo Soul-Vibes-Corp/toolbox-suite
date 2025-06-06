@@ -1,87 +1,32 @@
 body {
-  font-family: 'Segoe UI', sans-serif;
-  background: #f9f9f9;
+  font-family: "Segoe UI", sans-serif;
+  background: #f7f9fb;
+  color: #222;
   margin: 0;
-  padding: 0;
-  color: #333;
-}
-
-.container {
-  max-width: 800px;
-  margin: 0 auto;
   padding: 2rem;
 }
-
-h1, h2 {
-  color: #0051ff;
-  margin-bottom: 1rem;
-}
-
-form fieldset {
-  border: 1px solid #ccc;
+.container {
+  max-width: 800px;
+  margin: auto;
+  background: white;
+  padding: 2rem;
   border-radius: 8px;
+  box-shadow: 0 0 12px rgba(0,0,0,0.05);
+}
+fieldset {
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
   padding: 1rem;
-  margin-bottom: 1.5rem;
+  border-radius: 6px;
 }
-
-legend {
-  font-weight: bold;
-  padding: 0 8px;
-  color: #333;
-}
-
-input[type="text"],
-input[type="number"] {
-  width: 100%;
+input, button {
   padding: 10px;
-  margin-top: 8px;
-  margin-bottom: 12px;
-  border: 1px solid #aaa;
-  border-radius: 6px;
-  font-size: 1rem;
+  margin: 5px 0;
+  width: 100%;
 }
-
-button {
-  background-color: #0051ff;
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 1rem;
-  margin-top: 1rem;
-}
-
-button:hover {
-  background-color: #003ecc;
-}
-
-.preview {
-  background: #fff;
-  border: 1px solid #ccc;
-  padding: 1.5rem;
+#guide {
   margin-top: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-}
-
-.w2-form {
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.w2-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-
-.w2-form span {
-  font-weight: bold;
-}
-
-#guide img {
-  margin: 1rem 0;
+  background: #eef2f7;
+  padding: 1rem;
   border-radius: 8px;
-  border: 1px solid #ccc;
 }
