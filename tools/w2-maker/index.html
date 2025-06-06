@@ -31,7 +31,36 @@
     <button type="submit">Generate W-2</button>
   </form>
 
-  <div id="preview" class="preview"></div>
+  <div id="preview" class="preview">
+    <div class="w2-form" id="w2-template">
+  <h2>Form W-2 Wage and Tax Statement (2024)</h2>
+  <div class="w2-row">
+    <div><strong>1. Wages, tips, other comp:</strong><br>$<span id="out-wages"></span></div>
+    <div><strong>2. Fed income tax withheld:</strong><br>$<span id="out-fedTax"></span></div>
+  </div>
+  <div class="w2-row">
+    <div><strong>3. SS wages:</strong><br>$<span id="out-wages2"></span></div>
+    <div><strong>4. SS tax withheld:</strong><br>$<span id="out-fedTax2"></span></div>
+  </div>
+  <div class="w2-row">
+    <div><strong>5. Medicare wages:</strong><br>$<span id="out-wages3"></span></div>
+    <div><strong>6. Medicare tax withheld:</strong><br>$<span id="out-fedTax3"></span></div>
+  </div>
+  <hr>
+  <div class="w2-row">
+    <div><strong>Employee Name:</strong> <span id="out-employeeName"></span></div>
+    <div><strong>SSN:</strong> <span id="out-employeeSSN"></span></div>
+  </div>
+  <div><strong>Employee Address:</strong> <span id="out-employeeAddress"></span></div>
+  <hr>
+  <div class="w2-row">
+    <div><strong>Employer Name:</strong> <span id="out-employerName"></span></div>
+    <div><strong>EIN:</strong> <span id="out-employerEIN"></span></div>
+  </div>
+  <div><strong>Employer Address:</strong> <span id="out-employerAddress"></span></div>
+</div>
+
+  </div>
   <button onclick="downloadPDF()">Download PDF</button>
 
   <section id="guide">
