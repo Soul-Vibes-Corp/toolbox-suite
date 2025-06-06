@@ -1,16 +1,18 @@
-// Firebase config
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_DOMAIN",
-  projectId: "YOUR_PROJECT_ID"
-};
+// Firebase Config
+firebase.initializeApp({
+  apiKey: "YOUR_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_BUCKET.appspot.com",
+  messagingSenderId: "SENDER_ID",
+  appId: "APP_ID"
+});
 
-firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-document.getElementById('w2-form').addEventListener('submit', async (e) => {
+// Handle Form Submission
+document.getElementById('w2-form').addEventListener('submit', e => {
   e.preventDefault();
-
   const data = {
     employeeName: document.getElementById('employeeName').value,
     employeeSSN: document.getElementById('employeeSSN').value,
@@ -20,42 +22,32 @@ document.getElementById('w2-form').addEventListener('submit', async (e) => {
     employerAddress: document.getElementById('employerAddress').value,
     wages: document.getElementById('wages').value,
     fedTax: document.getElementById('fedTax').value,
-    stateTax: document.getElementById('stateTax').value
+    stateTax: document.getElementById('stateTax').value,
+    timestamp: new Date()
   };
 
-  const preview = `
-    TraceCore™ W-2 Summary
-    =====================
-    Employee: ${data.employeeName}
-    SSN: ${data.employeeSSN}
-    Address: ${data.employeeAddress}
-
-    Employer: ${data.employerName}
-    EIN: ${data.employerEIN}
-    Address: ${data.employerAddress}
-
-    Wages: $${data.wages}
-    Federal Tax: $${data.fedTax}
-    State Tax: $${data.stateTax || "0"}
-  `;
-
-  document.getElementById('preview').textContent = preview;
-
-  try {
-    const user = firebase.auth().currentUser;
-    if (!user) return alert("Login required.");
-    await db.collection("users").doc(user.uid).collection("w2Forms").add(data);
-    alert("W-2 saved to Firestore.");
-  } catch (err) {
-    alert("Failed to save: " + err.message);
-  }
+  db.collection("w2_submissions").add(data)
+    .then(() => {
+      alert("Saved to TraceCore Cloud.");
+    })
+    .catch(err => console.error(err));
 });
 
-function downloadPDF() {
-  const text = document.getElementById('preview').textContent;
-  const blob = new Blob([text], { type: 'text/plain' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'w2-summary.txt';
-  a.click();
+// PDF Generation
+async function downloadPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  const form = document.getElementById('w2-form');
+  const canvas = await html2canvas(form);
+  const imgData = canvas.toDataURL("image/png");
+  doc.addImage(imgData, "PNG", 10, 10, 190, 0);
+
+  doc.addPage();
+  const guide = document.getElementById('guide');
+  const guideCanvas = await html2canvas(guide);
+  const guideImg = guideCanvas.toDataURL("image/png");
+  doc.addImage(guideImg, "PNG", 10, 10, 190, 0);
+
+  doc.save("W2_Form.pdf");
 }
