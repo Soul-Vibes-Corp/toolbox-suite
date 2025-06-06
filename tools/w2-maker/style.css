@@ -1,39 +1,32 @@
 body {
-  font-family: Arial, sans-serif;
-  background: #f4f6f9;
-  color: #333;
+  font-family: "Segoe UI", sans-serif;
+  background: #f7f9fb;
+  color: #222;
+  margin: 0;
   padding: 2rem;
 }
 .container {
-  max-width: 700px;
-  margin: 0 auto;
+  max-width: 800px;
+  margin: auto;
   background: white;
-  padding: 1.5rem;
-  border-radius: 10px;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 0 12px rgba(0,0,0,0.05);
 }
 fieldset {
-  margin-bottom: 1.5rem;
-  padding: 1rem;
+  margin-bottom: 20px;
   border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 6px;
 }
 input, button {
-  display: block;
+  padding: 10px;
+  margin: 5px 0;
   width: 100%;
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
-  padding: 0.6rem;
 }
-button {
-  background: #0051ff;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  border: none;
-}
-.preview {
-  background: #f1f1f1;
+#guide {
+  margin-top: 2rem;
+  background: #eef2f7;
   padding: 1rem;
-  margin-top: 1rem;
-  white-space: pre-wrap;
-  font-family: monospace;
+  border-radius: 8px;
 }
