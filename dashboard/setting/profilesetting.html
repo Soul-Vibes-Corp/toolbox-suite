@@ -144,6 +144,37 @@
     color: #0078d4;
   }
 
+.clip-hexagon {
+    clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0% 50%);
+  }
+
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+
+  .futuristic-panel {
+    margin-top: 3rem;
+    padding: 2rem;
+    border-radius: 16px;
+    background: radial-gradient(circle at top left, rgba(100, 200, 255, 0.2), #ffffff);
+    box-shadow: 0 0 30px #a3e6ff;
+    color: #005fa3;
+  }
+
+  .extra-sections {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-top: 2rem;
+    justify-content: space-between;
+  }
+
     
   </style>
 </head>
