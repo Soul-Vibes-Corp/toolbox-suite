@@ -66,3 +66,9 @@ async function downloadPDF() {
 
   doc.save("W2_Form.pdf");
 }
+
+
+const template = document.getElementById('w2-template');
+const canvas = await html2canvas(template);
+const imgData = canvas.toDataURL("image/png");
+doc.addImage(imgData, "PNG", 10, 10, 190, 0);
