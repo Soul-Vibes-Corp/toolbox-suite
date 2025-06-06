@@ -1,87 +1,58 @@
 body {
   font-family: 'Segoe UI', sans-serif;
-  background: #f9f9f9;
   margin: 0;
-  padding: 0;
-  color: #333;
+  background: #f7f7f7;
 }
 
 .container {
   max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
+  margin: auto;
+  padding: 20px;
 }
 
-h1, h2 {
-  color: #0051ff;
-  margin-bottom: 1rem;
+form {
+  margin-bottom: 30px;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
 }
 
-form fieldset {
+fieldset {
+  margin-bottom: 20px;
   border: 1px solid #ccc;
   border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-legend {
-  font-weight: bold;
-  padding: 0 8px;
-  color: #333;
-}
-
-input[type="text"],
-input[type="number"] {
-  width: 100%;
   padding: 10px;
-  margin-top: 8px;
-  margin-bottom: 12px;
-  border: 1px solid #aaa;
-  border-radius: 6px;
-  font-size: 1rem;
-}
-
-button {
-  background-color: #0051ff;
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 1rem;
-  margin-top: 1rem;
-}
-
-button:hover {
-  background-color: #003ecc;
 }
 
 .preview {
-  background: #fff;
-  border: 1px solid #ccc;
-  padding: 1.5rem;
-  margin-top: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  margin-top: 30px;
+  text-align: center;
 }
 
-.w2-form {
-  font-size: 14px;
-  line-height: 1.6;
+#w2-canvas {
+  position: relative;
+  display: inline-block;
 }
 
-.w2-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
+#w2-canvas .template {
+  max-width: 100%;
 }
 
-.w2-form span {
-  font-weight: bold;
+.overlay {
+  position: absolute;
+  font-size: 12px;
+  font-family: monospace;
+  color: black;
 }
 
-#guide img {
-  margin: 1rem 0;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
+/* Sample positions (adjust to match form image exactly) */
+#field-empName       { top: 160px; left: 120px; }
+#field-empSSN        { top: 180px; left: 120px; }
+#field-empAddress    { top: 200px; left: 120px; }
+#field-employerName  { top: 100px; left: 400px; }
+#field-employerEIN   { top: 120px; left: 400px; }
+#field-employerAddress { top: 140px; left: 400px; }
+#field-wages         { top: 250px; left: 180px; }
+#field-fedTax        { top: 270px; left: 180px; }
+#field-stateTax      { top: 290px; left: 180px; }
