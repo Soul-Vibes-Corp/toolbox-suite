@@ -68,11 +68,17 @@
       background-color: var(--card-bg);
       border-bottom: 1px solid var(--accent);
     }
+     header .home-link {
+    margin: 0;
+    color: #0078d4;
+    font-size: 1.5rem;
+    text-decoration: none;
+  }
 
-    header h1 {
-      font-size: 1.2rem;
-      margin: 0;
-    }
+  header .home-link:hover {
+    color: #005fa3;
+  }
+
 
     .dashboard-section {
       padding: 1rem;
@@ -186,7 +192,7 @@
 <body>
 <header>
   <button class="back-button" aria-label="Back"><i class="fas fa-arrow-left"></i></button>
-  <h1>Professional Dashboard</h1>
+  <h1><a href="index.html" class="home-link">Professional Dashboard</a></h1>
   <button class="settings-icon" aria-label="Settings"><i class="fas fa-cog"></i></button>
 </header>
 
