@@ -185,6 +185,28 @@
       font-size: 1.4rem;
     }
 
+    .profile-circle img {
+ width: 24px;
+  height: 24px;
+  object-fit: contain;
+  filter: brightness(0) saturate(100%) invert(26%) sepia(57%) saturate(548%) hue-rotate(176deg) brightness(94%) contrast(91%);
+  transition: filter 0.2s ease;
+  object-fit: cover;
+  display: block;
+}
+
+  .nav-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  filter: brightness(0) saturate(100%) invert(26%) sepia(57%) saturate(548%) hue-rotate(176deg) brightness(94%) contrast(91%);
+  transition: filter 0.2s ease;
+}
+
+.nav-link:hover .nav-icon {
+  filter: brightness(0) saturate(100%) invert(39%) sepia(84%) saturate(439%) hue-rotate(180deg) brightness(95%) contrast(104%);
+}
+
   </style>
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
@@ -250,13 +272,26 @@
 </div>
 
 <!-- Footer Navigation -->
-<footer>
-  <i class="fas fa-home" aria-label="Home"></i>
-  <i class="fas fa-search" aria-label="Search"></i>
-  <i class="fas fa-plus-square" aria-label="Create"></i>
-  <i class="fas fa-video" aria-label="Videos"></i>
-  <i class="fas fa-user-circle" aria-label="Profile"></i>
+<footer class="bottom-nav">
+  <a href="index.html" class="nav-link" aria-label="Home">
+    <img src="assets/home-icon.svg" alt="Home" class="nav-icon" />
+  </a>
+  <a href="../dashboard/explore-page/index.html" class="nav-link" aria-label="Search">
+    <img src="assets/search-icon.svg" alt="Search" class="nav-icon" />
+  </a>
+  <a href="#add" class="nav-link" aria-label="Add">
+    <img src="assets/add-icon.svg" alt="Add" class="nav-icon" />
+  </a>
+  <a href="../tools/forum" class="nav-link" aria-label="Messages">
+    <img src="assets/message-icon.svg" alt="Messages" class="nav-icon" />
+  </a>
+  <a href="../dashboard/profile-page/index.html" class="nav-link profile-link" aria-label="Profile">
+    <div class="profile-circle">
+      <img id="profile-img" src="assets/default-user-icon.svg" alt="Profile" />
+    </div>
+  </a>
 </footer>
+
 
 </body>
 </html>
