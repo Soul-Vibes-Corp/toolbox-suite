@@ -286,13 +286,12 @@
 
   <nav class="menu">
      <div class="actions">
-    <div class="points-counter">⭐ Points: <span id="points-value">2340</span></div>
-  </div>
-      <button onclick="searchInput.value=''; searchInput.dispatchEvent(new Event('input'))">Clear</button>
+      <button id="search-toggle" aria-label="Search"> 🔍</button>
+    <input type="text" id="search-input" placeholder="Search tools..." aria-label="Search tools" />
+    <span id="result-count" aria-live="polite"></span>
       <a href="../dashboard/index.html">Dashboard</a>
-      <a href="../dashboard/setting/rewards.html">Rewards</a>
-      <a href="../dashboard/setting/toolHistory.html">Track Tools</a>
-       <button onclick="location.href='../index.html'" id="logout-button" aria-label="Logout">Logout</button>
+     <a href="../toolHistory.html">Track Tools</a>
+     <button onclick="location.href='../index.html'" id="logout-button" aria-label="Logout">Logout</button>
   </div>
   </nav>
 </header>
