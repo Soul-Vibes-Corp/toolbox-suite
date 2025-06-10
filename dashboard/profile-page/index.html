@@ -43,11 +43,18 @@
       padding: 1.5rem 1rem;
       align-items: center;
     }
-    .avatar {
+    .profile-circle2 {
       width: 80px;
       height: 80px;
       border-radius: 50%;
       background: #ccc url('https://via.placeholder.com/80') center/cover;
+      overflow: hidden;
+      border: 2px solid #5ec9f0; /* story-like border */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #e3eaf3;
+      transition: border 0.3s ease;
     }
     .stats {
       display: flex;
@@ -337,7 +344,7 @@
   <header>@abesoul</header>
 
   <section class="profile-top">
-   <div class="profile-circle">
+   <div class="profile-circle2">
       <img id="profile-img" src="/toolbox-suite/dashboard/assets/default-user-icon.svg" alt="Profile" />
     </div>
     <div class="stats">
