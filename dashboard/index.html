@@ -713,7 +713,7 @@
 </a>
   </div>
 
-<section id="dashboard2" class="futuristic-panel">
+<section id="forumchat-input" class="futuristic-panel">
   <div class="extra-sections">
     <div class="live-chat">
       <header class="chat-header">
@@ -727,13 +727,12 @@
     </div>
 
     <div class="forum-link">
-      <h3>Forum</h3>
       <a href="../toolbox-suite/tools/forum/index.html" target="_blank" class="forum-button">Enter the Forum</a>
     </div>
   </div>
 </section>
 
-  <section id="dashboard2" class="futuristic-panel">
+  <section id="forumchat-messages" class="futuristic-panel">
   <div class="chat-container">
     <header class="chat-header">
       <h3>Forum Dashboard</h3>
@@ -800,6 +799,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
 <!-- Core Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-database-compat.js"></script>
 
 <!-- Realtime Database -->
 <script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-database-compat.js"></script>
@@ -1263,6 +1264,11 @@ firebase.firestore().collection("userSettings").doc(user.uid).get().then(doc => 
   // Firebase Realtime Database Chat
   const chatInputRealtime = document.getElementById("globalchat-input");
   const chatMessagesRealtime = document.getElementById("globalchat-messages");
+  const forumInput = document.getElementById("forumchat-input");
+  const forumMessages = document.getElementById("forumchat-messages");
+  …
+ document.getElementById("forum-send-btn").addEventListener(…);
+
 
   chatInputRealtime.addEventListener("keypress", function (e) {
     if (e.key === "Enter" && chatInputRealtime.value.trim()) {
