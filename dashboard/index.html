@@ -814,10 +814,14 @@
     };
 
     // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-    const realtimeDB = firebase.database();
+   firebase.initializeApp(firebaseConfig);
+
+  const auth = firebase.auth();
+  const firestore = firebase.firestore();
+  const realtimeDB = firebase.database();
+  const storage = firebase.storage();
+  const analytics = firebase.analytics();
+  const functions = firebase.functions();
   </script>
 
   <script>
