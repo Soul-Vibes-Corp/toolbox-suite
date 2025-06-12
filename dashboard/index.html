@@ -666,6 +666,7 @@
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
   const db = firebase.firestore();
+  const db = firebase.database();
 </script>
 
    <script src="script.js"></script>
@@ -1094,6 +1095,49 @@ db.collection('globalChat').orderBy('timestamp')
     });
   });
 </script>
+
+<script>
+  const chatInput = document.getElementById("globalchat-input");
+  const chatMessages = document.getElementById("globalchat-messages");
+
+  // Send message on Enter
+  chatInput.addEventListener("keypress", function (e) {
+    if (e.key === "Enter" && chatInput.value.trim()) {
+      const message = {
+        text: chatInput.value,
+        timestamp: Date.now(),
+        user: "Anonymous" // replace with actual username or auth name
+      };
+      db.ref("globalchat").push(message);
+      chatInput.value = "";
+    }
+  });
+
+  // Listen for new messages
+  db.ref("globalchat").on("child_added", function (snapshot) {
+    const msg = snapshot.val();
+    const msgDiv = document.createElement("div");
+    msgDiv.innerHTML = `<strong>${msg.user}</strong>: ${msg.text}`;
+    chatMessages.appendChild(msgDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  });
+
+// Show "user is typing..."
+let typingRef = db.ref("typing/Anonymous");
+chatInput.addEventListener("input", () => {
+  typingRef.set(true);
+  setTimeout(() => typingRef.set(false), 1000);
+});
+
+// Listen to typing from others
+db.ref("typing").on("value", snapshot => {
+  const typingUsers = Object.keys(snapshot.val() || {}).filter(user => snapshot.val()[user]);
+  // Show in UI
+});
+
+  
+</script>
+
   
 </body>
 </html>
