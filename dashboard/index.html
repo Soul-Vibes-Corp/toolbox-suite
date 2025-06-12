@@ -713,7 +713,7 @@
 </a>
   </div>
 
-<section id="globalchat-input" class="futuristic-panel">
+<section id="globalchat-section" class="futuristic-panel">
   <div class="extra-sections">
     <div class="live-chat">
       <header class="chat-header">
@@ -825,42 +825,6 @@
   </script>
 
   <script>
-    // Realtime Chat Input/Output
-    const chatInput = document.getElementById("globalchat-input");
-    const chatMessages = document.getElementById("globalchat-messages");
-
-    chatInput.addEventListener("keypress", function (e) {
-      if (e.key === "Enter" && chatInput.value.trim()) {
-        const message = {
-          text: chatInput.value,
-          timestamp: Date.now(),
-          user: "Anonymous" // Replace with actual user name if available
-        };
-        realtimeDB.ref("globalchat").push(message);
-        chatInput.value = "";
-      }
-    });
-
-    realtimeDB.ref("globalchat").on("child_added", function (snapshot) {
-      const msg = snapshot.val();
-      const msgDiv = document.createElement("div");
-      msgDiv.className = 'chat-message';
-      msgDiv.innerHTML = `<strong>${msg.user}</strong>: ${msg.text}`;
-      chatMessages.appendChild(msgDiv);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    });
-
-    // Optional: Typing Indicator
-    const typingRef = realtimeDB.ref("typing/Anonymous");
-    chatInput.addEventListener("input", () => {
-      typingRef.set(true);
-      setTimeout(() => typingRef.set(false), 1000);
-    });
-
-    realtimeDB.ref("typing").on("value", snapshot => {
-      const typingUsers = Object.keys(snapshot.val() || {}).filter(user => snapshot.val()[user]);
-      // Add UI feedback if needed
-    });
   // ✅ Logout handler
   document.getElementById('logoutBtn').addEventListener('click', () => {
     auth.signOut().then(() => {
@@ -1033,7 +997,7 @@ const tools = [
 
 
 <script>
-  const chatInput = document.getElementById("globalchat-input");
+  const chatInput = document.getElementById("globalchat-textinput");
   const chatMessages = document.getElementById("globalchat-messages");
 
  firebase.auth().onAuthStateChanged(function(user) {
