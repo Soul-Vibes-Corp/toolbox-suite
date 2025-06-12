@@ -729,10 +729,11 @@
     <div id="forumchat-window" class="chat-window">
       <div id="forumchat-messages" class="chat-messages">
         <!-- ✅ Dummy previous chats -->
-        <div class="chat-message"><strong>Ada</strong>: How do I use the Profit Calculator?</div>
+       <div class="chat-message"><strong>Ada</strong>: How do I use the Profit Calculator?</div>
         <div class="chat-message"><strong>BojaOfficial</strong>: Just enter your revenue and cost, it auto calculates.</div>
         <div class="chat-message"><strong>Sam</strong>: Can we export the results?</div>
         <div class="chat-message"><strong>Admin</strong>: Yes, download CSV is available in the top right.</div>
+      </div>
       </div>
     </div>
 
@@ -1001,12 +1002,13 @@ const tools = [
   const forumInput = document.getElementById("forumchat-input-field");
   const forumMessages = document.getElementById("forumchat-messages");
   const sendButton = document.getElementById("sendMessage");
+
   const renderedForumMessages = new Set();
 
   firebase.auth().onAuthStateChanged(user => {
     if (!user) return;
 
-    // Send on Enter key
+    // Send on "Enter"
     forumInput.addEventListener("keypress", e => {
       if (e.key === "Enter" && forumInput.value.trim()) {
         sendForumMessage(user);
@@ -1020,13 +1022,22 @@ const tools = [
       }
     });
 
-    // Realtime listener
-    firebase.database().ref("forumchat").on("child_added", snapshot => {
-      const message = snapshot.val();
-      const key = snapshot.key;
-      if (renderedForumMessages.has(key)) return;
-      renderedForumMessages.add(key);
+    // Listen for new messages
+    const forumRef = firebase.database().ref("forumchat");
 
+    forumRef.on("child_added", snapshot => {
+      const message = snapshot.val();
+      const messageKey = snapshot.key;
+
+      // Avoid duplicates
+      if (renderedForumMessages.has(messageKey)) return;
+      renderedForumMessages.add(messageKey);
+
+      // Clear dummy messages if any exist
+      const dummy = forumMessages.querySelectorAll(".chat-message[data-dummy]");
+      dummy.forEach(el => el.remove());
+
+      // Append new message
       const msgDiv = document.createElement("div");
       msgDiv.className = "chat-message";
       msgDiv.innerHTML = `<strong>${message.user}</strong>: ${message.text}`;
@@ -1038,15 +1049,17 @@ const tools = [
   function sendForumMessage(user) {
     const text = forumInput.value.trim();
     const message = {
-      text: text,
+      text,
       timestamp: Date.now(),
       user: user.displayName || user.email || "Anonymous"
     };
 
+    // Send to Firebase
     firebase.database().ref("forumchat").push(message);
     forumInput.value = "";
   }
 </script>
+
 
 
 
