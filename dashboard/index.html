@@ -997,10 +997,8 @@ const tools = [
 
 
 <script>
-  const chatInput = document.getElementById("globalchat-input");
   const chatInput = document.getElementById("globalchat-main-input");
-  const chatInput = document.querySelector("#globalchat-section input[type='text']");
-  const chatMessages = document.getElementById("globalchat-messages");
+const chatMessages = document.getElementById("globalchat-messages");
 
  firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
