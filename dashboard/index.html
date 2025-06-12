@@ -1140,94 +1140,94 @@ firebase.firestore().collection("userSettings").doc(user.uid).get().then(doc => 
   }
 });
 
-const chatInput = document.getElementById('chat-input');
-const chatMessages = document.getElementById('chat-messages');
+ // Firebase Firestore Chat
+  const chatInputFirestore = document.getElementById('chat-input');
+  const chatMessagesFirestore = document.getElementById('chat-messages');
 
-chatInput.addEventListener('keypress', function (e) {
-  if (e.key === 'Enter' && chatInput.value.trim() !== '') {
-    const message = {
-      text: chatInput.value,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    };
+  chatInputFirestore.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter' && chatInputFirestore.value.trim() !== '') {
+      const message = {
+        text: chatInputFirestore.value,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      };
 
-    db.collection('globalChat').add(message).then(() => {
-      chatInput.value = '';
-    });
-  }
-});
-
-// Real-time listener
-db.collection('globalChat').orderBy('timestamp')
-  .onSnapshot(snapshot => {
-    chatMessages.innerHTML = '';
-    snapshot.forEach(doc => {
-      const msg = document.createElement('div');
-      msg.textContent = doc.data().text;
-      chatMessages.appendChild(msg);
-    });
+      db.collection('globalChat').add(message).then(() => {
+        chatInputFirestore.value = '';
+      });
+    }
   });
 
- // Handle forum button click
+  // Real-time listener (Firestore)
+  db.collection('globalChat').orderBy('timestamp')
+    .onSnapshot(snapshot => {
+      chatMessagesFirestore.innerHTML = '';
+      snapshot.forEach(doc => {
+        const msg = document.createElement('div');
+        msg.textContent = doc.data().text;
+        chatMessagesFirestore.appendChild(msg);
+      });
+    });
+
+  // Handle forum button click
   const forumBtn = document.getElementById("forumBtn");
   forumBtn.addEventListener("click", () => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        // User is logged in – redirect to forum
         window.open("../toolbox-suite/tools/forum/index.html", "_blank");
       } else {
-        // User is not logged in – send to login page
         alert("Please login to access the forum.");
         window.location.href = "../index.html";
       }
     });
   });
-
-@media (min-width: 768px) {
-  .bottom-nav {
-    display: none;
-  }
-}
-  
 </script>
+
+<style>
+  @media (min-width: 768px) {
+    .bottom-nav {
+      display: none;
+    }
+  }
+</style>
 
 <script>
   // Chatbot toggle
   const chatbotToggle = document.getElementById('chatbot-toggle');
   const chatWindow = document.getElementById('chat-window');
   const chatClose = document.getElementById('chat-close');
-  const chatInput = document.getElementById('chat-input');
-  const chatMessages = document.getElementById('chat-messages');
+  const chatInputBot = document.getElementById('chat-input');
+  const chatMessagesBot = document.getElementById('chat-messages');
 
   chatbotToggle.addEventListener('click', () => {
     if(chatWindow.style.display === 'flex'){
       chatWindow.style.display = 'none';
     } else {
       chatWindow.style.display = 'flex';
-      chatInput.focus();
+      chatInputBot.focus();
     }
   });
+
   chatClose.addEventListener('click', () => {
     chatWindow.style.display = 'none';
   });
 
-  chatInput.addEventListener('keydown', e => {
-    if(e.key === 'Enter' && chatInput.value.trim() !== '') {
+  chatInputBot.addEventListener('keydown', e => {
+    if(e.key === 'Enter' && chatInputBot.value.trim() !== '') {
       const userMsg = document.createElement('p');
-      userMsg.textContent = "You: " + chatInput.value.trim();
+      userMsg.textContent = "You: " + chatInputBot.value.trim();
       userMsg.style.color = "#0fa";
-      chatMessages.appendChild(userMsg);
+      chatMessagesBot.appendChild(userMsg);
 
-      // Simulate AI response
       setTimeout(() => {
         const botMsg = document.createElement('p');
         botMsg.textContent = "ShadowGrid-AI: Sorry, I’m still learning! 🤖";
         botMsg.style.color = "#0ff";
-        chatMessages.appendChild(botMsg);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+        chatMessagesBot.appendChild(botMsg);
+        chatMessagesBot.scrollTop = chatMessagesBot.scrollHeight;
       }, 800);
 
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-      chatInput.value = '';
+      chatMessagesBot.scrollTop = chatMessagesBot.scrollHeight;
+      chatInputBot.value = '';
     }
   });
 
@@ -1251,44 +1251,41 @@ db.collection('globalChat').orderBy('timestamp')
 </script>
 
 <script>
-  const chatInput = document.getElementById("globalchat-input");
-  const chatMessages = document.getElementById("globalchat-messages");
+  // Firebase Realtime Database Chat
+  const chatInputRealtime = document.getElementById("globalchat-input");
+  const chatMessagesRealtime = document.getElementById("globalchat-messages");
 
-  // Send message on Enter
-  chatInput.addEventListener("keypress", function (e) {
-    if (e.key === "Enter" && chatInput.value.trim()) {
+  chatInputRealtime.addEventListener("keypress", function (e) {
+    if (e.key === "Enter" && chatInputRealtime.value.trim()) {
       const message = {
-        text: chatInput.value,
+        text: chatInputRealtime.value,
         timestamp: Date.now(),
-        user: "Anonymous" // replace with actual username or auth name
+        user: "Anonymous"
       };
       db.ref("globalchat").push(message);
-      chatInput.value = "";
+      chatInputRealtime.value = "";
     }
   });
 
-  // Listen for new messages
   db.ref("globalchat").on("child_added", function (snapshot) {
     const msg = snapshot.val();
     const msgDiv = document.createElement("div");
     msgDiv.innerHTML = `<strong>${msg.user}</strong>: ${msg.text}`;
-    chatMessages.appendChild(msgDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    chatMessagesRealtime.appendChild(msgDiv);
+    chatMessagesRealtime.scrollTop = chatMessagesRealtime.scrollHeight;
   });
 
-// Show "user is typing..."
-let typingRef = db.ref("typing/Anonymous");
-chatInput.addEventListener("input", () => {
-  typingRef.set(true);
-  setTimeout(() => typingRef.set(false), 1000);
-});
+  // Typing Indicator
+  let typingRef = db.ref("typing/Anonymous");
+  chatInputRealtime.addEventListener("input", () => {
+    typingRef.set(true);
+    setTimeout(() => typingRef.set(false), 1000);
+  });
 
-// Listen to typing from others
-db.ref("typing").on("value", snapshot => {
-  const typingUsers = Object.keys(snapshot.val() || {}).filter(user => snapshot.val()[user]);
-  // Show in UI
-});
-
+  db.ref("typing").on("value", snapshot => {
+    const typingUsers = Object.keys(snapshot.val() || {}).filter(user => snapshot.val()[user]);
+    // You can show typing users in the UI if needed
+  });
   
 </script>
 
