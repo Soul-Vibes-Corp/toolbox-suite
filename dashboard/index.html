@@ -1032,256 +1032,43 @@ const tools = [
   
 
 
-<script type="module">
-  // Simple visitor tracking
-  const trackVisit = (toolName) => {
-    const history = JSON.parse(localStorage.getItem('toolHistory') || '[]');
-    const now = new Date().toISOString();
-    history.unshift({ tool: toolName, time: now });
-    localStorage.setItem('toolHistory', JSON.stringify(history.slice(0, 25))); // keep last 25
-  };
-
-  // Count launches per tool
-  const countLaunch = (toolName) => {
-    const key = launchCount_${toolName};
-    const current = parseInt(localStorage.getItem(key) || '0');
-    localStorage.setItem(key, current + 1);
-  };
-
-  // Apply launch tracking to buttons
-  document.querySelectorAll('.suite-button').forEach(button => {
-    const name = button.textContent.trim();
-    button.addEventListener('click', () => {
-      trackVisit(name);
-      countLaunch(name);
-    });
-  });
-
-  // Enhanced search
-  const allTools = [...tools]; // From inline script
-  searchInput.addEventListener('input', e => {
-    const val = e.target.value.toLowerCase();
-    if (!val) {
-      searchResults.style.display = 'none';
-      suiteGrid.style.display = 'grid';
-      return;
-    }
-
-    const matches = allTools.filter(tool =>
-      tool.name.toLowerCase().includes(val) ||
-      tool.tags.some(tag => tag.includes(val))
-    );
-
-    searchResults.innerHTML = matches.map(tool =>
-      <a href="${tool.link}" class="suite-button">${tool.name}</a>
-    ).join('');
-
-    searchResults.style.display = 'grid';
-    suiteGrid.style.display = 'none';
-  });
-  
-
-function saveUserSettings(settingsObject) {
-  const user = firebase.auth().currentUser;
-  if (!user) return;
-
-  firebase.firestore().collection("userSettings").doc(user.uid).set(settingsObject);
-}
-
-// Example:
-saveUserSettings({
-  theme: "dark",
-  compressorSettings: {
-    threshold: -12,
-    ratio: 4,
-  },
-  reverbPreset: "Valhalla Space",
-});
-
-firebase.firestore().collection("userSettings").doc(user.uid).get().then(doc => {
-  if (doc.exists) {
-    const settings = doc.data();
-    // Apply settings to app UI
-  }
-});
-
-  searchInput.addEventListener('input', () => {
-  const query = searchInput.value.toLowerCase();
-  const filteredTools = tools.filter(tool =>
-    tool.name.toLowerCase().includes(query) ||
-    tool.tags.some(tag => tag.includes(query))
-  );
-
-  searchResults.innerHTML = ''; // Clear previous
-  if (query && filteredTools.length > 0) {
-    suiteGrid.style.display = 'none';
-    searchResults.style.display = 'grid';
-
-    filteredTools.forEach(tool => {
-      const a = document.createElement('a');
-      a.href = tool.link;
-      a.className = 'suite-button';
-      a.textContent = tool.name;
-      searchResults.appendChild(a);
-    });
-  } else {
-    suiteGrid.style.display = 'grid';
-    searchResults.style.display = 'none';
-  }
-});
-
- // Firebase Firestore Chat
-  const chatInputFirestore = document.getElementById('chat-input');
-  const chatMessagesFirestore = document.getElementById('chat-messages');
-
-  chatInputFirestore.addEventListener('keypress', function (e) {
-    if (e.key === 'Enter' && chatInputFirestore.value.trim() !== '') {
-      const message = {
-        text: chatInputFirestore.value,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      };
-
-      db.collection('globalChat').add(message).then(() => {
-        chatInputFirestore.value = '';
-      });
-    }
-  });
-
-  // Real-time listener (Firestore)
-  db.collection('globalChat').orderBy('timestamp')
-    .onSnapshot(snapshot => {
-      chatMessagesFirestore.innerHTML = '';
-      snapshot.forEach(doc => {
-        const msg = document.createElement('div');
-        msg.textContent = doc.data().text;
-        chatMessagesFirestore.appendChild(msg);
-      });
-    });
-
-  // Handle forum button click
-  const forumBtn = document.getElementById("forumBtn");
-  forumBtn.addEventListener("click", () => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        window.open("../toolbox-suite/tools/forum/index.html", "_blank");
-      } else {
-        alert("Please login to access the forum.");
-        window.location.href = "../index.html";
-      }
-    });
-  });
-</script>
-
-<style>
-  @media (min-width: 768px) {
-    .bottom-nav {
-      display: none;
-    }
-  }
-</style>
-
 <script>
-  // Chatbot toggle
-  const chatbotToggle = document.getElementById('chatbot-toggle');
-  const chatWindow = document.getElementById('chat-window');
-  const chatClose = document.getElementById('chat-close');
-  const chatInputBot = document.getElementById('chat-input');
-  const chatMessagesBot = document.getElementById('chat-messages');
+  const chatInput = document.getElementById("globalchat-input");
+  const chatMessages = document.getElementById("globalchat-messages");
 
-  chatbotToggle.addEventListener('click', () => {
-    if(chatWindow.style.display === 'flex'){
-      chatWindow.style.display = 'none';
-    } else {
-      chatWindow.style.display = 'flex';
-      chatInputBot.focus();
-    }
-  });
-
-  chatClose.addEventListener('click', () => {
-    chatWindow.style.display = 'none';
-  });
-
-  chatInputBot.addEventListener('keydown', e => {
-    if(e.key === 'Enter' && chatInputBot.value.trim() !== '') {
-      const userMsg = document.createElement('p');
-      userMsg.textContent = "You: " + chatInputBot.value.trim();
-      userMsg.style.color = "#0fa";
-      chatMessagesBot.appendChild(userMsg);
-
-      setTimeout(() => {
-        const botMsg = document.createElement('p');
-        botMsg.textContent = "ShadowGrid-AI: Sorry, I’m still learning! 🤖";
-        botMsg.style.color = "#0ff";
-        chatMessagesBot.appendChild(botMsg);
-        chatMessagesBot.scrollTop = chatMessagesBot.scrollHeight;
-      }, 800);
-
-      chatMessagesBot.scrollTop = chatMessagesBot.scrollHeight;
-      chatInputBot.value = '';
-    }
-  });
-
-  // Search filter
-  const searchInput = document.getElementById('search-input');
-  const dashboardGrid = document.getElementById('dashboard-grid');
-  const cards = dashboardGrid.querySelectorAll('.card');
-
-  searchInput.addEventListener('input', () => {
-    const filter = searchInput.value.toLowerCase();
-    cards.forEach(card => {
-      const title = card.querySelector('.card-title').textContent.toLowerCase();
-      const desc = card.querySelector('.card-desc').textContent.toLowerCase();
-      if(title.includes(filter) || desc.includes(filter)){
-        card.style.display = 'flex';
-      } else {
-        card.style.display = 'none';
-      }
-    });
-  });
-</script>
-
-<script>
-  // Firebase Realtime Database Chat
-  const chatInputRealtime = document.getElementById("globalchat-input");
-  const chatMessagesRealtime = document.getElementById("globalchat-messages");
-  const forumInput = document.getElementById("forumchat-input");
-  const forumMessages = document.getElementById("forumchat-messages");
-  …
- document.getElementById("forum-send-btn").addEventListener(…);
-
-
-  chatInputRealtime.addEventListener("keypress", function (e) {
-    if (e.key === "Enter" && chatInputRealtime.value.trim()) {
+  chatInput.addEventListener("keypress", function (e) {
+    if (e.key === "Enter" && chatInput.value.trim()) {
+      const messageText = chatInput.value.trim();
       const message = {
-        text: chatInputRealtime.value,
+        text: messageText,
         timestamp: Date.now(),
-        user: "Anonymous"
+        user: "Anonymous" // Replace with actual user name or auth
       };
-      db.ref("globalchat").push(message);
-      chatInputRealtime.value = "";
+
+      // Push to Realtime Database
+      realtimeDB.ref("globalchat").push(message);
+
+      // Immediately show in chat window
+      const userMsg = document.createElement("div");
+      userMsg.className = 'chat-message self-message'; // Add CSS class if needed
+      userMsg.innerHTML = `<strong>${message.user}</strong>: ${message.text}`;
+      chatMessages.appendChild(userMsg);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+
+      chatInput.value = "";
     }
   });
 
-  db.ref("globalchat").on("child_added", function (snapshot) {
+  // Listen for messages from others (and this user again)
+  realtimeDB.ref("globalchat").on("child_added", function (snapshot) {
     const msg = snapshot.val();
+
     const msgDiv = document.createElement("div");
+    msgDiv.className = 'chat-message';
     msgDiv.innerHTML = `<strong>${msg.user}</strong>: ${msg.text}`;
-    chatMessagesRealtime.appendChild(msgDiv);
-    chatMessagesRealtime.scrollTop = chatMessagesRealtime.scrollHeight;
+    chatMessages.appendChild(msgDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
   });
-
-  // Typing Indicator
-  let typingRef = db.ref("typing/Anonymous");
-  chatInputRealtime.addEventListener("input", () => {
-    typingRef.set(true);
-    setTimeout(() => typingRef.set(false), 1000);
-  });
-
-  db.ref("typing").on("value", snapshot => {
-    const typingUsers = Object.keys(snapshot.val() || {}).filter(user => snapshot.val()[user]);
-    // You can show typing users in the UI if needed
-  });
-  
 </script>
 
   
