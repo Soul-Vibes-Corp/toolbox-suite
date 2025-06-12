@@ -548,6 +548,132 @@
   filter: brightness(0) saturate(100%) invert(39%) sepia(84%) saturate(439%) hue-rotate(180deg) brightness(95%) contrast(104%);
 }
 
+.futuristic-panel {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 2rem;
+  background: #0f0f10;
+  color: white;
+  font-family: 'Inter', sans-serif;
+}
+
+.chat-container {
+  flex: 1;
+  background: #1a1a1d;
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+}
+
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.25rem;
+  border-bottom: 1px solid #333;
+  padding-bottom: 0.5rem;
+}
+
+.live-indicator {
+  color: red;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.chat-window {
+  flex: 1;
+  overflow-y: auto;
+  margin: 1rem 0;
+  max-height: 400px;
+  background: #121214;
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.chat-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.chat-message {
+  background: #2a2a2d;
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.chat-message strong {
+  color: #58a6ff;
+  margin-right: 0.5rem;
+}
+
+.chat-input-section {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.chat-input {
+  flex: 1;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: none;
+  background: #252529;
+  color: white;
+  font-size: 0.95rem;
+}
+
+.chat-send-btn {
+  background: #58a6ff;
+  color: white;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.chat-send-btn:hover {
+  background: #4094e6;
+}
+
+.chat-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  margin-top: 1rem;
+  color: #aaa;
+}
+
+.forum-section {
+  flex-shrink: 0;
+  width: 250px;
+  background: #1a1a1d;
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.forum-button {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: #58a6ff;
+  color: white;
+  text-decoration: none;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.forum-button:hover {
+  background: #4094e6;
+}
+
+  
 </style>
 
 <main class="dashboard-layout">
@@ -587,7 +713,23 @@
 </a>
   </div>
 
- <section id="dashboard2" class="futuristic-panel">
+<section id="dashboard2" class="futuristic-panel">
+    <div class="extra-sections">
+      <div class="live-chat">
+        <h3>💬 Global Chat</h3>
+        <div id="globalchat-window">
+          <div id="globalchat-messages"></div>
+          <input type="text" id="globalchat-input" placeholder="Type a message..." />
+        </div>
+      </div>
+
+      <div class="forum-link">
+        <h3>Forum</h3>
+        <a href="../toolbox-suite/tools/forum/index.html" target="_blank" class="forum-button">Enter the Forum</a>
+      </div>
+    </div>
+  </section>
+  <section id="dashboard2" class="futuristic-panel">
   <div class="chat-container">
     <header class="chat-header">
       <h3>💬 Global Chat</h3>
@@ -614,6 +756,7 @@
     <a href="../toolbox-suite/tools/forum/index.html" target="_blank" class="forum-button">Enter the Forum</a>
   </aside>
 </section>
+
 
 </main>
 
