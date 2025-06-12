@@ -998,53 +998,56 @@ const tools = [
 
 
 <script>
-  // Element references
-  const chatInput = document.getElementById("globalchat-main-input");
-  const chatMessages = document.getElementById("globalchat-messages");
+  const forumInput = document.getElementById("forumchat-input-field");
+  const forumMessages = document.getElementById("forumchat-messages");
+  const sendButton = document.getElementById("sendMessage");
+  const renderedForumMessages = new Set();
 
-  // Keep track of rendered message keys to avoid duplicates
-  const renderedMessages = new Set();
-
-  // Wait for Firebase Auth to confirm user is logged in
   firebase.auth().onAuthStateChanged(user => {
     if (!user) return;
 
-    // Send message on "Enter" key
-    chatInput.addEventListener("keypress", e => {
-      if (e.key === "Enter" && chatInput.value.trim()) {
-        const text = chatInput.value.trim();
-        const message = {
-          text: text,
-          timestamp: Date.now(),
-          user: user.displayName || user.email || "Anonymous"
-        };
-
-        // Push to Firebase Realtime Database
-        firebase.database().ref("globalchat").push(message);
-        chatInput.value = "";
+    // Send on Enter key
+    forumInput.addEventListener("keypress", e => {
+      if (e.key === "Enter" && forumInput.value.trim()) {
+        sendForumMessage(user);
       }
     });
 
-    // Listen for new messages in globalchat
-    firebase.database().ref("globalchat").on("child_added", snapshot => {
+    // Send on button click
+    sendButton.addEventListener("click", () => {
+      if (forumInput.value.trim()) {
+        sendForumMessage(user);
+      }
+    });
+
+    // Realtime listener
+    firebase.database().ref("forumchat").on("child_added", snapshot => {
       const message = snapshot.val();
-      const messageKey = snapshot.key;
+      const key = snapshot.key;
+      if (renderedForumMessages.has(key)) return;
+      renderedForumMessages.add(key);
 
-      // Avoid displaying duplicates
-      if (renderedMessages.has(messageKey)) return;
-      renderedMessages.add(messageKey);
-
-      // Create and append the message element
       const msgDiv = document.createElement("div");
       msgDiv.className = "chat-message";
       msgDiv.innerHTML = `<strong>${message.user}</strong>: ${message.text}`;
-      chatMessages.appendChild(msgDiv);
-
-      // Auto-scroll
-      chatMessages.scrollTop = chatMessages.scrollHeight;
+      forumMessages.appendChild(msgDiv);
+      forumMessages.scrollTop = forumMessages.scrollHeight;
     });
   });
+
+  function sendForumMessage(user) {
+    const text = forumInput.value.trim();
+    const message = {
+      text: text,
+      timestamp: Date.now(),
+      user: user.displayName || user.email || "Anonymous"
+    };
+
+    firebase.database().ref("forumchat").push(message);
+    forumInput.value = "";
+  }
 </script>
+
 
 
   
