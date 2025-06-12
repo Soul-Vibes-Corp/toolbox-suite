@@ -997,47 +997,52 @@ const tools = [
 
 
 <script>
+  // Element references
   const chatInput = document.getElementById("globalchat-main-input");
-const chatMessages = document.getElementById("globalchat-messages");
+  const chatMessages = document.getElementById("globalchat-messages");
 
- firebase.auth().onAuthStateChanged(function(user) {
-  if (user) {
-    chatInput.addEventListener("keypress", function (e) {
+  // Keep track of rendered message keys to avoid duplicates
+  const renderedMessages = new Set();
+
+  // Wait for Firebase Auth to confirm user is logged in
+  firebase.auth().onAuthStateChanged(user => {
+    if (!user) return;
+
+    // Send message on "Enter" key
+    chatInput.addEventListener("keypress", e => {
       if (e.key === "Enter" && chatInput.value.trim()) {
-        const messageText = chatInput.value.trim();
+        const text = chatInput.value.trim();
         const message = {
-          text: messageText,
+          text: text,
           timestamp: Date.now(),
           user: user.displayName || user.email || "Anonymous"
         };
 
-        // Push to Realtime Database
-        realtimeDB.ref("globalchat").push(message);
-
-        // Immediately show in chat window
-        const userMsg = document.createElement("div");
-        userMsg.className = 'chat-message self-message';
-        userMsg.innerHTML = `<strong>${message.user}</strong>: ${message.text}`;
-        chatMessages.appendChild(userMsg);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-
+        // Push to Firebase Realtime Database
+        firebase.database().ref("globalchat").push(message);
         chatInput.value = "";
       }
     });
 
-    // Listen for messages from others (and this user again)
-    realtimeDB.ref("globalchat").on("child_added", function (snapshot) {
-      const msg = snapshot.val();
+    // Listen for new messages in globalchat
+    firebase.database().ref("globalchat").on("child_added", snapshot => {
+      const message = snapshot.val();
+      const messageKey = snapshot.key;
 
+      // Avoid displaying duplicates
+      if (renderedMessages.has(messageKey)) return;
+      renderedMessages.add(messageKey);
+
+      // Create and append the message element
       const msgDiv = document.createElement("div");
-      msgDiv.className = 'chat-message';
-      msgDiv.innerHTML = `<strong>${msg.user}</strong>: ${msg.text}`;
+      msgDiv.className = "chat-message";
+      msgDiv.innerHTML = `<strong>${message.user}</strong>: ${message.text}`;
       chatMessages.appendChild(msgDiv);
+
+      // Auto-scroll
       chatMessages.scrollTop = chatMessages.scrollHeight;
     });
-  } // ✅ Add this closing brace!
-});
-
+  });
 </script>
 
 
