@@ -722,7 +722,7 @@
       </header>
       <div id="globalchat-window">
         <div id="globalchat-messages" class="chat-messages"></div>
-        <input type="text" id="globalchat-input" placeholder="Type a message..." />
+        <input type="text" id="globalchat-main-input" placeholder="Type a message..." />
       </div>
     </div>
 
@@ -744,7 +744,7 @@
     </div>
 
     <div class="chat-input-section">
-      <input type="text" id="globalchat-input" class="chat-input" placeholder="Type a message..." />
+     <input type="text" id="forumchat-input-field" class="chat-input" placeholder="Type a message..." />
       <button id="sendMessage" class="chat-send-btn">Send</button>
     </div>
 
@@ -997,7 +997,9 @@ const tools = [
 
 
 <script>
-  const chatInput = document.getElementById("globalchat-textinput");
+  const chatInput = document.getElementById("globalchat-input");
+  const chatInput = document.getElementById("globalchat-main-input");
+  const chatInput = document.querySelector("#globalchat-section input[type='text']");
   const chatMessages = document.getElementById("globalchat-messages");
 
  firebase.auth().onAuthStateChanged(function(user) {
