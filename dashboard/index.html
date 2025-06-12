@@ -713,7 +713,7 @@
 </a>
   </div>
 
-<section id="forumchat-input" class="futuristic-panel">
+<section id="globalchat-input" class="futuristic-panel">
   <div class="extra-sections">
     <div class="live-chat">
       <header class="chat-header">
@@ -732,15 +732,15 @@
   </div>
 </section>
 
-  <section id="forumchat-messages" class="futuristic-panel">
+  <section id="forumchat-input" class="futuristic-panel">
   <div class="chat-container">
     <header class="chat-header">
       <h3>Forum Dashboard</h3>
       <span class="live-indicator">● Live</span>
     </header>
 
-    <div id="globalchat-window" class="chat-window">
-      <div id="globalchat-messages" class="chat-messages"></div>
+    <div id="forumchat-window" class="chat-window">
+      <div id="forumchat-messages" class="chat-messages"></div>
     </div>
 
     <div class="chat-input-section">
@@ -800,8 +800,6 @@
 <!-- Core Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-app-compat.js"></script>
 
-<script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-database-compat.js"></script>
-
 <!-- Realtime Database -->
 <script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-database-compat.js"></script>
 
@@ -816,34 +814,71 @@
 
 
 <script>
-  // Your web app's Firebase configuration
-  const firebaseConfig = {
-  apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
-  authDomain: "chat-code-forum.firebaseapp.com",
-  projectId: "chat-code-forum",
-  storageBucket: "chat-code-forum.firebasestorage.app",
-  messagingSenderId: "496765673859",
-  appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
-  measurementId: "G-XJKWXHF8WN"
-};
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-analytics-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-functions-compat.js"></script>
 
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-</script>
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
+      authDomain: "chat-code-forum.firebaseapp.com",
+      projectId: "chat-code-forum",
+      storageBucket: "chat-code-forum.appspot.com",
+      messagingSenderId: "496765673859",
+      appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
+      measurementId: "G-XJKWXHF8WN"
+    };
 
-   <script src="script.js"></script>
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(() => console.log('✅ Service Worker Registered'))
-      .catch(err => console.error('Service Worker registration failed:', err));
-  }
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const realtimeDB = firebase.database();
+  </script>
 
+  <script>
+    // Realtime Chat Input/Output
+    const chatInput = document.getElementById("globalchat-input");
+    const chatMessages = document.getElementById("globalchat-messages");
 
-  });
+    chatInput.addEventListener("keypress", function (e) {
+      if (e.key === "Enter" && chatInput.value.trim()) {
+        const message = {
+          text: chatInput.value,
+          timestamp: Date.now(),
+          user: "Anonymous" // Replace with actual user name if available
+        };
+        realtimeDB.ref("globalchat").push(message);
+        chatInput.value = "";
+      }
+    });
 
+    realtimeDB.ref("globalchat").on("child_added", function (snapshot) {
+      const msg = snapshot.val();
+      const msgDiv = document.createElement("div");
+      msgDiv.className = 'chat-message';
+      msgDiv.innerHTML = `<strong>${msg.user}</strong>: ${msg.text}`;
+      chatMessages.appendChild(msgDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
+
+    // Optional: Typing Indicator
+    const typingRef = realtimeDB.ref("typing/Anonymous");
+    chatInput.addEventListener("input", () => {
+      typingRef.set(true);
+      setTimeout(() => typingRef.set(false), 1000);
+    });
+
+    realtimeDB.ref("typing").on("value", snapshot => {
+      const typingUsers = Object.keys(snapshot.val() || {}).filter(user => snapshot.val()[user]);
+      // Add UI feedback if needed
+    });
   // ✅ Logout handler
   document.getElementById('logoutBtn').addEventListener('click', () => {
     auth.signOut().then(() => {
@@ -1016,28 +1051,6 @@ const tools = [
 
 
 <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
-    authDomain: "chat-code-forum.firebaseapp.com",
-    projectId: "chat-code-forum",
-    storageBucket: "chat-code-forum.firebasestorage.app",
-    messagingSenderId: "496765673859",
-    appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
-    measurementId: "G-XJKWXHF8WN"
-  };
-
-  // Initialize Firebase
- firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-</script>
 
 <!-- Main Tracking + UI Script -->
 <script>
