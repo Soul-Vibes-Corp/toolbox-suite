@@ -587,22 +587,34 @@
 </a>
   </div>
 
-  <section id="dashboard2" class="futuristic-panel">
-    <div class="extra-sections">
-      <div class="live-chat">
-        <h3>💬 Global Chat</h3>
-        <div id="globalchat-window">
-          <div id="globalchat-messages"></div>
-          <input type="text" id="globalchat-input" placeholder="Type a message..." />
-        </div>
-      </div>
+ <section id="dashboard2" class="futuristic-panel">
+  <div class="chat-container">
+    <header class="chat-header">
+      <h3>💬 Global Chat</h3>
+      <span class="live-indicator">● Live</span>
+    </header>
 
-      <div class="forum-link">
-        <h3>Forum</h3>
-        <a href="../toolbox-suite/tools/forum/index.html" target="_blank" class="forum-button">Enter the Forum</a>
-      </div>
+    <div id="globalchat-window" class="chat-window">
+      <div id="globalchat-messages" class="chat-messages"></div>
     </div>
-  </section>
+
+    <div class="chat-input-section">
+      <input type="text" id="globalchat-input" class="chat-input" placeholder="Type a message..." />
+      <button id="sendMessage" class="chat-send-btn">Send</button>
+    </div>
+
+    <div class="chat-footer">
+      <span class="chat-users-count">👥 12 Online</span>
+      <span class="chat-status">You’re chatting as <strong>Guest</strong></span>
+    </div>
+  </div>
+
+  <aside class="forum-section">
+    <h3>💬 Forum</h3>
+    <a href="../toolbox-suite/tools/forum/index.html" target="_blank" class="forum-button">Enter the Forum</a>
+  </aside>
+</section>
+
 </main>
 
 <!-- Floating chatbot -->
