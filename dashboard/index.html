@@ -713,7 +713,7 @@
 </a>
   </div>
 
-  <section id="forumchat-input" class="futuristic-panel">
+ <section id="forumchat-input" class="futuristic-panel">
   <div class="chat-container">
     <header class="chat-header">
       <h3>Forum Dashboard</h3>
@@ -721,11 +721,17 @@
     </header>
 
     <div id="forumchat-window" class="chat-window">
-      <div id="forumchat-messages" class="chat-messages"></div>
+      <div id="forumchat-messages" class="chat-messages">
+        <!-- ✅ Dummy previous chats -->
+        <div class="chat-message"><strong>Ada</strong>: How do I use the Profit Calculator?</div>
+        <div class="chat-message"><strong>BojaOfficial</strong>: Just enter your revenue and cost, it auto calculates.</div>
+        <div class="chat-message"><strong>Sam</strong>: Can we export the results?</div>
+        <div class="chat-message"><strong>Admin</strong>: Yes, download CSV is available in the top right.</div>
+      </div>
     </div>
 
     <div class="chat-input-section">
-     <input type="text" id="forumchat-input-field" class="chat-input" placeholder="Type a message..." />
+      <input type="text" id="forumchat-input-field" class="chat-input" placeholder="Type a message..." />
       <button id="sendMessage" class="chat-send-btn">Send</button>
     </div>
 
@@ -735,12 +741,12 @@
     </div>
   </div>
 
-<div class="forum-link">
-      <a href="../tools/forum" target="_blank" class="forum-button">Enter the Forum</a>
-    </div>
+  <!-- Optional: external link to full forum -->
+  <div class="forum-link">
+    <a href="../tools/forum" target="_blank" class="forum-button">Enter the Forum</a>
   </div>
-    
 </section>
+
 
 
 </main>
