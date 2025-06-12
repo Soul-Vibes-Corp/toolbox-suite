@@ -1036,14 +1036,16 @@ const tools = [
   const chatInput = document.getElementById("globalchat-input");
   const chatMessages = document.getElementById("globalchat-messages");
 
-  chatInput.addEventListener("keypress", function (e) {
-    if (e.key === "Enter" && chatInput.value.trim()) {
-      const messageText = chatInput.value.trim();
-      const message = {
-        text: messageText,
-        timestamp: Date.now(),
-        user: "Anonymous" // Replace with actual user name or auth
-      };
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+      chatInput.addEventListener("keypress", function (e) {
+        if (e.key === "Enter" && chatInput.value.trim()) {
+          const messageText = chatInput.value.trim();
+          const message = {
+            text: messageText,
+            timestamp: Date.now(),
+            user: user.displayName || user.email || "Anonymous"
+          };
 
       // Push to Realtime Database
       realtimeDB.ref("globalchat").push(message);
@@ -1070,6 +1072,7 @@ const tools = [
     chatMessages.scrollTop = chatMessages.scrollHeight;
   });
 </script>
+
 
   
 </body>
