@@ -824,6 +824,19 @@
   const storage = firebase.storage();
   const analytics = firebase.analytics();
   const functions = firebase.functions();
+
+
+ firebase.auth().onAuthStateChanged(user => {
+  console.log("Auth state changed:", user);
+  if (!user) return;
+  console.log("User logged in:", user.uid);
+});
+
+const dbRef = firebase.database().ref("forumchat");
+dbRef.on("child_added", snapshot => {
+  console.log("Child added:", snapshot.key, snapshot.val());
+});
+   
   </script>
 
   <script>
@@ -1006,23 +1019,25 @@ document.addEventListener("DOMContentLoaded", () => {
   const sendButton = document.getElementById("sendMessage");
   const renderedKeys = new Set();
 
-  // Initialize Firebase 
-  // (Assumes firebase.initializeApp(...) has already run)
+  // Firestore collection reference
+  const forumCollection = firebase.firestore().collection("forumchat");
 
-  // Must use Realtime Database reference, not Firestore
-  const dbRef = firebase.database().ref("forumchat");
-
+  // Wait for user auth
   firebase.auth().onAuthStateChanged(user => {
     if (!user) {
-      console.warn("User not logged in yet – forum cannot send.");
+      console.warn("User not logged in – forum chat unavailable.");
       return;
     }
 
+    console.log("User authenticated:", user.email || user.displayName);
+
+    // Send button handler
     sendButton.addEventListener("click", () => {
       const txt = forumInput.value.trim();
       if (txt) sendForumMessage(user, txt);
     });
 
+    // Enter key handler
     forumInput.addEventListener("keypress", e => {
       if (e.key === "Enter") {
         const txt = forumInput.value.trim();
@@ -1030,38 +1045,41 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    dbRef.on("child_added", snapshot => {
-      const key = snapshot.key;
-      const msg = snapshot.val();
-      if (renderedKeys.has(key)) return;
-      renderedKeys.add(key);
+    // Listen for new messages in real-time (Firestore)
+    forumCollection.orderBy("timestamp").onSnapshot(snapshot => {
+      snapshot.docChanges().forEach(change => {
+        if (change.type === "added") {
+          const docId = change.doc.id;
+          const msg = change.doc.data();
+          if (renderedKeys.has(docId)) return;
+          renderedKeys.add(docId);
 
-      // Remove dummy
-      if (forumMessages.querySelector("[data-dummy]")) {
-        forumMessages.querySelectorAll("[data-dummy]").forEach(d => d.remove());
-      }
-
-      const msgDiv = document.createElement("div");
-      msgDiv.className = "chat-message";
-      msgDiv.innerHTML = `<strong>${msg.user}</strong>: ${msg.text}`;
-      forumMessages.appendChild(msgDiv);
-      forumMessages.scrollTop = forumMessages.scrollHeight;
+          const msgDiv = document.createElement("div");
+          msgDiv.className = "chat-message";
+          msgDiv.innerHTML = `<strong>${msg.user}</strong>: ${msg.text}`;
+          forumMessages.appendChild(msgDiv);
+          forumMessages.scrollTop = forumMessages.scrollHeight;
+        }
+      });
     });
   });
 
+  // Send a new message to Firestore
   function sendForumMessage(user, text) {
     const message = {
       text,
-      timestamp: Date.now(),
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       user: user.displayName || user.email || "Anonymous"
     };
-    dbRef.push(message)
-      .then(() => { forumInput.value = ""; })
-      .catch(console.error);
+    forumCollection.add(message)
+      .then(() => {
+        forumInput.value = "";
+        console.log("Message sent:", message);
+      })
+      .catch(err => console.error("Failed to send message:", err));
   }
 });
 </script>
-
 
 
 
