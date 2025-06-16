@@ -1011,75 +1011,115 @@ const tools = [
   
 
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  // Element references
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import {
+    getFirestore,
+    collection,
+    query,
+    orderBy,
+    onSnapshot,
+    addDoc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import {
+    getAuth,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  // ✅ Initialize Firebase (replace with your actual config)
+  const firebaseConfig = {
+      apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
+      authDomain: "chat-code-forum.firebaseapp.com",
+      projectId: "chat-code-forum",
+      storageBucket: "chat-code-forum.appspot.com",
+      messagingSenderId: "496765673859",
+      appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
+      measurementId: "G-XJKWXHF8WN"
+    };
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+
+  // ✅ DOM elements
   const forumInput = document.getElementById("forumchat-input-field");
   const forumMessages = document.getElementById("forumchat-messages");
   const sendButton = document.getElementById("sendMessage");
-  const renderedKeys = new Set();
 
-  // Firestore collection reference
-  const forumCollection = firebase.firestore().collection("forumchat");
+  // ✅ Chat Collection Reference
+  const forumCollection = collection(db, "forumchat");
+  const forumQuery = query(forumCollection, orderBy("timestamp"));
 
-  // Wait for user auth
-  firebase.auth().onAuthStateChanged(user => {
+  // ✅ Track rendered messages (avoid duplicates)
+  const renderedMsgIds = new Set();
+
+  // ✅ Listen to authentication
+  onAuthStateChanged(auth, (user) => {
     if (!user) {
-      console.warn("User not logged in – forum chat unavailable.");
+      console.warn("User not logged in.");
       return;
     }
 
-    console.log("User authenticated:", user.email || user.displayName);
-
-    // Send button handler
+    // ✅ Send message on button click
     sendButton.addEventListener("click", () => {
       const txt = forumInput.value.trim();
       if (txt) sendForumMessage(user, txt);
     });
 
-    // Enter key handler
-    forumInput.addEventListener("keypress", e => {
+    // ✅ Send message on "Enter" key
+    forumInput.addEventListener("keypress", (e) => {
       if (e.key === "Enter") {
         const txt = forumInput.value.trim();
         if (txt) sendForumMessage(user, txt);
       }
     });
 
-    // Listen for new messages in real-time (Firestore)
-    forumCollection.orderBy("timestamp").onSnapshot(snapshot => {
-      snapshot.docChanges().forEach(change => {
-        if (change.type === "added") {
-          const docId = change.doc.id;
-          const msg = change.doc.data();
-          if (renderedKeys.has(docId)) return;
-          renderedKeys.add(docId);
+    // ✅ Realtime Firestore listener with change tracking
+    const unsubscribe = onSnapshot(
+      forumQuery,
+      { includeMetadataChanges: true },
+      (snapshot) => {
+        snapshot.docChanges().forEach((change) => {
+          const doc = change.doc;
+          const msgData = doc.data();
 
+          // ✅ Avoid duplicate rendering
+          if (renderedMsgIds.has(doc.id)) return;
+          renderedMsgIds.add(doc.id);
+
+          // ✅ Message rendering
+          const source = doc.metadata.hasPendingWrites ? "📝 (Local)" : "";
           const msgDiv = document.createElement("div");
           msgDiv.className = "chat-message";
-          msgDiv.innerHTML = `<strong>${msg.user}</strong>: ${msg.text}`;
+          msgDiv.innerHTML = `<strong>${msgData.user}</strong>${source}: ${msgData.text}`;
           forumMessages.appendChild(msgDiv);
           forumMessages.scrollTop = forumMessages.scrollHeight;
-        }
-      });
-    });
+        });
+      },
+      (error) => {
+        console.error("❌ Firestore listen error:", error.message);
+      }
+    );
+
+    // Optional: handle when user navigates away
+    window.addEventListener("beforeunload", () => unsubscribe());
   });
 
-  // Send a new message to Firestore
-  function sendForumMessage(user, text) {
-    const message = {
-      text,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      user: user.displayName || user.email || "Anonymous"
-    };
-    forumCollection.add(message)
-      .then(() => {
-        forumInput.value = "";
-        console.log("Message sent:", message);
-      })
-      .catch(err => console.error("Failed to send message:", err));
+  // ✅ Send message function
+  async function sendForumMessage(user, text) {
+    try {
+      await addDoc(forumCollection, {
+        text,
+        timestamp: serverTimestamp(),
+        user: user.displayName || user.email || "Anonymous"
+      });
+      forumInput.value = "";
+    } catch (err) {
+      console.error("❌ Failed to send message:", err);
+    }
   }
-});
 </script>
+
 
 
 
