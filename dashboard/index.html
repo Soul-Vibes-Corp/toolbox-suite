@@ -1079,22 +1079,22 @@ const tools = [
       forumQuery,
       { includeMetadataChanges: true },
       (snapshot) => {
-        snapshot.docChanges().forEach((change) => {
-          const doc = change.doc;
-          const msgData = doc.data();
+       snapshot.docChanges().forEach((change) => {
+  if (change.type === "added") {
+    const doc = change.doc;
+    const msgData = doc.data();
 
-          // ✅ Avoid duplicate rendering
-          if (renderedMsgIds.has(doc.id)) return;
-          renderedMsgIds.add(doc.id);
+    if (renderedMsgIds.has(doc.id)) return;
+    renderedMsgIds.add(doc.id);
 
-          // ✅ Message rendering
-          const source = doc.metadata.hasPendingWrites ? "📝 (Local)" : "";
-          const msgDiv = document.createElement("div");
-          msgDiv.className = "chat-message";
-          msgDiv.innerHTML = `<strong>${msgData.user}</strong>${source}: ${msgData.text}`;
-          forumMessages.appendChild(msgDiv);
-          forumMessages.scrollTop = forumMessages.scrollHeight;
-        });
+    const source = doc.metadata.hasPendingWrites ? "📝 (Local)" : "";
+    const msgDiv = document.createElement("div");
+    msgDiv.className = "chat-message";
+    msgDiv.innerHTML = `<strong>${msgData.user}</strong>${source}: ${msgData.text}`;
+    forumMessages.appendChild(msgDiv);
+    forumMessages.scrollTop = forumMessages.scrollHeight;
+  }
+});
       },
       (error) => {
         console.error("❌ Firestore listen error:", error.message);
