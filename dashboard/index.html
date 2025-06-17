@@ -1106,18 +1106,18 @@ const tools = [
   });
 
   // ✅ Send message function
-  async function sendForumMessage(user, text) {
-    try {
-      await addDoc(forumCollection, {
-        text,
-        timestamp: serverTimestamp(),
-        user: user.displayName || user.email || "Anonymous"
-      });
-      forumInput.value = "";
-    } catch (err) {
-      console.error("❌ Failed to send message:", err);
-    }
+ async function sendForumMessage(user, text) {
+  try {
+    await addDoc(forumCollection, {
+      text,
+      user: user.displayName || user.email || "Anonymous",
+      timestamp: new Date() // Add client-side timestamp as fallback
+    });
+    forumInput.value = ""; // ✅ Clears input
+  } catch (err) {
+    console.error("❌ Failed to send message:", err);
   }
+}
 </script>
 
 
