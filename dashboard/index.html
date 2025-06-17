@@ -797,7 +797,6 @@
 <script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-storage-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-analytics-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-functions-compat.js"></script>
@@ -820,7 +819,6 @@
 
   const auth = firebase.auth();
   const firestore = firebase.firestore();
-  const realtimeDB = firebase.database();
   const storage = firebase.storage();
   const analytics = firebase.analytics();
   const functions = firebase.functions();
@@ -830,11 +828,6 @@
   console.log("Auth state changed:", user);
   if (!user) return;
   console.log("User logged in:", user.uid);
-});
-
-const dbRef = firebase.database().ref("forumchat");
-dbRef.on("child_added", snapshot => {
-  console.log("Child added:", snapshot.key, snapshot.val());
 });
    
   </script>
