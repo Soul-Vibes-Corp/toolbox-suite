@@ -158,6 +158,64 @@ function generatePalette() {
   });
 }
 
+/ ======================
+// FONT PREVIEW
+// ======================
+document.getElementById("brandFont").addEventListener("change", (e) => {
+  document.getElementById("fontPreview").style.fontFamily = e.target.value;
+});
+
+// ======================
+// BUSINESS CARD GENERATOR
+// ======================
+function generateBusinessCard() {
+  const name = document.getElementById("cardName").value;
+  const title = document.getElementById("cardTitle").value;
+  const email = document.getElementById("cardEmail").value;
+
+  const cardPreview = document.getElementById("cardPreview");
+  cardPreview.innerHTML = `
+    <div style="border:1px solid #333;padding:10px;width:250px;font-family:${document.getElementById("brandFont").value};background:#f9f9f9;">
+      <strong>${name}</strong><br>
+      <em>${title}</em><br>
+      <span>${email}</span>
+    </div>
+  `;
+}
+
+// ======================
+// EMAIL SIGNATURE GENERATOR
+// ======================
+function generateSignature() {
+  const name = document.getElementById("signatureName").value;
+  const title = document.getElementById("signatureTitle").value;
+  const website = document.getElementById("signatureWebsite").value;
+
+  const signaturePreview = document.getElementById("signaturePreview");
+  signaturePreview.innerHTML = `
+    <div style="font-family:${document.getElementById("brandFont").value};color:#333;">
+      <strong>${name}</strong><br>
+      <em>${title}</em><br>
+      <a href="https://${website}" target="_blank">${website}</a>
+    </div>
+  `;
+}
+
+// ======================
+// SOCIAL MEDIA ASSETS (PLACEHOLDER)
+// ======================
+function generateSocialMediaAssets() {
+  const socialPreview = document.getElementById("socialPreview");
+  socialPreview.innerHTML = `
+    <p>Social Media Kit Generated! (Preview)</p>
+    <div style="display:flex;gap:10px;">
+      <div style="width:100px;height:100px;background:#007bff;color:white;display:flex;align-items:center;justify-content:center;">Post 1</div>
+      <div style="width:100px;height:100px;background:#28a745;color:white;display:flex;align-items:center;justify-content:center;">Post 2</div>
+      <div style="width:100px;height:100px;background:#ffc107;color:white;display:flex;align-items:center;justify-content:center;">Post 3</div>
+    </div>
+  `;
+}
+
 // Generate Brandbook PDF
 function generateBrandbook() {
   const { jsPDF } = window.jspdf;
@@ -171,4 +229,16 @@ function generateBrandbook() {
   doc.text("Font: " + document.getElementById("brandFont").value, 20, 70);
 
   doc.save("Brandbook.pdf");
+}
+
+
+// ======================
+// DOWNLOAD / ZIP EXPORT (DUMMY)
+// ======================
+function downloadAll() {
+  alert("ZIP export coming soon! Ready to integrate with JSZip.");
+}
+
+function downloadKit() {
+  alert("Brand Kit download coming soon! Ready to integrate backend export.");
 }
