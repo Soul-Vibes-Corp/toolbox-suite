@@ -18,68 +18,85 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/2.1.1/tesseract.min.js"></script>
 </head>
-
 <body>
-
+  <!-- Top Navigation -->
   <header class="header">
-    <h1>🎨 Branding Toolkit & Instant Brand Kit Generator</h1>
-    <p>Build your entire brand identity in minutes</p>
-    <div class="actions">
-      <button id="toggle-dark">🌙 Toggle Dark Mode</button>
+    <div class="brand-bar">
+      <img src="assets/logo-192.png" alt="TraceCore™ Logo" class="brand-icon">
+      <h1>🎨 TraceCore™ Branding Toolkit 2025</h1>
     </div>
+    <p class="subtitle">Build your entire brand identity in minutes</p>
+    <nav class="actions">
+      <button id="toggle-dark">🌙 Dark Mode</button>
+      <button id="resetKit">🔄 Reset Project</button>
+    </nav>
   </header>
+
+  <!-- Progress Tracker -->
+  <div id="progress-tracker">
+    <ul>
+      <li class="active">Logo</li>
+      <li>Details</li>
+      <li>Colors</li>
+      <li>Fonts</li>
+      <li>Cards</li>
+      <li>Signature</li>
+      <li>Assets</li>
+      <li>Brandbook</li>
+      <li>Export</li>
+    </ul>
+  </div>
 
   <main class="container">
 
     <!-- Logo Section -->
     <section class="tool">
       <h2>1️⃣ Logo Generator & Upload</h2>
-      <input type="file" accept="image/*" id="logoUpload">
-      <button onclick="generateLogo()">Generate Logo</button>
-      <button onclick="generatePlaceholderLogo()">Generate Placeholder Logo</button>
-      
-      <div>
-        <label for="logoText">Logo Text:</label>
+      <div class="tool-grid">
+        <input type="file" accept="image/*" id="logoUpload">
         <input type="text" id="logoText" placeholder="Enter Logo Text">
-      </div>
-
-      <div>
-        <label for="logoColor">Logo Color:</label>
         <input type="color" id="logoColor" value="#007bff">
+        <div class="radio-group">
+          <label><input type="radio" name="logoShape" value="square" checked> Square</label>
+          <label><input type="radio" name="logoShape" value="circle"> Circle</label>
+          <label><input type="radio" name="logoShape" value="abstract"> Abstract</label>
+        </div>
+        <div class="btn-group">
+          <button onclick="generateLogo()">✨ Generate Logo</button>
+          <button onclick="generatePlaceholderLogo()">🖼️ Placeholder Logo</button>
+        </div>
       </div>
-
-      <div>
-        <label><input type="radio" name="logoShape" value="square" checked> Square</label>
-        <label><input type="radio" name="logoShape" value="circle"> Circle</label>
-      </div>
-
-      <div id="logoPreview" class="preview"></div>
+      <div id="logoPreview" class="preview large"></div>
     </section>
 
     <!-- Brand Details Section -->
     <section class="tool">
       <h2>🎯 Brand Details</h2>
-      <label for="brandName">Brand Name:</label>
-      <input type="text" id="brandName" placeholder="Enter brand name">
-
-      <label for="taglineInput">Tagline:</label>
-      <input type="text" id="taglineInput" placeholder="Enter your brand idea...">
-      <button onclick="generateTagline()">Generate Tagline</button>
-      <button id="generate-tagline">Generate Tagline (Auto)</button>
-      <div id="taglinePreview" class="preview"></div>
-      
-      <label for="bioInput">Bio:</label>
-      <input type="text" id="bioInput" placeholder="Enter your brand story...">
-      <button onclick="generateBio()">Generate Bio</button>
-      <button id="generate-bio">Generate Bio (Auto)</button>
-      <div id="bioPreview" class="preview"></div>
+      <div class="tool-grid">
+        <label>Brand Name:<input type="text" id="brandName" placeholder="Enter brand name"></label>
+        <label>Tagline:<input type="text" id="taglineInput" placeholder="Enter your tagline..."></label>
+        <div class="btn-group">
+          <button onclick="generateTagline()">Generate</button>
+          <button id="generate-tagline">Auto</button>
+        </div>
+        <div id="taglinePreview" class="preview"></div>
+        <label>Bio:<input type="text" id="bioInput" placeholder="Enter your brand story..."></label>
+        <div class="btn-group">
+          <button onclick="generateBio()">Generate</button>
+          <button id="generate-bio">Auto</button>
+        </div>
+        <div id="bioPreview" class="preview"></div>
+      </div>
     </section>
 
     <!-- Color Palette Section -->
     <section class="tool">
-      <h2>2️⃣ Brand Colors</h2>
+      <h2>2️⃣ Smart Color Palettes</h2>
       <input type="color" id="colorPicker">
-      <button onclick="generatePalette()">Generate Palette</button>
+      <div class="btn-group">
+        <button onclick="generatePalette()">🎨 Generate Palette</button>
+        <button onclick="generateAccessibilityCheck()">🔍 Check Accessibility</button>
+      </div>
       <div id="palettePreview" class="preview colors"></div>
     </section>
 
@@ -91,58 +108,73 @@
         <option value="Arial">Arial</option>
         <option value="Helvetica">Helvetica</option>
         <option value="Times New Roman">Times New Roman</option>
+        <option value="Poppins">Poppins</option>
+        <option value="Montserrat">Montserrat</option>
       </select>
+      <div id="fontPreview" class="preview text-sample">Aa Bb Cc — The quick brown fox jumps over the lazy dog.</div>
     </section>
 
     <!-- Business Card Maker Section -->
     <section class="tool">
       <h2>4️⃣ Business Card Maker</h2>
-      <input type="text" id="cardName" placeholder="Your Name">
-      <input type="text" id="cardTitle" placeholder="Your Title">
-      <input type="text" id="cardEmail" placeholder="Your Email">
-      <button onclick="generateBusinessCard()">Generate Business Card</button>
-      <div id="cardPreview" class="preview"></div>
-      <button id="auto-generate-card">Auto Generate Business Card</button>
+      <div class="tool-grid">
+        <input type="text" id="cardName" placeholder="Your Name">
+        <input type="text" id="cardTitle" placeholder="Your Title">
+        <input type="text" id="cardEmail" placeholder="Your Email">
+      </div>
+      <div class="btn-group">
+        <button onclick="generateBusinessCard()">🪪 Generate</button>
+        <button id="auto-generate-card">Auto</button>
+      </div>
+      <div id="cardPreview" class="preview medium"></div>
     </section>
 
     <!-- Email Signature Maker Section -->
     <section class="tool">
       <h2>5️⃣ Email Signature Maker</h2>
-      <input type="text" id="signatureName" placeholder="Your Name">
-      <input type="text" id="signatureTitle" placeholder="Your Title">
-      <input type="text" id="signatureWebsite" placeholder="Your Website">
-      <button onclick="generateSignature()">Generate Signature</button>
-      <button onclick="generateEmailSignature()">Generate Email Signature (Auto)</button>
+      <div class="tool-grid">
+        <input type="text" id="signatureName" placeholder="Your Name">
+        <input type="text" id="signatureTitle" placeholder="Your Title">
+        <input type="text" id="signatureWebsite" placeholder="Your Website">
+      </div>
+      <div class="btn-group">
+        <button onclick="generateSignature()">Generate</button>
+        <button onclick="generateEmailSignature()">Auto</button>
+      </div>
       <div id="signaturePreview" class="preview"></div>
     </section>
 
     <!-- Social Media Assets Section -->
     <section class="tool">
       <h2>6️⃣ Social Media Assets</h2>
-      <button onclick="generateSocialMediaAssets()">Generate Social Media Assets</button>
+      <button onclick="generateSocialMediaAssets()">📱 Generate Social Media Kit</button>
+      <div id="socialPreview" class="preview"></div>
     </section>
 
     <!-- Brandbook Generator Section -->
     <section class="tool">
       <h2>7️⃣ Brandbook Generator (PDF)</h2>
-      <button onclick="generateBrandbook()">Generate Brandbook PDF</button>
-      <div id="brandbookPreview" class="preview"></div>
+      <button onclick="generateBrandbook()">📘 Generate Brandbook</button>
+      <div id="brandbookPreview" class="preview large"></div>
     </section>
 
     <!-- Download All Section -->
     <section class="tool">
-      <h2>8️⃣ Final Review & Download All</h2>
-      <button onclick="downloadAll()">Download ZIP</button>
-      <button onclick="downloadKit()">Download All (Kit ZIP)</button>
+      <h2>8️⃣ Final Review & Export</h2>
+      <div class="btn-group">
+        <button onclick="downloadAll()">⬇️ Download ZIP</button>
+        <button onclick="downloadKit()">📦 Download Brand Kit</button>
+      </div>
     </section>
 
   </main>
 
+  <!-- Footer -->
   <footer>
-    <p>© 2025 Soul Vibes Corp - Toolbox Suite</p>
+    <p>© 2025 Soul Vibes Corp — Toolbox Suite | <a href="#privacy">Privacy</a> | <a href="#terms">Terms</a></p>
   </footer>
 
   <script src="script.js"></script>
-
 </body>
+
 </html>
