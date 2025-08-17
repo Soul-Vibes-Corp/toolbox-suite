@@ -104,3 +104,8 @@ footer {
 #toggle-dark:hover {
   background-color: #c0392b;
 }
+
+:root {
+  primary: #007bff;
+  secondary: #ff4081;
+  bg-light:
