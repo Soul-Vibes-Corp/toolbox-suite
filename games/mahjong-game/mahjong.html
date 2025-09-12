@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mahjong Match</title>
+    <style>
+        body {
+            background-color: #f6f8fa;
+            color: #1c1c1c;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .game-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #005fa3;
+            margin-bottom: 10px;
+        }
+
+        .score-display {
+            font-size: 1.5rem;
+            color: #346f99;
+            margin-bottom: 20px;
+        }
+
+        canvas {
+            border: 2px solid #a3e6ff;
+            background-color: #e8f4ff;
+            border-radius: 12px;
+            touch-action: none; /* Prevents mobile browser touch gestures */
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="game-title">Mahjong Match</h1>
+        <div class="score-display">Score: <span id="score-value">0</span></div>
+        <canvas id="gameCanvas"></canvas>
+    </div>
+</body>
+</html>
