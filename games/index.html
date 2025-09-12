@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#000000">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/logo-192.png">
+  <title>Smart Daily Tools</title>
+  <link rel="stylesheet" href="style.css">
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    background: #f6f8fa;
+    color: #1c1c1c;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-image:
+      linear-gradient(45deg, #e5e9ef 25%, transparent 25%),
+      linear-gradient(-45deg, #e5e9ef 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #e5e9ef 75%),
+      linear-gradient(-45deg, transparent 75%, #e5e9ef 75%);
+    background-size: 60px 60px;
+    background-position: 0 0, 0 30px, 30px -30px, -30px 0;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:
+      radial-gradient(circle, rgba(0, 180, 255, 0.1), transparent 70%),
+      radial-gradient(circle at bottom right, rgba(140, 100, 255, 0.08), transparent 80%);
+    z-index: -1;
+    transform: translateZ(-200px) scale(1.1);
+    animation: float 10s linear infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) translateZ(-200px); }
+    50% { transform: translateY(-30px) translateZ(-200px); }
+  }
+
+  /* Header (NEW) */
+  header {
+    background-color: #ffffff;
+    color: #1c1c1c;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 10;
+  }
+
+  header .home-link {
+    color: #0078d4;
+    font-size: 1.5rem;
+    text-decoration: none;
+  }
+
+  header .home-link:hover {
+    color: #005fa3;
+  }
+
+  main {
+    padding: 2rem 1rem 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .suite-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    width: 100%;
+    max-width: 800px;
+    padding: 1rem;
+  }
+
+ .tool-card {
+  background: #e8f4ff;
+  border: 1px solid #a3e6ff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 6px rgba(94, 201, 240, 0.15);
+  color: #005fa3;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s ease;
+  user-select: none;
+  text-decoration: none;
+}
+
+.tool-card:hover {
+  background: #f2fbff;
+  box-shadow: 0 0 25px #a3e6ff, 0 0 30px #5ec9f0, 0 0 40px #3aa1cc;
+  transform: translateY(-5px) scale(1.02);
+}
+
+
+  .card-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .card-title {
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .card-desc {
+    font-weight: 400;
+    font-size: 0.9rem;
+    color: #346f99;
+    text-align: center;
+  }
+
+  footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #e3eaf3;
+    color: #2a2a2a;
+    font-size: 0.9rem;
+    border-top: 1px solid #ccc;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    padding: 1rem;
+    z-index: 1000;
+  }
+
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background-color: #dde6f0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-top: 1px solid #bbb;
+    z-index: 1000;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
+  }
+
+  .bottom-nav .nav-link {
+    color: #2a2a2a;
+    font-size: 1.5rem;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .bottom-nav .nav-link:hover,
+  .bottom-nav .nav-link:focus {
+    color: #0078d4;
+  }
+
+  #chatbot-toggle {
+    position: fixed;
+    bottom: 90px;
+    right: 24px;
+    background: #5ec9f0;
+    color: #fff;
+    padding: 1rem 1.1rem;
+    border-radius: 50%;
+    font-size: 1.6rem;
+    cursor: pointer;
+    box-shadow: 0 0 15px #5ec9f0;
+    z-index: 150;
+    transition: box-shadow 0.3s ease;
+  }
+
+  #chatbot-toggle:hover {
+    box-shadow: 0 0 25px #3aa1cc, 0 0 35px #5ec9f0;
+  }
+
+  #chat-window {
+    position: fixed;
+    bottom: 150px;
+    right: 24px;
+    width: 320px;
+    max-height: 400px;
+    background: #ffffff;
+    border: 1px solid #5ec9f0;
+    border-radius: 12px;
+    box-shadow: 0 0 30px #a3e6ff;
+    display: none;
+    flex-direction: column;
+    z-index: 151;
+    overflow: hidden;
+  }
+
+  #chat-header {
+    background: #5ec9f0;
+    color: #fff;
+    padding: 0.7rem 1rem;
+    font-weight: 700;
+    user-select: none;
+  }
+
+  #chat-messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 0.7rem 1rem;
+    font-size: 0.9rem;
+    color: #005fa3;
+  }
+
+  #chat-input {
+    border: none;
+    border-top: 1px solid #a3e6ff;
+    background: #f9f9f9;
+    color: #005fa3;
+    padding: 0.7rem 1rem;
+    font-size: 1rem;
+    outline: none;
+  }
+
+  #chat-close {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+
+  .clip-hexagon {
+    clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0% 50%);
+  }
+
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+
+  .futuristic-panel {
+    margin-top: 3rem;
+    padding: 2rem;
+    border-radius: 16px;
+    background: radial-gradient(circle at top left, rgba(100, 200, 255, 0.2), #ffffff);
+    box-shadow: 0 0 30px #a3e6ff;
+    color: #005fa3;
+  }
+
+  .extra-sections {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-top: 2rem;
+    justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+  <div class="register-container">
+
+<header class="header">
+   <h1><a href="../dashboard/index.html" class="home-link">Smart Daily Tools</a></h1>
+
+  <!-- Hidden checkbox to toggle the menu -->
+  <input type="checkbox" id="menuToggle" class="menu-toggle" />
+  <label for="menuToggle" class="hamburger" aria-label="Toggle Menu">&#9776;</label>
+
+   <nav class="menu">
+  <div class="actions">
+      <button id="search-toggle" aria-label="Search"> 🔍</button>
+    <input type="text" id="search-input" placeholder="Search tools..." aria-label="Search tools" />
+    <span id="result-count" aria-live="polite"></span>
+      <a href="../dashboard/index.html">Dashboard</a>
+     <a href="../toolHistory.html">Track Tools</a>
+     <button onclick="location.href='../index.html'" id="logout-button" aria-label="Logout">Logout</button>
+  </div>
+ </nav>
+</header>
+ <style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    background-color: #e3eaf3;
+    border-bottom: 1px solid #dcdfe3;
+    position: relative;
+    z-index: 10;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  }
+
+  .home-link {
+    color: #0078d4;
+    text-decoration: none;
+    font-size: 1.8rem;
+  }
+
+  .home-link:hover {
+    color: #005fa3;
+  }
+
+  .hamburger {
+    font-size: 30px;
+    color: #0078d4;
+    cursor: pointer;
+    display: none;
+    user-select: none;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .points-counter {
+    background-color: #e8f4ff;
+    color: #005fa3;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 1rem;
+    box-shadow: 0 0 10px rgba(94, 201, 240, 0.2);
+  }
+
+  .hamburger:hover {
+    color: #005fa3;
+  }
+
+  .menu-toggle {
+    display: none;
+  }
+
+  .menu {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .actions a,
+  .actions button,
+  .actions input[type="text"] {
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: 1px solid #dcdfe3;
+    background: #f9fbfc;
+    color: #0078d4;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+
+  .actions a:hover,
+  .actions button:hover,
+  .actions input[type="text"]:focus {
+    background-color: #e0f2ff;
+    color: #005fa3;
+    outline: none;
+  }
+
+  .actions input[type="text"] {
+    min-width: 150px;
+    color: #1c1c1c;
+  }
+
+  .visually-hidden {
+    position: absolute !important;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+    clip: rect(1px, 1px, 1px, 1px);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 768px) {
+    .hamburger {
+      display: block;
+    }
+
+    .menu {
+      position: absolute;
+      top: 100%;
+      right: 24px;
+      flex-direction: column;
+      background: #e8f4ff;
+      padding: 16px;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0, 120, 212, 0.1);
+      width: 250px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+    }
+
+    .actions {
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .actions input[type="text"] {
+      width: 100%;
+    }
+
+    .menu-toggle:checked + .hamburger + .menu {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+  }
+
+  .profile-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #5ec9f0; /* story-like border */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e3eaf3;
+  transition: border 0.3s ease;
+}
+
+.profile-circle img {
+ width: 24px;
+  height: 24px;
+  object-fit: contain;
+  filter: brightness(0) saturate(100%) invert(26%) sepia(57%) saturate(548%) hue-rotate(176deg) brightness(94%) contrast(91%);
+  transition: filter 0.2s ease;
+  object-fit: cover;
+  display: block;
+}
+
+  .nav-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  filter: brightness(0) saturate(100%) invert(26%) sepia(57%) saturate(548%) hue-rotate(176deg) brightness(94%) contrast(91%);
+  transition: filter 0.2s ease;
+}
+
+.nav-link:hover .nav-icon {
+  filter: brightness(0) saturate(100%) invert(39%) sepia(84%) saturate(439%) hue-rotate(180deg) brightness(95%) contrast(104%);
+}
+
+</style>
+    
+<main>
+  <div id="search-results" class="suite-grid" style="display: none;"></div>
+  <div class="suite-grid">
+    <a href="../tools/pdf-merger/index.html" class="tool-card">📎 PDF Merger Tool</a>
+    <a href="../tools/image-compressor/index.html" class="tool-card">🖼️ Image Compressor</a>
+    <a href="../tools/qr-code-generator/index.html" class="tool-card">🔗 QR Code Generator</a>
+    <a href="../tools/document-scanner/index.html" class="tool-card">📄 Document Scanner</a>
+    <a href="../tools/quote-box/index.html" class="tool-card">💬 Quote Box</a>
+    <a href="../tools/currency-converter/index.html" class="tool-card">💱 Currency Converter</a>
+    <a href="../tools/fitness-tracker/index.html" class="tool-card">🏋️‍♂️ Fitness Tracker</a>
+    <a href="../tools/image-editor/index.html" class="tool-card">🖌️ Image Editor</a>
+    <a href="../tools/json-formatter/index.html" class="tool-card">🗄️ JSON Formatter</a>
+    <a href="../tools/meditation-timer/index.html" class="tool-card">🧘 Meditation Timer</a>
+    <a href="../tools/password-generator/index.html" class="tool-card">🔐 Password Generator</a>
+    <a href="../tools/resume-builder/index.html" class="tool-card">📄 Resume Builder</a>
+    <a href="../tools/text-to-speech/index.html" class="tool-card">🗣️ Text to Speech</a>
+    <a href="../tools/unit-converter/index.html" class="tool-card">📏 Unit Converter</a>
+    <a href="../tools/drum-pad/index.html" class="tool-card">🥁 Drum Pad</a>
+  </div>
+</main>
+
+<footer class="bottom-nav">
+  <a href="../dashboard/index.html" class="nav-link" aria-label="Home">
+    <img src="../dashboard/assets/home-icon.svg" alt="Home" class="nav-icon" />
+  </a>
+  <a href="../dashboard/explore-page/index.html" class="nav-link" aria-label="Search">
+    <img src="../dashboard/assets/search-icon.svg" alt="Search" class="nav-icon" />
+  </a>
+  <a href="#add" class="nav-link" aria-label="Add">
+    <img src="../dashboard/assets/add-icon.svg" alt="Add" class="nav-icon" />
+  </a>
+  <a href="../tools/forum/index.html" class="nav-link" aria-label="Messages">
+    <img src="../dashboard/assets/message-icon.svg" alt="Messages" class="nav-icon" />
+  </a>
+  <a href="../dashboard/profile-page/index.html" class="nav-link profile-link" aria-label="Profile">
+    <div class="profile-circle">
+      <img id="profile-img" src="../dashboard/assets/default-user-icon.svg" alt="Profile" />
+    </div>
+  </a>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(() => console.log('✅ Service Worker Registered'))
+      .catch(err => console.error('Service Worker registration failed:', err));
+  }
+</script>
+
+<script>
+  const searchToggle = document.getElementById('search-toggle');
+  const searchInput = document.getElementById('search-input');
+  const searchResults = document.getElementById('search-results');
+  const suiteGrid = document.querySelector('.suite-grid');
+
+const tools = [
+  // 🛠️ Freelance Marketing, Branding & Employment
+  { name: "🎨 Instant Brand Kit Creator", tags: ["branding", "design", "brand"], link: "../tools/brand-kit-generator/index.html" },
+  { name: "📅 Marketing Content Calendar Generator", tags: ["marketing", "calendar", "content"], link: "../tools/content-calendar-generator/index.html" },
+  { name: "📚 Lead Magnet Creator", tags: ["lead", "magnet", "conversion"], link: "../tools/lead-magnet-creator/index.html" },
+  { name: "📊 Social Media Analytics Snapshot", tags: ["social", "analytics", "media"], link: "../tools/social-media-analytics-snapshot/index.html" },
+  { name: "🔍 Smart Business Name & Domain Finder", tags: ["business", "domain", "name"], link: "../tools/business-name-domain-finder/index.html" },
+  { name: "🏢 Find Gigs", tags: ["jobs", "gigs", "freelance"], link: "../tools/find-gigs/index.html" },
+  { name: "🔐 Job Search Tools", tags: ["job", "search", "career"], link: "../tools/job-search-tools/index.html" },
+  { name: "📄 Resume Builder", tags: ["resume", "cv", "builder"], link: "../tools/resume-builder/index.html" },
+  { name: "🗣️ Interview Prep Tools", tags: ["interview", "preparation", "job"], link: "../tools/interview-prep-tools/index.html" },
+  { name: "🏢 Work Schedule Management", tags: ["schedule", "work", "management"], link: "../tools/work-schedule-management/index.html" },
+  { name: "📄 Salary Calculator", tags: ["salary", "finance", "calculator"], link: "../tools/salary-calculator/index.html" },
+  { name: "⏱️ Time Tracking Tool", tags: ["time", "tracking", "productivity"], link: "../tools/time-tracking-tool/index.html" },
+
+  // 📈 Business Strategy & Financial Planning
+  { name: "📝 One-Page Business Plan Generator", tags: ["business", "plan", "strategy"], link: "../tools/business-plan-generator/index.html" },
+  { name: "⚖️ Instant SWOT Analysis Generator", tags: ["swot", "analysis", "strategy"], link: "../tools/swot-analysis-generator/index.html" },
+  { name: "💲 Profit & Investment Calculator", tags: ["profit", "investment", "finance"], link: "../tools/profit-investment-calculator/index.html" },
+  { name: "📊 Smart KPI Dashboard", tags: ["kpi", "dashboard", "metrics"], link: "../tools/kpi-dashboard/index.html" },
+  { name: "🔧 Smart Cost-Cutting Analyzer", tags: ["cost", "cutting", "savings"], link: "../tools/cost-cutting-analyzer/index.html" },
+  { name: "🖲️ Expense Tracking", tags: ["expense", "tracking", "finance"], link: "../tools/expense-tracking/index.html" },
+  { name: "🖲️ Expense Tracking", tags: [ "tracking", "finance"], link: "../tools/w2-maker/index.html" },
+
+  // 📊 Sales & Client Management
+  { name: "📑 Smart Proposal Generator", tags: ["proposal", "sales", "client"], link: "../tools/proposal-generator/index.html" },
+  { name: "🧾 Invoice + Bill Payment Services", tags: ["invoice", "payment", "billing"], link: "../tools/invoice-bill-payment/index.html" },
+  { name: "📝 Client Contract Generator", tags: ["contract", "client", "agreement"], link: "../tools/client-contract-generator/index.html" },
+  { name: "🖋️ Automated NDA Signer Tool", tags: ["nda", "signer", "legal"], link: "../tools/nda-signer/index.html" },
+  { name: "📅 Meeting Agenda + Summary Maker", tags: ["meeting", "agenda", "summary"], link: "../tools/meeting-agenda-summary/index.html" },
+  { name: "🧾 Invoice Generator", tags: ["invoice", "generator", "billing"], link: "../tools/invoice-generator/index.html" },
+
+  // 🧑‍💼 Operations & Team Management
+  { name: "📋 Employee Onboarding Kit Generator", tags: ["employee", "onboarding", "hr"], link: "../tools/employee-onboarding-kit/index.html" },
+  { name: "🗂️ Team Taskboard Generator", tags: ["team", "taskboard", "management"], link: "../tools/team-taskboard/index.html" },
+  { name: "📏 Professional Networking", tags: ["networking", "professional", "connections"], link: "../tools/professional-networking/index.html" },
+
+  // 🤝 Customer & Audience Building
+  { name: "👥 Customer Avatar Builder", tags: ["customer", "avatar", "persona"], link: "../tools/customer-avatar-builder/index.html" },
+  { name: "📧 Smart Email Sequence Generator", tags: ["email", "sequence", "marketing"], link: "../tools/email-sequence-generator/index.html" },
+
+  // 🛠️ Everyday Utility Tools
+  { name: "📎 PDF Merger Tool", tags: ["pdf", "merge", "documents"], link: "../tools/pdf-merger/index.html" },
+  { name: "🖼️ Image Compressor", tags: ["image", "compressor", "optimize"], link: "../tools/image-compressor/index.html" },
+  { name: "🔗 QR Code Generator", tags: ["qr", "code", "generator"], link: "../tools/qr-code-generator/index.html" },
+  { name: "📄 Document Scanner", tags: ["document", "scanner", "pdf"], link: "../tools/document-scanner/index.html" },
+  { name: "💬 Quote Box", tags: ["quote", "box", "inspiration"], link: "../tools/quote-box/index.html" },
+  { name: "💱 Currency Converter", tags: ["currency", "converter", "exchange"], link: "../tools/currency-converter/index.html" },
+  { name: "🏋️‍♂️ Fitness Tracker", tags: ["fitness", "tracker", "health"], link: "../tools/fitness-tracker/index.html" },
+  { name: "🖌️ Image Editor", tags: ["image", "editor", "design"], link: "../tools/image-editor/index.html" },
+  { name: "🗄️ JSON Formatter", tags: ["json", "formatter", "code"], link: "../tools/json-formatter/index.html" },
+  { name: "🧘 Meditation Timer", tags: ["meditation", "timer", "relaxation"], link: "../tools/meditation-timer/index.html" },
+  { name: "🔐 Password Generator", tags: ["password", "generator", "security"], link: "../tools/password-generator/index.html" },
+  { name: "🗣️ Text to Speech", tags: ["text", "speech", "audio"], link: "../tools/text-to-speech/index.html" },
+  { name: "📏 Unit Converter", tags: ["unit", "converter", "measurement"], link: "../tools/unit-converter/index.html" },
+  { name: "🥁 Drum Pad", tags: ["drum", "pad", "music"], link: "../tools/drum-pad/index.html" },
+  { name: "🎬 Free Movies Tool", tags: ["movies", "streaming", "video"], link: "../tools/free-movies/index.html" },
+  // ✅ All tools now included
+];
+
+
+
+  searchToggle.addEventListener('click', () => {
+    searchInput.classList.toggle('expanded');
+    if (searchInput.classList.contains('expanded')) {
+      searchInput.focus();
+    } else {
+      searchInput.value = '';
+      searchResults.style.display = 'none';
+      suiteGrid.style.display = 'grid';
+    }
+  });
+
+  searchInput.addEventListener('input', () => {
+    const query = searchInput.value.toLowerCase();
+    if (query === '') {
+      searchResults.style.display = 'none';
+      suiteGrid.style.display = 'grid';
+      return;
+    }
+
+    const filteredTools = tools.filter(tool =>
+      tool.name.toLowerCase().includes(query) ||
+      tool.tags.some(tag => tag.includes(query))
+    );
+
+ searchResults.innerHTML = '';
+  filteredTools.forEach(tool => {
+   const toolElement = document.createElement('a');
+   toolElement.href = tool.link;
+   toolElement.className = 'suite-button';
+   toolElement.textContent = tool.name;
+  searchResults.appendChild(toolElement);
+});
+
+
+    suiteGrid.style.display = 'none';
+    searchResults.style.display = 'grid';
+  });
+</script>
+
+  <script>
+  const searchToggle = document.getElementById('search-toggle');
+  const searchInput = document.getElementById('search-input');
+
+  searchToggle.addEventListener('click', () => {
+    searchInput.classList.toggle('expanded');
+    if (searchInput.classList.contains('expanded')) {
+      searchInput.focus();
+    }
+  });
+</script>
+
+<!-- Firebase App & Auth (optional, only needed if using Firebase auth) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js"></script>
+<script>
+  // Firebase Config (adjust this to your actual config)
+  const firebaseConfig = {
+  apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
+  authDomain: "chat-code-forum.firebaseapp.com",
+  projectId: "chat-code-forum",
+  storageBucket: "chat-code-forum.firebasestorage.app",
+  messagingSenderId: "496765673859",
+  appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
+  measurementId: "G-XJKWXHF8WN"
+};
+
+firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+</script>
+
+<!-- Main Tracking + UI Script -->
+<script>
+  // Theme toggle
+  const themeToggle = document.getElementById('toggle-dark');
+  const isDark = localStorage.getItem('theme') === 'dark';
+  if (isDark) document.body.classList.add('dark');
+
+  themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark');
+    const theme = document.body.classList.contains('dark') ? 'dark' : 'light';
+    localStorage.setItem('theme', theme);
+    themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+  });
+
+  // Login/Logout (if using Firebase)
+  const logoutBtn = document.getElementById('logout-button');
+  logoutBtn.addEventListener('click', () => {
+    localStorage.removeItem('user');
+    if (auth.currentUser) auth.signOut();
+    alert('Logged out!');
+    location.reload();
+  });
+
+  // Simple visitor tracking
+  const trackVisit = (toolName) => {
+    const history = JSON.parse(localStorage.getItem('toolHistory') || '[]');
+    const now = new Date().toISOString();
+    history.unshift({ tool: toolName, time: now });
+    localStorage.setItem('toolHistory', JSON.stringify(history.slice(0, 25))); // keep last 25
+  };
+
+  // Count launches per tool
+  const countLaunch = (toolName) => {
+    const key = `launchCount_${toolName}`;
+    const current = parseInt(localStorage.getItem(key) || '0');
+    localStorage.setItem(key, current + 1);
+  };
+
+  // Apply launch tracking to buttons
+  document.querySelectorAll('.suite-button').forEach(button => {
+    const name = button.textContent.trim();
+    button.addEventListener('click', () => {
+      trackVisit(name);
+      countLaunch(name);
+    });
+  });
+
+  // Enhanced search
+  const allTools = [...tools]; // From inline script
+  searchInput.addEventListener('input', e => {
+    const val = e.target.value.toLowerCase();
+    if (!val) {
+      searchResults.style.display = 'none';
+      suiteGrid.style.display = 'grid';
+      return;
+    }
+
+    const matches = allTools.filter(tool =>
+      tool.name.toLowerCase().includes(val) ||
+      tool.tags.some(tag => tag.includes(val))
+    );
+
+    searchResults.innerHTML = matches.map(tool =>
+      `<a href="${tool.link}" class="suite-button">${tool.name}</a>`
+    ).join('');
+
+    searchResults.style.display = 'grid';
+    suiteGrid.style.display = 'none';
+  });
+
+  
+    function filterTools() {
+      const input = document.getElementById('toolSearch').value.toLowerCase();
+      const cards = document.querySelectorAll('.tool-card');
+      cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        card.style.display = text.includes(input) ? 'flex' : 'none';
+      });
+    }
+  
+
+  // Optional: auto login stub if using Firebase
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      console.log('✅ Logged in as:', user.email);
+      localStorage.setItem('user', user.email);
+    } else {
+      localStorage.removeItem('user');
+    }
+  });
+</script>  
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js"></script>
+<script>
+  const db = firebase.firestore();
+
+  const logToFirestore = (toolName) => {
+    db.collection("toolUsage").add({
+      tool: toolName,
+      user: localStorage.getItem('user') || 'anonymous',
+      timestamp: new Date().toISOString()
+    }).then(() => {
+      console.log("Logged to Firestore:", toolName);
+    }).catch(err => console.error("Firestore log error:", err));
+  };
+
+  // Modify existing tool click handler
+  document.querySelectorAll('.suite-button').forEach(button => {
+    const name = button.textContent.trim();
+    button.addEventListener('click', () => {
+      trackVisit(name);
+      countLaunch(name);
+      logToFirestore(name); // 🔥 Add this
+    });
+  });
+
+function saveUserSettings(settingsObject) {
+  const user = firebase.auth().currentUser;
+  if (!user) return;
+
+  firebase.firestore().collection("userSettings").doc(user.uid).set(settingsObject);
+}
+
+// Example:
+saveUserSettings({
+  theme: "dark",
+  compressorSettings: {
+    threshold: -12,
+    ratio: 4,
+  },
+  reverbPreset: "Valhalla Space",
+});
+
+firebase.firestore().collection("userSettings").doc(user.uid).get().then(doc => {
+  if (doc.exists) {
+    const settings = doc.data();
+    // Apply settings to app UI
+  }
+});
+
+function saveUserSettings(settingsObject) {
+  const user = firebase.auth().currentUser;
+  if (!user) return;
+
+  firebase.firestore().collection("userSettings").doc(user.uid).set(settingsObject);
+}
+
+// Example:
+saveUserSettings({
+  theme: "dark",
+  compressorSettings: {
+    threshold: -12,
+    ratio: 4,
+  },
+  reverbPreset: "Valhalla Space",
+});
+
+firebase.firestore().collection("userSettings").doc(user.uid).get().then(doc => {
+  if (doc.exists) {
+    const settings = doc.data();
+    // Apply settings to app UI
+  }
+});
+
+  
+</script>
+
+<script>
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+  apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
+  authDomain: "chat-code-forum.firebaseapp.com",
+  projectId: "chat-code-forum",
+  storageBucket: "chat-code-forum.firebasestorage.app",
+  messagingSenderId: "496765673859",
+  appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
+  measurementId: "G-XJKWXHF8WN"
+};
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+</script>
+  
+    
+</body>
+</html>
