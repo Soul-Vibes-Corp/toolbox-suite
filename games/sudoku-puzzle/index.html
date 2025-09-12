@@ -146,6 +146,7 @@
         <div class="controls">
             <button id="check-button">Check Solution</button>
             <button id="new-game-button">New Game</button>
+            <button id="hint-button">Hint (<span id="hints-left">3</span>)</button>
         </div>
         <div class="game-instructions">
             <h2>Sudoku: How to Play</h2>
@@ -155,9 +156,10 @@
             <p><strong>1. Fill the Grid:</strong> Click on an empty cell and enter a digit from 1 to 9. The game will provide a new, solvable puzzle each time you start.</p>
             <p><strong>2. Follow the Rules:</strong> Remember, a number cannot be repeated in the same row, column, or 3x3 box. Be careful with your choices!</p>
             <p><strong>3. Check Your Progress:</strong> Click the "Check Solution" button to see if your current solution is correct. The game will highlight any errors to help you fix them.</p>
+            <p><strong>4. Use a Hint:</strong> If you get stuck, click the "Hint" button for help! You have 3 hints per puzzle. The hint button will be disabled when you run out of hints.</p>
             
             <h3>Earning Points</h3>
-            <p>When you successfully complete the puzzle, you will be awarded **300 points** to your account! These points will be added to your total and can be viewed on your dashboard.</p>
+            <p>When you successfully complete the puzzle, you will be awarded **300 points** to your account! These points will be added to your total and can be viewed on your dashboard. Using a hint does not affect the points you earn for solving the puzzle.</p>
         </div>
     </div>
 
@@ -187,12 +189,15 @@
         
         let userId = null;
         let isAuthReady = false;
+        let hintsLeft = 3;
 
         // --- Game Setup ---
         const board = document.getElementById('sudoku-board');
         const messageArea = document.getElementById('message-area');
         const checkButton = document.getElementById('check-button');
         const newGameButton = document.getElementById('new-game-button');
+        const hintButton = document.getElementById('hint-button');
+        const hintsLeftSpan = document.getElementById('hints-left');
         let activeCell = null;
         let puzzle = [];
         let solution = [];
@@ -282,19 +287,16 @@
 
         function checkSolution() {
             let isCorrect = true;
-            let currentBoard = [];
             const cells = board.querySelectorAll('.sudoku-cell');
             
             cells.forEach(cell => cell.classList.remove('error'));
             
-            // Build the user's board and check against the solution
+            // Check against the solution
             for (let r = 0; r < PUZZLE_SIZE; r++) {
-                currentBoard[r] = [];
                 for (let c = 0; c < PUZZLE_SIZE; c++) {
                     const cellIndex = r * PUZZLE_SIZE + c;
                     const cell = cells[cellIndex];
                     const value = cell.textContent ? parseInt(cell.textContent) : 0;
-                    currentBoard[r][c] = value;
                     
                     if (value !== solution[r][c]) {
                         cell.classList.add('error');
@@ -311,6 +313,35 @@
             }
         }
         
+        function useHint() {
+            if (hintsLeft > 0) {
+                // Find all empty cells
+                const emptyCells = Array.from(board.querySelectorAll('.sudoku-cell')).filter(cell => cell.textContent === '' && !cell.classList.contains('fixed'));
+                
+                if (emptyCells.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * emptyCells.length);
+                    const cell = emptyCells[randomIndex];
+                    const row = cell.dataset.row;
+                    const col = cell.dataset.col;
+                    
+                    cell.textContent = solution[row][col];
+                    cell.classList.add('fixed'); // Mark as fixed so it can't be changed
+
+                    hintsLeft--;
+                    hintsLeftSpan.textContent = hintsLeft;
+                    
+                    if (hintsLeft === 0) {
+                        hintButton.disabled = true;
+                    }
+                } else {
+                    showMessage("No empty cells left for a hint!", "error");
+                }
+            } else {
+                showMessage("You are out of hints!", "error");
+                hintButton.disabled = true;
+            }
+        }
+
         function showMessage(text, type) {
             messageArea.textContent = text;
             messageArea.style.color = type === "win" ? "green" : "red";
@@ -320,6 +351,9 @@
             createPuzzle();
             renderBoard();
             showMessage("");
+            hintsLeft = 3;
+            hintsLeftSpan.textContent = hintsLeft;
+            hintButton.disabled = false;
         }
 
         // --- Point System Integration with Dashboard ---
@@ -370,7 +404,7 @@
         document.addEventListener('keydown', handleNumberInput);
         checkButton.addEventListener('click', checkSolution);
         newGameButton.addEventListener('click', startNewGame);
-        
+        hintButton.addEventListener('click', useHint);
     </script>
 </body>
 </html>
