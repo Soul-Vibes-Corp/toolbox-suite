@@ -184,5 +184,171 @@
             <p>Each time you find a successful match, you earn **100 points**. When you clear the entire board by finding all the pairs, you will get a bonus of **500 points**. These points are automatically added to your account!</p>
         </div>
     </div>
+
+    <script type="module">
+        import { getAuth, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+        import { getFirestore, doc, setDoc, increment } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
+
+        // This is a crucial fix to avoid "unidentified" errors
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        
+        // Firebase configuration from your dashboard
+        const firebaseConfig = {
+            apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
+            authDomain: "chat-code-forum.firebaseapp.com",
+            projectId: "chat-code-forum",
+            storageBucket: "chat-code-forum.appspot.com",
+            messagingSenderId: "496765673859",
+            appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
+            measurementId: "G-XJKWXHF8WN"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        let userId = null;
+        let isAuthReady = false;
+
+        // --- Game Setup ---
+        const gameGrid = document.getElementById('game-grid');
+        const matchesValueSpan = document.getElementById('matches-value');
+        const triesValueSpan = document.getElementById('tries-value');
+        const newGameButton = document.getElementById('new-game-button');
+        
+        const CARD_ICONS = ['🍉', '🍇', '🍒', '🍋', '🍑', '🍓', '🍊', '🍍'];
+        let board = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let tries = 0;
+        const BOARD_SIZE = 16;
+        let gameActive = false;
+
+        function createBoard() {
+            gameGrid.innerHTML = '';
+            board = [];
+            
+            let iconsToUse = shuffleArray([...CARD_ICONS, ...CARD_ICONS]);
+            
+            for (let i = 0; i < BOARD_SIZE; i++) {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.dataset.icon = iconsToUse[i];
+                card.innerHTML = `<div class="card-front">${iconsToUse[i]}</div><div class="card-back"></div>`;
+                card.addEventListener('click', () => handleCardClick(card));
+                gameGrid.appendChild(card);
+            }
+        }
+
+        function handleCardClick(card) {
+            if (!gameActive || flippedCards.length === 2 || card.classList.contains('flipped')) {
+                return;
+            }
+
+            card.classList.add('flipped');
+            flippedCards.push(card);
+
+            if (flippedCards.length === 2) {
+                tries++;
+                triesValueSpan.textContent = tries;
+                setTimeout(checkForMatch, 1000);
+            }
+        }
+        
+        function checkForMatch() {
+            const [card1, card2] = flippedCards;
+            const icon1 = card1.dataset.icon;
+            const icon2 = card2.dataset.icon;
+
+            if (icon1 === icon2) {
+                // It's a match!
+                matchesValueSpan.textContent = ++matchedPairs;
+                awardPointsForMatch(100);
+
+                if (matchedPairs === CARD_ICONS.length) {
+                    endGame();
+                }
+            } else {
+                // Not a match, flip back
+                card1.classList.remove('flipped');
+                card2.classList.remove('flipped');
+            }
+            flippedCards = [];
+        }
+
+        function endGame() {
+            gameActive = false;
+            alert(`You won! You made ${matchedPairs} matches in ${tries} tries.`);
+            awardPointsForWin(500);
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function initGame() {
+            gameActive = true;
+            flippedCards = [];
+            matchedPairs = 0;
+            tries = 0;
+            matchesValueSpan.textContent = matchedPairs;
+            triesValueSpan.textContent = tries;
+            createBoard();
+        }
+
+        // --- Point System Integration with Dashboard ---
+        async function updatePoints(amount) {
+            if (!userId || !isAuthReady) {
+                console.error("User not authenticated or authentication is not ready.");
+                return;
+            }
+            const userRef = doc(db, `artifacts/${appId}/users/${userId}/data/user_points`);
+            try {
+                await setDoc(userRef, { points: increment(amount) }, { merge: true });
+                console.log(`Points updated in Firestore: +${amount}`);
+            } catch (error) {
+                console.error("Error updating points:", error);
+            }
+        }
+        
+        function awardPointsForMatch(points) {
+            window.parent.postMessage({ type: 'points_earned', value: points }, '*');
+        }
+
+        function awardPointsForWin(bonus) {
+            window.parent.postMessage({ type: 'points_earned', value: bonus }, '*');
+        }
+        
+        // --- Event Listeners and Initial Call ---
+        window.onload = () => {
+             onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    userId = user.uid;
+                    isAuthReady = true;
+                    console.log("Memory game loaded for user:", userId);
+                    initGame();
+                } else {
+                    try {
+                        if (initialAuthToken) {
+                            await signInWithCustomToken(auth, initialAuthToken);
+                        } else {
+                            console.error("No authentication token available. Cannot sign in.");
+                        }
+                    } catch (error) {
+                        console.error("Error signing in:", error);
+                    }
+                }
+            });
+        };
+
+        newGameButton.addEventListener('click', initGame);
+
+    </script>
 </body>
 </html>
