@@ -374,17 +374,11 @@
             const spinDurations = [2500, 3500, 4500]; // Stagger reel stops
 
             reelElements.forEach((reel, index) => {
-                const reelContent = reel.querySelector('.reel-content');
-                const finalIndex = Math.floor(Math.random() * symbols.length);
-                finalResults[index] = symbols[finalIndex];
-
-                // Animate the reel to stop on the final symbol
-                reelContent.style.transition = `transform ${spinDurations[index] / 1000}s cubic-bezier(0.2, 0.8, 0.5, 1)`;
-                reelContent.style.transform = `translateY(-${(finalIndex / symbols.length) * 100}%)`;
-                
+                reel.classList.add('spinning');
                 setTimeout(() => {
-                    reelContent.style.transition = 'none';
-                    reelContent.style.transform = 'translateY(0)';
+                    reel.classList.remove('spinning');
+                    const randomIndex = Math.floor(Math.random() * symbols.length);
+                    finalResults[index] = symbols[randomIndex];
                     reel.textContent = finalResults[index];
                     stopCount++;
 
