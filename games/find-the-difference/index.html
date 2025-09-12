@@ -82,6 +82,7 @@
             left: 0;
             width: 100%;
             height: 100%;
+            cursor: crosshair;
         }
 
         .difference-spot {
@@ -93,6 +94,26 @@
             display: none;
             box-shadow: 0 0 10px rgba(40, 167, 69, 0.7);
             pointer-events: none;
+        }
+
+        .controls {
+            margin-top: 20px;
+        }
+        
+        #start-button {
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            background-color: #28a745;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        #start-button:hover {
+            background-color: #218838;
         }
 
         .game-instructions {
@@ -133,17 +154,26 @@
         </div>
         <div id="game-area">
             <div class="image-container">
-                <img id="image1" class="game-image" src="https://placehold.co/400x400/D8E6F1/005fa3?text=Original" alt="Original Image">
+                <img id="image1" class="game-image" 
+                     src="https://images.unsplash.com/photo-1594901509971-6101150410ec?q=80&w=800&h=600&auto=format&fit=crop" 
+                     onerror="this.src='https://placehold.co/800x600/D8E6F1/005fa3?text=Image+Unavailable'"
+                     alt="Original Image">
                 <div id="overlay1" class="game-overlay"></div>
             </div>
             <div class="image-container">
-                <img id="image2" class="game-image" src="https://placehold.co/400x400/D8E6F1/005fa3?text=Find+Differences" alt="Modified Image">
+                <img id="image2" class="game-image" 
+                     src="https://images.unsplash.com/photo-1594901509971-6101150410ec?q=80&w=800&h=600&auto=format&fit=crop" 
+                     onerror="this.src='https://placehold.co/800x600/D8E6F1/005fa3?text=Image+Unavailable'"
+                     alt="Modified Image">
                 <div id="overlay2" class="game-overlay"></div>
             </div>
         </div>
+        <div class="controls">
+            <button id="start-button">Start Game</button>
+        </div>
         <div class="game-instructions">
             <h2>Find the Difference: How to Play</h2>
-            <p>Welcome to **Find the Difference**, a classic game that will sharpen your observation skills! The goal is to find <strong>5 subtle differences</strong> between the two images below. </p>
+            <p>Welcome to **Find the Difference**, a classic game that will sharpen your observation skills! The goal is to find <strong>5 subtle differences</strong> between the two images below. .</p>
             
             <h3>How to Play</h3>
             <p><strong>1. Find the Difference:</strong> Carefully examine both images and click or tap on a spot in either image where you see a difference. You can use your device's touch screen or a mouse.</p>
@@ -184,7 +214,11 @@
         // --- Game Setup ---
         const foundValueSpan = document.getElementById('found-value');
         const triesValueSpan = document.getElementById('tries-value');
-        const messageArea = document.querySelector('.game-container');
+        const startButton = document.getElementById('start-button');
+        const image1 = document.getElementById('image1');
+        const image2 = document.getElementById('image2');
+        const overlay1 = document = document.getElementById('overlay1');
+        const overlay2 = document.getElementById('overlay2');
         
         let foundCount = 0;
         let triesCount = 0;
@@ -192,7 +226,7 @@
         let gameActive = false;
         
         // Define the differences in relative coordinates (as a percentage)
-        // These will be used for both images
+        // These are the coordinates for the images above
         const differences = [
             { id: 1, x: 25, y: 15, found: false },
             { id: 2, x: 75, y: 30, found: false },
@@ -234,11 +268,10 @@
                 foundValueSpan.textContent = foundCount;
                 
                 // Add visual markers to both images
-                const overlay1 = document.getElementById('overlay1');
-                const overlay2 = document.getElementById('overlay2');
-                
                 createVisualMarker(overlay1, diff.x, diff.y);
                 createVisualMarker(overlay2, diff.x, diff.y);
+                
+                awardPointsForWin(100);
 
                 if (foundCount === totalDifferences) {
                     endGame();
@@ -258,10 +291,12 @@
         function endGame() {
             gameActive = false;
             alert(`You found all ${totalDifferences} differences! You've earned ${foundCount * 100 + 500} points!`);
-            awardPointsForWin(foundCount * 100 + 500);
+            awardPointsForWin(500); // Bonus for winning
+            startButton.style.display = 'block';
         }
 
         function startGame() {
+            startButton.style.display = 'none';
             foundCount = 0;
             triesCount = 0;
             gameActive = true;
@@ -270,6 +305,9 @@
             
             // Clear old markers
             document.querySelectorAll('.difference-spot').forEach(marker => marker.remove());
+            
+            // Reset differences
+            differences.forEach(d => d.found = false);
         }
         
         // --- Point System Integration with Dashboard ---
@@ -298,7 +336,7 @@
                     userId = user.uid;
                     isAuthReady = true;
                     console.log("Find the Difference game loaded for user:", userId);
-                    startGame();
+                    // Game starts when the user clicks the button
                 } else {
                     try {
                         if (initialAuthToken) {
@@ -313,8 +351,9 @@
             });
         };
 
-        document.getElementById('image1').addEventListener('click', handleImageClick);
-        document.getElementById('image2').addEventListener('click', handleImageClick);
+        image1.addEventListener('click', handleImageClick);
+        image2.addEventListener('click', handleImageClick);
+        startButton.addEventListener('click', startGame);
     </script>
 </body>
 </html>
