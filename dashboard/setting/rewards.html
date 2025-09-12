@@ -480,5 +480,93 @@ document.getElementById('redeem-code').addEventListener('click', function () {
     alert(`🔑 Code "${code}" redeemed!`);
 });
   </script>
+<script type="module">
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
+            import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+            import { getFirestore, doc, getDoc, setDoc, onSnapshot, increment } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
+            import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
+            setLogLevel('debug');
+    
+            const firebaseConfig = {
+                apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
+                authDomain: "chat-code-forum.firebaseapp.com",
+                projectId: "chat-code-forum",
+                storageBucket: "chat-code-forum.appspot.com",
+                messagingSenderId: "496765673859",
+                appId: "1:496765673859:web:6c2e6695be447d6e32d6b6"
+            };
+    
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            const db = getFirestore(app);
+            const pointsDisplay = document.getElementById('userPointsDisplay');
+            let userId = null;
+    
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    userId = user.uid;
+                    const userRef = doc(db, 'artifacts/__app_id/users/' + userId + '/data/user_points');
+                    
+                    onSnapshot(userRef, (docSnap) => {
+                        if (docSnap.exists()) {
+                            const data = docSnap.data();
+                            const currentPoints = data.points || 0;
+                            pointsDisplay.textContent = `${currentPoints} Points`;
+                        } else {
+                            pointsDisplay.textContent = '0 Points';
+                            // Create the user document if it doesn't exist
+                            setDoc(userRef, { points: 0, lastLogin: new Date() }, { merge: true });
+                        }
+                    }, (error) => {
+                        console.error("Error listening to user points:", error);
+                    });
+    
+                } else {
+                    try {
+                        await signInAnonymously(auth);
+                    } catch (error) {
+                        console.error("Error signing in anonymously:", error);
+                    }
+                }
+            });
+    
+            async function updatePoints(amount) {
+                if (!userId) {
+                    console.error("User not authenticated.");
+                    return;
+                }
+    
+                const userRef = doc(db, 'artifacts/__app_id/users/' + userId + '/data/user_points');
+                try {
+                    await setDoc(userRef, { points: increment(amount) }, { merge: true });
+                    console.log(`Points updated in Firestore: +${amount}`);
+                } catch (error) {
+                    console.error("Error updating points:", error);
+                }
+            }
+    
+            document.getElementById('claim-signup-bonus').addEventListener('click', function () {
+                updatePoints(500);
+                alert('🎉 Welcome bonus claimed!');
+            });
+    
+            document.getElementById('redeem-code').addEventListener('click', function () {
+                const code = document.getElementById('bonus-code-input').value;
+                if (code) {
+                    updatePoints(100);
+                    alert(`🔑 Code "${code}" redeemed!`);
+                } else {
+                    alert('Please enter a valid code.');
+                }
+            });
+    
+            document.getElementById('copy-referral-link').addEventListener('click', function () {
+                const link = document.getElementById('referral-link');
+                link.select();
+                document.execCommand('copy');
+                alert('Referral link copied!');
+            });
+        </script>
+  
 </body>
 </html>
