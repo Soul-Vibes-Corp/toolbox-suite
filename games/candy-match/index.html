@@ -135,5 +135,256 @@
             <p>Every time you make a successful match, your score will increase. Your total score at the end of the 60-second round will be automatically added to your account and reflected on your dashboard.</p>
         </div>
     </div>
+    
+    <script type="module">
+        import { getAuth, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+        import { getFirestore, doc, setDoc, increment } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
+
+        // Use canvas variables if they exist, otherwise use fallbacks
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        
+        // Firebase configuration from your dashboard
+        const firebaseConfig = {
+            apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
+            authDomain: "chat-code-forum.firebaseapp.com",
+            projectId: "chat-code-forum",
+            storageBucket: "chat-code-forum.appspot.com",
+            messagingSenderId: "496765673859",
+            appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
+            measurementId: "G-XJKWXHF8WN"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        let userId = null;
+        let isAuthReady = false;
+
+        // --- Game Setup ---
+        const gameBoardElement = document.getElementById('game-board');
+        const scoreValueSpan = document.getElementById('score-value');
+        const timeValueSpan = document.getElementById('time-value');
+        
+        let score = 0;
+        let timeLeft = 60;
+        let gameInterval = null;
+        
+        const boardSize = 8;
+        const candyIcons = ['🍉', '🍇', '🍒', '🍋', '🍑', '🍓', '🍊'];
+        let board = [];
+        let selectedCandy = null;
+
+        function createBoard() {
+            gameBoardElement.innerHTML = '';
+            board = [];
+            for (let r = 0; r < boardSize; r++) {
+                board[r] = [];
+                for (let c = 0; c < boardSize; c++) {
+                    const randomCandy = candyIcons[Math.floor(Math.random() * candyIcons.length)];
+                    board[r][c] = randomCandy;
+                    const cell = document.createElement('div');
+                    cell.classList.add('game-cell');
+                    cell.textContent = randomCandy;
+                    cell.dataset.row = r;
+                    cell.dataset.col = c;
+                    cell.addEventListener('click', handleCandyClick);
+                    gameBoardElement.appendChild(cell);
+                }
+            }
+        }
+        
+        function drawBoard() {
+            for (let r = 0; r < boardSize; r++) {
+                for (let c = 0; c < boardSize; c++) {
+                    const cell = gameBoardElement.children[r * boardSize + c];
+                    cell.textContent = board[r][c];
+                }
+            }
+        }
+        
+        function handleCandyClick(e) {
+            if (!gameInterval) return;
+
+            const clickedCell = e.target;
+            const r = parseInt(clickedCell.dataset.row);
+            const c = parseInt(clickedCell.dataset.col);
+            
+            if (!selectedCandy) {
+                // First selection
+                selectedCandy = { r, c, element: clickedCell };
+                clickedCell.style.border = '2px solid #fff';
+            } else {
+                const r2 = selectedCandy.r;
+                const c2 = selectedCandy.c;
+
+                // Check if adjacent
+                if (Math.abs(r - r2) + Math.abs(c - c2) === 1) {
+                    swapCandies(r, c, r2, c2);
+                    selectedCandy.element.style.border = 'none';
+                    selectedCandy = null;
+                } else {
+                    selectedCandy.element.style.border = 'none';
+                    selectedCandy = { r, c, element: clickedCell };
+                    clickedCell.style.border = '2px solid #fff';
+                }
+            }
+        }
+        
+        function swapCandies(r1, c1, r2, c2) {
+            const temp = board[r1][c1];
+            board[r1][c1] = board[r2][c2];
+            board[r2][c2] = temp;
+            drawBoard();
+
+            setTimeout(() => {
+                if (!checkBoardForMatches()) {
+                    // No match, swap back
+                    const temp = board[r1][c1];
+                    board[r1][c1] = board[r2][c2];
+                    board[r2][c2] = temp;
+                    drawBoard();
+                }
+            }, 300);
+        }
+
+        function checkBoardForMatches() {
+            let matched = false;
+            let matches = [];
+
+            // Check horizontal matches
+            for (let r = 0; r < boardSize; r++) {
+                for (let c = 0; c < boardSize - 2; c++) {
+                    if (board[r][c] !== null && board[r][c] === board[r][c+1] && board[r][c] === board[r][c+2]) {
+                        matches.push({ r, c }, { r, c: c+1 }, { r, c: c+2 });
+                        matched = true;
+                    }
+                }
+            }
+
+            // Check vertical matches
+            for (let r = 0; r < boardSize - 2; r++) {
+                for (let c = 0; c < boardSize; c++) {
+                    if (board[r][c] !== null && board[r][c] === board[r+1][c] && board[r][c] === board[r+2][c]) {
+                        matches.push({ r, c }, { r: r+1, c }, { r: r+2, c });
+                        matched = true;
+                    }
+                }
+            }
+            
+            if (matched) {
+                clearMatches(matches);
+                return true;
+            }
+            return false;
+        }
+        
+        function clearMatches(matches) {
+            matches.forEach(match => {
+                board[match.r][match.c] = null;
+                score += 10;
+            });
+            scoreValueSpan.textContent = score;
+            setTimeout(() => {
+                collapseColumnsAndFill();
+            }, 300);
+        }
+        
+        function collapseColumnsAndFill() {
+            for (let c = 0; c < boardSize; c++) {
+                let emptyCells = [];
+                for (let r = boardSize - 1; r >= 0; r--) {
+                    if (board[r][c] === null) {
+                        emptyCells.push(r);
+                    } else if (emptyCells.length > 0) {
+                        const newR = emptyCells.shift();
+                        board[newR][c] = board[r][c];
+                        board[r][c] = null;
+                        emptyCells.push(r);
+                    }
+                }
+                while (emptyCells.length > 0) {
+                    const r = emptyCells.pop();
+                    board[r][c] = candyIcons[Math.floor(Math.random() * candyIcons.length)];
+                }
+            }
+            drawBoard();
+            setTimeout(() => {
+                checkBoardForMatches();
+            }, 300);
+        }
+
+        function gameLoop() {
+            timeLeft--;
+            timeValueSpan.textContent = timeLeft;
+
+            if (timeLeft <= 0) {
+                endGame();
+            }
+        }
+        
+        function endGame() {
+            clearInterval(gameInterval);
+            gameInterval = null;
+            alert(`Game Over! Final score: ${score} points!`);
+            awardPointsForWin(score);
+            score = 0;
+            scoreValueSpan.textContent = score;
+        }
+
+        function startGame() {
+            score = 0;
+            timeLeft = 60;
+            scoreValueSpan.textContent = score;
+            timeValueSpan.textContent = timeLeft;
+            createBoard();
+            drawBoard();
+            gameInterval = setInterval(gameLoop, 1000);
+        }
+
+        // --- Point System Integration with Dashboard ---
+        async function updatePoints(amount) {
+            if (!userId || !isAuthReady) {
+                console.error("User not authenticated or authentication is not ready.");
+                return;
+            }
+            const userRef = doc(db, `artifacts/${appId}/users/${userId}/data/user_points`);
+            try {
+                await setDoc(userRef, { points: increment(amount) }, { merge: true });
+                console.log(`Points updated in Firestore: +${amount}`);
+            } catch (error) {
+                console.error("Error updating points:", error);
+            }
+        }
+        
+        function awardPointsForWin(points) {
+            // This is the key line that links the game to the dashboard
+            window.parent.postMessage({ type: 'points_earned', value: points }, '*');
+        }
+
+        // --- Event Listeners and Initial Call ---
+        window.onload = () => {
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    userId = user.uid;
+                    isAuthReady = true;
+                    console.log("Candy Match game loaded for user:", userId);
+                    startGame();
+                } else {
+                    try {
+                        if (initialAuthToken) {
+                            await signInWithCustomToken(auth, initialAuthToken);
+                        } else {
+                            console.error("No authentication token available. Cannot sign in.");
+                        }
+                    } catch (error) {
+                        console.error("Error signing in:", error);
+                    }
+                }
+            });
+        };
+    </script>
 </body>
 </html>
