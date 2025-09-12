@@ -160,5 +160,217 @@
             <p>When you successfully complete the puzzle, you will be awarded **300 points** to your account! These points will be added to your total and can be viewed on your dashboard.</p>
         </div>
     </div>
+
+    <script type="module">
+        import { getAuth, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+        import { getFirestore, doc, setDoc, increment } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
+
+        // Use canvas variables if they exist, otherwise use fallbacks
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        
+        // Firebase configuration from your dashboard
+        const firebaseConfig = {
+            apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
+            authDomain: "chat-code-forum.firebaseapp.com",
+            projectId: "chat-code-forum",
+            storageBucket: "chat-code-forum.appspot.com",
+            messagingSenderId: "496765673859",
+            appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
+            measurementId: "G-XJKWXHF8WN"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        let userId = null;
+        let isAuthReady = false;
+
+        // --- Game Setup ---
+        const board = document.getElementById('sudoku-board');
+        const messageArea = document.getElementById('message-area');
+        const checkButton = document.getElementById('check-button');
+        const newGameButton = document.getElementById('new-game-button');
+        let activeCell = null;
+        let puzzle = [];
+        let solution = [];
+        const PUZZLE_SIZE = 9;
+
+        // A simple solvable Sudoku puzzle
+        const solvedBoard = [
+            [5, 3, 4, 6, 7, 8, 9, 1, 2],
+            [6, 7, 2, 1, 9, 5, 3, 4, 8],
+            [1, 9, 8, 3, 4, 2, 5, 6, 7],
+            [8, 5, 9, 7, 6, 1, 4, 2, 3],
+            [4, 2, 6, 8, 5, 3, 7, 9, 1],
+            [7, 1, 3, 9, 2, 4, 8, 5, 6],
+            [9, 6, 1, 5, 3, 7, 2, 8, 4],
+            [2, 8, 7, 4, 1, 9, 6, 3, 5],
+            [3, 4, 5, 2, 8, 6, 1, 7, 9]
+        ];
+
+        // --- Game Logic ---
+        function createPuzzle() {
+            // Start with the solved board and create the puzzle by removing some numbers
+            puzzle = solvedBoard.map(row => [...row]);
+            solution = solvedBoard.map(row => [...row]);
+
+            // Hide some numbers to create the puzzle
+            const cellsToRemove = 45; // A good number for a medium difficulty puzzle
+            let count = 0;
+            while (count < cellsToRemove) {
+                const row = Math.floor(Math.random() * 9);
+                const col = Math.floor(Math.random() * 9);
+                if (puzzle[row][col] !== 0) {
+                    puzzle[row][col] = 0;
+                    count++;
+                }
+            }
+        }
+
+        function renderBoard() {
+            board.innerHTML = '';
+            for (let r = 0; r < PUZZLE_SIZE; r++) {
+                for (let c = 0; c < PUZZLE_SIZE; c++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('sudoku-cell');
+                    cell.dataset.row = r;
+                    cell.dataset.col = c;
+                    
+                    const cellValue = puzzle[r][c];
+                    if (cellValue !== 0) {
+                        cell.textContent = cellValue;
+                        cell.classList.add('fixed');
+                    }
+                    
+                    // Add borders for 3x3 sections
+                    if ((c + 1) % 3 === 0 && c !== 8) {
+                        cell.classList.add('sudoku-section-border-right');
+                    }
+                    if ((r + 1) % 3 === 0 && r !== 8) {
+                        cell.classList.add('sudoku-section-border-bottom');
+                    }
+                    board.appendChild(cell);
+                }
+            }
+        }
+        
+        function handleCellClick(e) {
+            if (activeCell) {
+                activeCell.classList.remove('active');
+            }
+            if (e.target.classList.contains('fixed')) {
+                activeCell = null;
+                return;
+            }
+            activeCell = e.target;
+            activeCell.classList.add('active');
+        }
+
+        function handleNumberInput(e) {
+            if (activeCell && !activeCell.classList.contains('fixed')) {
+                const key = e.key;
+                if (key >= '1' && key <= '9') {
+                    activeCell.textContent = key;
+                } else if (key === 'Backspace' || key === 'Delete') {
+                    activeCell.textContent = '';
+                }
+            }
+        }
+
+        function checkSolution() {
+            let isCorrect = true;
+            let currentBoard = [];
+            const cells = board.querySelectorAll('.sudoku-cell');
+            
+            cells.forEach(cell => cell.classList.remove('error'));
+            
+            // Build the user's board and check against the solution
+            for (let r = 0; r < PUZZLE_SIZE; r++) {
+                currentBoard[r] = [];
+                for (let c = 0; c < PUZZLE_SIZE; c++) {
+                    const cellIndex = r * PUZZLE_SIZE + c;
+                    const cell = cells[cellIndex];
+                    const value = cell.textContent ? parseInt(cell.textContent) : 0;
+                    currentBoard[r][c] = value;
+                    
+                    if (value !== solution[r][c]) {
+                        cell.classList.add('error');
+                        isCorrect = false;
+                    }
+                }
+            }
+            
+            if (isCorrect) {
+                showMessage("Puzzle solved! You've earned 300 points!", "win");
+                awardPointsForWin(300);
+            } else {
+                showMessage("There are errors on the board. Keep trying!", "error");
+            }
+        }
+        
+        function showMessage(text, type) {
+            messageArea.textContent = text;
+            messageArea.style.color = type === "win" ? "green" : "red";
+        }
+
+        function startNewGame() {
+            createPuzzle();
+            renderBoard();
+            showMessage("");
+        }
+
+        // --- Point System Integration with Dashboard ---
+        async function updatePoints(amount) {
+            if (!userId || !isAuthReady) {
+                console.error("User not authenticated or authentication is not ready.");
+                return;
+            }
+            const userRef = doc(db, `artifacts/${appId}/users/${userId}/data/user_points`);
+            try {
+                await setDoc(userRef, { points: increment(amount) }, { merge: true });
+                console.log(`Points updated in Firestore: +${amount}`);
+            } catch (error) {
+                console.error("Error updating points:", error);
+            }
+        }
+
+        function awardPointsForWin(points) {
+            const pointsToAward = points;
+            console.log(`Sending message to parent to award ${pointsToAward} points.`);
+            window.parent.postMessage({ type: 'points_earned', value: pointsToAward }, '*');
+        }
+
+        // --- Event Listeners and Initial Call ---
+        window.onload = () => {
+             onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    userId = user.uid;
+                    isAuthReady = true;
+                    console.log("Sudoku game loaded for user:", userId);
+                    startNewGame();
+                } else {
+                    try {
+                        if (initialAuthToken) {
+                            await signInWithCustomToken(auth, initialAuthToken);
+                        } else {
+                            // This should not happen in a Canvas environment
+                            await signInAnonymously(auth);
+                        }
+                    } catch (error) {
+                        console.error("Error signing in:", error);
+                    }
+                }
+            });
+        };
+        
+        board.addEventListener('click', handleCellClick);
+        document.addEventListener('keydown', handleNumberInput);
+        checkButton.addEventListener('click', checkSolution);
+        newGameButton.addEventListener('click', startNewGame);
+        
+    </script>
 </body>
 </html>
