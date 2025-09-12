@@ -56,7 +56,6 @@
         #game-board {
             display: grid;
             grid-template-columns: repeat(8, 1fr);
-            gap: 5px;
             width: 100%;
             aspect-ratio: 1 / 1;
             max-width: 350px;
@@ -64,22 +63,46 @@
             border: 2px solid #a3e6ff;
             border-radius: 12px;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            position: relative; /* Used for absolute positioning of cells */
         }
-
+        
         .game-cell {
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 2rem;
-            border-radius: 8px;
+            font-size: 1.5rem; /* Flexible font size */
+            border: 1px solid #c9d6e4; /* Demarcation lines */
             transition: all 0.2s ease-in-out;
             cursor: pointer;
+            box-sizing: border-box; /* Ensures padding and border are inside */
             position: relative;
+            background-color: #e8f4ff;
+        }
+        
+        .game-cell.selected {
+            border: 3px solid #007bff;
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.7);
         }
         
         .game-cell:hover {
-            transform: scale(1.1);
+            transform: scale(1.05);
             z-index: 1;
+        }
+        
+        .start-button {
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            background-color: #28a745;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        .start-button:hover {
+            background-color: #218838;
         }
 
         .game-instructions {
@@ -123,13 +146,14 @@
         <div id="game-board">
             <!-- Game cells will be dynamically generated here -->
         </div>
+        <button id="start-button" class="start-button">Start Game</button>
         <div class="game-instructions">
             <h2>Candy Match: How to Play</h2>
             <p>Welcome to **Candy Match**, a classic puzzle game where you can earn points for your account! The goal is to match three or more identical candies in a row or column to clear them and earn points. You have 60 seconds to get the highest score possible.</p>
             
             <h3>How to Play</h3>
             <p><strong>1. Swap Candies:</strong> Click or tap a candy and then click or tap an adjacent candy to swap their positions.</p>
-            <p><strong>2. Match Three or More:</strong> If swapping creates a line of three or more identical candies, they will be cleared from the board. New candies will fall from the top to fill the empty spaces.</p>
+            <p><strong>2. Match Three or More:</strong> If swapping creates a line of three or more identical candies, they will be cleared from the board. New candies will fall from the top to fill the empty spaces. .</p>
             <p><strong>3. Beat the Clock:</strong> You have 60 seconds to earn as many points as possible. The game ends when the timer runs out.</p>
             
             <h3>Earning Points</h3>
@@ -168,15 +192,16 @@
         const gameBoardElement = document.getElementById('game-board');
         const scoreValueSpan = document.getElementById('score-value');
         const timeValueSpan = document.getElementById('time-value');
+        const startButton = document.getElementById('start-button');
         
         let score = 0;
         let timeLeft = 60;
         let gameInterval = null;
-        
-        const boardSize = 8;
-        const candyIcons = ['🍉', '🍇', '🍒', '🍋', '🍑', '🍓', '🍊'];
         let board = [];
         let selectedCandy = null;
+
+        const boardSize = 8;
+        const candyIcons = ['🍉', '🍇', '🍒', '🍋', '🍑', '🍓', '🍊'];
 
         function createBoard() {
             gameBoardElement.innerHTML = '';
@@ -184,6 +209,7 @@
             for (let r = 0; r < boardSize; r++) {
                 board[r] = [];
                 for (let c = 0; c < boardSize; c++) {
+                    // Prevent matches from being generated on the initial board
                     let randomCandy;
                     do {
                         randomCandy = candyIcons[Math.floor(Math.random() * candyIcons.length)];
@@ -206,39 +232,42 @@
             for (let r = 0; r < boardSize; r++) {
                 for (let c = 0; c < boardSize; c++) {
                     const cell = gameBoardElement.children[r * boardSize + c];
-                    cell.textContent = board[r][c];
+                    cell.textContent = board[r][c] || '';
+                    if (selectedCandy && selectedCandy.r === r && selectedCandy.c === c) {
+                         cell.classList.add('selected');
+                    } else {
+                        cell.classList.remove('selected');
+                    }
                 }
             }
         }
-        
+
         function handleCandyClick(e) {
             if (!gameInterval) return;
-
+            
             const clickedCell = e.target;
             const r = parseInt(clickedCell.dataset.row);
             const c = parseInt(clickedCell.dataset.col);
-            
+
             if (!selectedCandy) {
-                // First selection
                 selectedCandy = { r, c, element: clickedCell };
-                clickedCell.style.border = '2px solid #fff';
+                clickedCell.classList.add('selected');
             } else {
                 const r2 = selectedCandy.r;
                 const c2 = selectedCandy.c;
 
-                // Check if adjacent
                 if (Math.abs(r - r2) + Math.abs(c - c2) === 1) {
                     swapCandies(r, c, r2, c2);
-                    selectedCandy.element.style.border = 'none';
+                    selectedCandy.element.classList.remove('selected');
                     selectedCandy = null;
                 } else {
-                    selectedCandy.element.style.border = 'none';
+                    selectedCandy.element.classList.remove('selected');
                     selectedCandy = { r, c, element: clickedCell };
-                    clickedCell.style.border = '2px solid #fff';
+                    clickedCell.classList.add('selected');
                 }
             }
         }
-        
+
         function swapCandies(r1, c1, r2, c2) {
             const temp = board[r1][c1];
             board[r1][c1] = board[r2][c2];
@@ -246,7 +275,10 @@
             drawBoard();
 
             setTimeout(() => {
-                if (!checkBoardForMatches()) {
+                const matches = findMatches();
+                if (matches.length > 0) {
+                    clearMatches(matches);
+                } else {
                     // No match, swap back
                     const temp = board[r1][c1];
                     board[r1][c1] = board[r2][c2];
@@ -255,17 +287,18 @@
                 }
             }, 300);
         }
-
-        function checkBoardForMatches() {
-            let matched = false;
-            let matches = [];
+        
+        function findMatches() {
+            const matches = new Set();
 
             // Check horizontal matches
             for (let r = 0; r < boardSize; r++) {
                 for (let c = 0; c < boardSize - 2; c++) {
-                    if (board[r][c] !== null && board[r][c] === board[r][c+1] && board[r][c] === board[r][c+2]) {
-                        matches.push({ r, c }, { r, c: c+1 }, { r, c: c+2 });
-                        matched = true;
+                    const candy = board[r][c];
+                    if (candy !== null && candy === board[r][c+1] && candy === board[r][c+2]) {
+                        matches.add(`${r},${c}`);
+                        matches.add(`${r},${c+1}`);
+                        matches.add(`${r},${c+2}`);
                     }
                 }
             }
@@ -273,31 +306,34 @@
             // Check vertical matches
             for (let r = 0; r < boardSize - 2; r++) {
                 for (let c = 0; c < boardSize; c++) {
-                    if (board[r][c] !== null && board[r][c] === board[r+1][c] && board[r][c] === board[r+2][c]) {
-                        matches.push({ r, c }, { r: r+1, c }, { r: r+2, c });
-                        matched = true;
+                    const candy = board[r][c];
+                    if (candy !== null && candy === board[r+1][c] && candy === board[r+2][c]) {
+                        matches.add(`${r},${c}`);
+                        matches.add(`${r+1},${c}`);
+                        matches.add(`${r+2},${c}`);
                     }
                 }
             }
             
-            if (matched) {
-                clearMatches(matches);
-                return true;
-            }
-            return false;
+            return Array.from(matches).map(coord => {
+                const [r, c] = coord.split(',').map(Number);
+                return { r, c };
+            });
         }
-        
+
         function clearMatches(matches) {
             matches.forEach(match => {
-                board[match.r][match.c] = null;
-                score += 10;
+                if (board[match.r][match.c]) {
+                    board[match.r][match.c] = null;
+                    score += 10;
+                }
             });
             scoreValueSpan.textContent = score;
             setTimeout(() => {
                 collapseColumnsAndFill();
             }, 300);
         }
-        
+
         function collapseColumnsAndFill() {
             for (let c = 0; c < boardSize; c++) {
                 let emptyCells = [];
@@ -318,7 +354,10 @@
             }
             drawBoard();
             setTimeout(() => {
-                checkBoardForMatches();
+                const matches = findMatches();
+                if (matches.length > 0) {
+                    clearMatches(matches);
+                }
             }, 300);
         }
 
@@ -338,9 +377,11 @@
             awardPointsForWin(score);
             score = 0;
             scoreValueSpan.textContent = score;
+            startButton.style.display = 'block';
         }
 
         function startGame() {
+            startButton.style.display = 'none';
             score = 0;
             timeLeft = 60;
             scoreValueSpan.textContent = score;
@@ -366,18 +407,17 @@
         }
         
         function awardPointsForWin(points) {
-            // This is the key line that links the game to the dashboard
             window.parent.postMessage({ type: 'points_earned', value: points }, '*');
         }
 
         // --- Event Listeners and Initial Call ---
         window.onload = () => {
-            onAuthStateChanged(auth, async (user) => {
+             onAuthStateChanged(auth, async (user) => {
                 if (user) {
                     userId = user.uid;
                     isAuthReady = true;
                     console.log("Candy Match game loaded for user:", userId);
-                    startGame();
+                    // The game will start when the user clicks the button
                 } else {
                     try {
                         if (initialAuthToken) {
@@ -391,6 +431,9 @@
                 }
             });
         };
+
+        startButton.addEventListener('click', startGame);
+
     </script>
 </body>
 </html>
