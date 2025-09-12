@@ -1,321 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mahjong Match</title>
-    <style>
-        /* General page and container styling */
-        body {
-            background-color: #f6f8fa;
-            color: #1c1c1c;
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-        
-        .game-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mahjong Match</title>
+    <style>
+        /* General page and container styling */
+        body {
+            background-color: #f6f8fa;
+            color: #1c1c1c;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-        .game-title {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #005fa3;
-            margin-bottom: 10px;
-        }
+        .game-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #005fa3;
+            margin-bottom: 10px;
+        }
 
-        .score-display {
-            font-size: 1.5rem;
-            color: #346f99;
-            margin-bottom: 20px;
-        }
-        
-        canvas {
-            border: 2px solid #a3e6ff;
-            background-color: #e8f4ff;
-            border-radius: 12px;
-            touch-action: none;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-        }
+        .score-display {
+            font-size: 1.5rem;
+            color: #346f99;
+            margin-bottom: 20px;
+        }
+        
+        canvas {
+            border: 2px solid #a3e6ff;
+            background-color: #e8f4ff;
+            border-radius: 12px;
+            touch-action: none;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
 
-        .game-instructions {
-            max-width: 600px;
-            margin-top: 30px;
-            padding: 20px;
-            background-color: #e8f4ff;
-            border: 1px solid #a3e6ff;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-        }
-        
-        .game-instructions h2 {
-            color: #005fa3;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        
-        .game-instructions p {
-            margin-bottom: 10px;
-            line-height: 1.6;
-        }
+        .game-instructions {
+            max-width: 600px;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e8f4ff;
+            border: 1px solid #a3e6ff;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .game-instructions h2 {
+            color: #005fa3;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .game-instructions p {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
 
-        /* Responsive adjustments */
-        @media (max-width: 600px) {
-            .game-title {
-                font-size: 2rem;
-            }
-            .score-display {
-                font-size: 1.2rem;
-            }
-        }
-    </style>
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .game-title {
+                font-size: 2rem;
+            }
+            .score-display {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="game-container">
-        <h1 class="game-title">Mahjong Match</h1>
-        <div class="score-display">Score: <span id="score-value">0</span></div>
-        <canvas id="gameCanvas"></canvas>
-        <div class="game-instructions">
-            <h2>Mahjong Match: How to Play</h2>
-            <p>Welcome to **Mahjong Match**, a relaxing puzzle game where you can earn points for your account! The goal is simple: clear the board by matching all the pairs of identical tiles.</p>
-            
-            <h3>How to Play</h3>
-            <p><strong>1. Select a Tile:</strong> Click or tap on any tile to select it. The tile will be highlighted to show it's active.</p>
-            <p><strong>2. Find a Match:</strong> Find and select a second tile with the exact same icon. If the two tiles match, they will be removed from the board and you'll earn points!</p>
-            <p><strong>3. Clear the Board:</strong> Continue matching pairs until you have cleared the entire board. Once all tiles are gone, you win the game!</p>
-            
-            <h3>Earning Points</h3>
-            <p>Each time you successfully match a pair of tiles, you earn **100 points**. When you clear the entire board, you'll be awarded a bonus of **500 points**. These points are automatically added to your account and will be reflected on your dashboard.</p>
-        </div>
-    </div>
-
-    <script type="module">
-        import { getAuth, onAuthStateChanged, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, increment } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
-
-        // Use canvas variables if they exist, otherwise use fallbacks
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-        
-        // Firebase configuration from your dashboard
-        const firebaseConfig = {
-            apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
-            authDomain: "chat-code-forum.firebaseapp.com",
-            projectId: "chat-code-forum",
-            storageBucket: "chat-code-forum.appspot.com",
-            messagingSenderId: "496765673859",
-            appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
-            measurementId: "G-XJKWXHF8WN"
-        };
-        
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        
-        let userId = null;
-
-        // --- Game Setup ---
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const scoreValueSpan = document.getElementById('score-value');
-        let score = 0;
-        let tiles = [];
-        let selectedTile = null;
-        let gameActive = false;
-
-        const tileRows = 8;
-        const tileCols = 8;
-        const tilePadding = 5;
-        let tileSize = 0;
-
-        const tileIcons = ['🥑', '🍍', '🍌', '🍒', '🥥', '🍇', '🥝', '🍋', '🍓', '🍉', '🍎', '🍐', '🍊', '🍑', '🌶️', '🍆'];
-        
-        // --- Game Logic ---
-        function createBoard() {
-            const numPairs = (tileRows * tileCols) / 2;
-            const shuffledIcons = shuffleArray(tileIcons).slice(0, numPairs);
-            
-            let gameIcons = [...shuffledIcons, ...shuffledIcons];
-            gameIcons = shuffleArray(gameIcons);
-
-            tiles = [];
-            for (let r = 0; r < tileRows; r++) {
-                for (let c = 0; c < tileCols; c++) {
-                    tiles.push({
-                        icon: gameIcons.pop(),
-                        row: r,
-                        col: c,
-                        x: c * (tileSize + tilePadding),
-                        y: r * (tileSize + tilePadding),
-                        matched: false,
-                        visible: true
-                    });
-                }
-            }
-        }
-
-        function drawBoard() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.font = `${tileSize / 2}px Arial`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-
-            tiles.forEach(tile => {
-                if (tile.visible) {
-                    // Draw tile background
-                    ctx.fillStyle = selectedTile && selectedTile.icon === tile.icon && selectedTile !== tile ? '#5ec9f0' : '#d3d6da';
-                    if (selectedTile && selectedTile.x === tile.x && selectedTile.y === tile.y) {
-                        ctx.fillStyle = '#6aaa64'; // Highlight selected tile
-                    }
-                    ctx.fillRect(tile.x, tile.y, tileSize, tileSize);
-
-                    // Draw icon
-                    ctx.fillStyle = '#1c1c1c';
-                    ctx.fillText(tile.icon, tile.x + tileSize / 2, tile.y + tileSize / 2);
-                }
-            });
-        }
-        
-        function handleCanvasClick(event) {
-            if (!gameActive) return;
-            const rect = canvas.getBoundingClientRect();
-            const mouseX = event.clientX - rect.left;
-            const mouseY = event.clientY - rect.top;
-
-            const clickedTile = tiles.find(tile => 
-                tile.visible &&
-                mouseX >= tile.x &&
-                mouseX <= tile.x + tileSize &&
-                mouseY >= tile.y &&
-                mouseY <= tile.y + tileSize
-            );
-
-            if (clickedTile) {
-                if (!selectedTile) {
-                    // First tile selected
-                    selectedTile = clickedTile;
-                    drawBoard();
-                } else if (selectedTile.x === clickedTile.x && selectedTile.y === clickedTile.y) {
-                    // Clicking the same tile deselects it
-                    selectedTile = null;
-                    drawBoard();
-                } else if (selectedTile.icon === clickedTile.icon) {
-                    // A successful match!
-                    score += 100;
-                    scoreValueSpan.textContent = score;
-                    selectedTile.visible = false;
-                    clickedTile.visible = false;
-                    selectedTile = null;
-                    drawBoard();
-                    checkWin();
-                } else {
-                    // Mismatch, deselect the first tile
-                    selectedTile = clickedTile;
-                    drawBoard();
-                }
-            }
-        }
-        
-        function checkWin() {
-            if (tiles.every(tile => !tile.visible)) {
-                gameActive = false;
-                alert(`You won! Final score: ${score}`);
-                awardPointsForWin(score);
-            }
-        }
-
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
-
-        function resizeCanvas() {
-            // Adjust canvas size to fit window while maintaining aspect ratio
-            const parentWidth = canvas.parentElement.offsetWidth;
-            const parentHeight = window.innerHeight * 0.6; // Take up 60% of viewport height
-            const size = Math.min(parentWidth, parentHeight);
-            
-            canvas.width = size;
-            canvas.height = size;
-            
-            tileSize = (size - (tileCols + 1) * tilePadding) / tileCols;
-            
-            // Re-draw the board after resizing
-            drawBoard();
-        }
-
-        // --- Point System Integration with Dashboard ---
-        async function updatePoints(amount) {
-            if (!userId) {
-                console.error("User not authenticated.");
-                return;
-            }
-            const userRef = doc(db, `artifacts/${appId}/users/${userId}/data/user_points`);
-            try {
-                await setDoc(userRef, { points: increment(amount) }, { merge: true });
-                console.log(`Points updated in Firestore: +${amount}`);
-            } catch (error) {
-                console.error("Error updating points:", error);
-            }
-        }
-        
-        function awardPointsForWin(points) {
-            // You can adjust the points awarded here
-            const pointsToAward = points + 500; // Bonus for winning the game
-            console.log(`Sending message to parent to award ${pointsToAward} points.`);
-            
-            // This is the key line that links the game to the dashboard
-            window.parent.postMessage({ type: 'points_earned', value: pointsToAward }, '*');
-        }
-
-        // --- Main Game Loop ---
-        function initGame() {
-            score = 0;
-            scoreValueSpan.textContent = score;
-            selectedTile = null;
-            gameActive = true;
-            resizeCanvas();
-            createBoard();
-            drawBoard();
-        }
-
-        window.addEventListener('resize', resizeCanvas);
-        canvas.addEventListener('click', handleCanvasClick);
-        
-      window.onload = () => {
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            userId = user.uid;
-            console.log("Mahjong game loaded for user:", userId);
-            // Now that we have a user, we can safely initialize the game
-            initGame();
-        } else {
-            try {
-                if (initialAuthToken) {
-                    await signInWithCustomToken(auth, initialAuthToken);
-                } else {
-                    console.error("No authentication token available. Cannot sign in.");
-                }
-            } catch (error) {
-                console.error("Error signing in:", error);
-            }
-        }
-    });
-};
-    </script>
+    <div class="game-container">
+        <h1 class="game-title">Mahjong Match</h1>
+        <div class="score-display">Score: <span id="score-value">0</span></div>
+        <canvas id="gameCanvas"></canvas>
+        <div class="game-instructions">
+            <h2>Mahjong Match: How to Play</h2>
+            <p>Welcome to **Mahjong Match**, a relaxing puzzle game where you can earn points for your account! The goal is simple: clear the board by matching all the pairs of identical tiles.</p>
+            
+            <h3>How to Play</h3>
+            <p><strong>1. Select a Tile:</strong> Click or tap on any tile to select it. The tile will be highlighted to show it's active.</p>
+            <p><strong>2. Find a Match:</strong> Find and select a second tile with the exact same icon. If the two tiles match, they will be removed from the board and you'll earn points!</p>
+            <p><strong>3. Clear the Board:</strong> Continue matching pairs until you have cleared the entire board. Once all tiles are gone, you win the game!</p>
+            
+            <h3>Earning Points</h3>
+            <p>Each time you successfully match a pair of tiles, you earn **100 points**. When you clear the entire board, you'll be awarded a bonus of **500 points**. These points are automatically added to your account and will be reflected on your dashboard.</p>
+        </div>
+    </div>
 </body>
 </html>
