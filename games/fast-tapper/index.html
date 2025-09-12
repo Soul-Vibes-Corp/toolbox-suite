@@ -53,7 +53,7 @@
             text-align: center;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
         }
-
+        
         #game-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -141,5 +141,155 @@
             <p>Each time you successfully tap a target, you earn **10 points**. Your total score at the end of the 30-second round will be automatically added to your account and reflected on your dashboard.</p>
         </div>
     </div>
+    <script type="module">
+        import { getAuth, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+        import { getFirestore, doc, setDoc, increment } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
+
+        // Firebase-specific Canvas variables for authentication
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        // Firebase configuration from your dashboard
+        const firebaseConfig = {
+            apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
+            authDomain: "chat-code-forum.firebaseapp.com",
+            projectId: "chat-code-forum",
+            storageBucket: "chat-code-forum.appspot.com",
+            messagingSenderId: "496765673859",
+            appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
+            measurementId: "G-XJKWXHF8WN"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        let userId = null;
+        let isAuthReady = false;
+
+        // --- Game Logic ---
+        const gameGrid = document.getElementById('game-grid');
+        const scoreValueSpan = document.getElementById('score-value');
+        const timeValueSpan = document.getElementById('time-value');
+        
+        let score = 0;
+        let timeLeft = 30;
+        let gameInterval = null;
+        let currentTargetIndex = -1;
+        const GRID_SIZE = 16;
+        const CELLS_PER_ROW = 4;
+
+        function createGrid() {
+            gameGrid.innerHTML = '';
+            for (let i = 0; i < GRID_SIZE; i++) {
+                const cell = document.createElement('div');
+                cell.classList.add('game-cell');
+                cell.dataset.index = i;
+                cell.addEventListener('click', handleTap);
+                gameGrid.appendChild(cell);
+            }
+        }
+
+        function handleTap(event) {
+            if (!gameInterval) return; // Don't allow taps if game isn't running
+
+            const tappedCell = event.target;
+            if (tappedCell.classList.contains('target')) {
+                score += 10;
+                scoreValueSpan.textContent = score;
+                tappedCell.classList.remove('target');
+                setRandomTarget();
+            }
+        }
+
+        function setRandomTarget() {
+            // Remove the old target
+            const oldTarget = gameGrid.querySelector('.target');
+            if (oldTarget) {
+                oldTarget.classList.remove('target');
+            }
+            
+            // Set a new target
+            let newTargetIndex = -1;
+            do {
+                newTargetIndex = Math.floor(Math.random() * GRID_SIZE);
+            } while (newTargetIndex === currentTargetIndex);
+
+            gameGrid.children[newTargetIndex].classList.add('target');
+            currentTargetIndex = newTargetIndex;
+        }
+
+        function gameLoop() {
+            timeLeft--;
+            timeValueSpan.textContent = timeLeft;
+
+            if (timeLeft <= 0) {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            clearInterval(gameInterval);
+            gameInterval = null;
+            alert(`Game Over! You scored ${score} points!`);
+            awardPointsForWin(score);
+            score = 0;
+            scoreValueSpan.textContent = score;
+        }
+        
+        function startGame() {
+            score = 0;
+            timeLeft = 30;
+            scoreValueSpan.textContent = score;
+            timeValueSpan.textContent = timeLeft;
+            gameInterval = setInterval(gameLoop, 1000);
+            setRandomTarget();
+        }
+        
+        // --- Point System Integration with Dashboard ---
+        async function updatePoints(amount) {
+            if (!userId || !isAuthReady) {
+                console.error("User not authenticated or authentication is not ready.");
+                return;
+            }
+            const userRef = doc(db, `artifacts/${appId}/users/${userId}/data/user_points`);
+            try {
+                await setDoc(userRef, { points: increment(amount) }, { merge: true });
+                console.log(`Points updated in Firestore: +${amount}`);
+            } catch (error) {
+                console.error("Error updating points:", error);
+            }
+        }
+        
+        function awardPointsForWin(points) {
+            // This is the key line that links the game to the dashboard
+            window.parent.postMessage({ type: 'points_earned', value: points }, '*');
+        }
+
+        // --- Event Listeners and Initial Call ---
+        window.onload = () => {
+             onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    userId = user.uid;
+                    isAuthReady = true;
+                    console.log("Fast Tapper game loaded for user:", userId);
+                    createGrid();
+                    // Start the game automatically on load
+                    startGame();
+                } else {
+                    try {
+                        if (initialAuthToken) {
+                            await signInWithCustomToken(auth, initialAuthToken);
+                        } else {
+                            console.error("No authentication token available. Cannot sign in.");
+                        }
+                    } catch (error) {
+                        console.error("Error signing in:", error);
+                    }
+                }
+            });
+        };
+    </script>
 </body>
 </html>
