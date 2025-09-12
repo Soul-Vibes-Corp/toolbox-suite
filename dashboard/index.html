@@ -802,17 +802,86 @@
 <script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-functions-compat.js"></script>
 
 
-  <script>
-    // Firebase configuration
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
+    import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged, signOut, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+    import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
+    setLogLevel('debug');
+    
+    // Use Canvas variables if they exist, otherwise use fallbacks
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+    
     const firebaseConfig = {
-      apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
-      authDomain: "chat-code-forum.firebaseapp.com",
-      projectId: "chat-code-forum",
-      storageBucket: "chat-code-forum.appspot.com",
-      messagingSenderId: "496765673859",
-      appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
-      measurementId: "G-XJKWXHF8WN"
+        apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
+        authDomain: "chat-code-forum.firebaseapp.com",
+        projectId: "chat-code-forum",
+        storageBucket: "chat-code-forum.appspot.com",
+        messagingSenderId: "496765673859",
+        appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
+        measurementId: "G-XJKWXHF8WN"
     };
+    
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    // Find the element to display points on this page
+    const pointsDisplay = document.getElementById('points-value');
+    let userId = null;
+    // ... rest of the code will go here
+
+  onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            userId = user.uid;
+            const userRef = doc(db, 'artifacts/' + appId + '/users/' + userId + '/data/user_points');
+
+            // Listen for real-time updates to the user's points
+            onSnapshot(userRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    const currentPoints = data.points || 0;
+                    pointsDisplay.textContent = currentPoints;
+                } else {
+                    pointsDisplay.textContent = '0';
+                    // Create the user document if it doesn't exist
+                    setDoc(userRef, { points: 0, lastLogin: new Date() }, { merge: true });
+                }
+            }, (error) => {
+                console.error("Error listening to user points:", error);
+            });
+        } else {
+            try {
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.error("Error signing in:", error);
+            }
+        }
+    });
+
+  // This handler should be inside the modular script block
+const logoutBtn = document.getElementById("logout-button");
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+        signOut(auth)
+            .then(() => {
+                console.log("User signed out");
+                window.location.href = '../index.html';
+            })
+            .catch(error => {
+                console.error("Error signing out:", error);
+            });
+    });
+}
+  
+</script>
+  
+  <script>
 
     // Initialize Firebase
    firebase.initializeApp(firebaseConfig);
@@ -866,17 +935,6 @@ const pointsDisplay = document.getElementById('points-value');
         });
     
   </script>
-
-  <script>
-  // ✅ Logout handler
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    auth.signOut().then(() => {
-      localStorage.removeItem('loggedIn');
-      window.location.href = 'index.html';
-    });
-  });
-  
-</script>
 
 <script>
   const searchToggle = document.getElementById('search-toggle');
