@@ -122,10 +122,7 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-        let userId = null;
-
+        
         // --- Game Setup ---
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -297,15 +294,15 @@
         window.addEventListener('resize', resizeCanvas);
         canvas.addEventListener('click', handleCanvasClick);
         
-       window.onload = () => {
+      window.onload = () => {
     onAuthStateChanged(auth, async (user) => {
         if (user) {
             userId = user.uid;
             console.log("Mahjong game loaded for user:", userId);
+            // Now that we have a user, we can safely initialize the game
             initGame();
         } else {
             try {
-                // Use the provided authentication token, do not try anonymous sign-in
                 if (initialAuthToken) {
                     await signInWithCustomToken(auth, initialAuthToken);
                 } else {
