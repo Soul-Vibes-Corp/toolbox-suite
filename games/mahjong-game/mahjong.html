@@ -294,25 +294,26 @@
         window.addEventListener('resize', resizeCanvas);
         canvas.addEventListener('click', handleCanvasClick);
         
-        window.onload = () => {
-             onAuthStateChanged(auth, async (user) => {
-                if (user) {
-                    userId = user.uid;
-                    console.log("Mahjong game loaded for user:", userId);
-                    initGame();
+       window.onload = () => {
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            userId = user.uid;
+            console.log("Mahjong game loaded for user:", userId);
+            initGame();
+        } else {
+            try {
+                // Use the provided authentication token, do not try anonymous sign-in
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
                 } else {
-                     try {
-                        if (initialAuthToken) {
-                           await signInWithCustomToken(auth, initialAuthToken);
-                        } else {
-                           await signInAnonymously(auth);
-                        }
-                    } catch (error) {
-                        console.error("Error signing in:", error);
-                    }
+                    console.error("No authentication token available. Cannot sign in.");
                 }
-            });
-        };
+            } catch (error) {
+                console.error("Error signing in:", error);
+            }
+        }
+    });
+};
     </script>
 </body>
 </html>
