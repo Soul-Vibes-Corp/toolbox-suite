@@ -354,7 +354,7 @@
 <header class="header">
    <h1><a href="index.html" class="home-link">🧰</a></h1>
    <div class="actions">
-    <div class="points-counter">⭐ Points: <span id="points-value">2340</span></div>
+    <div class="points-counter">⭐ Points: <span id="points-value">0</span></div>
   </div>
   
   <input type="checkbox" id="menuToggle" class="menu-toggle" />
@@ -829,7 +829,42 @@
   if (!user) return;
   console.log("User logged in:", user.uid);
 });
-   
+
+const pointsDisplay = document.getElementById('points-value');
+        let userId = null;
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                userId = user.uid;
+                const userRef = doc(db, 'artifacts/' + appId + '/users/' + userId + '/data/user_points');
+
+                // Listen for real-time updates to the user's points
+                onSnapshot(userRef, (docSnap) => {
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        const currentPoints = data.points || 0;
+                        pointsDisplay.textContent = currentPoints;
+                    } else {
+                        pointsDisplay.textContent = '0';
+                        // Create the user document if it doesn't exist
+                        setDoc(userRef, { points: 0, lastLogin: new Date() }, { merge: true });
+                    }
+                }, (error) => {
+                    console.error("Error listening to user points:", error);
+                });
+            } else {
+                try {
+                    if (initialAuthToken) {
+                        await signInWithCustomToken(auth, initialAuthToken);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                } catch (error) {
+                    console.error("Error signing in:", error);
+                }
+            }
+        });
+    
   </script>
 
   <script>
