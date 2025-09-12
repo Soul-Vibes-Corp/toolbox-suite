@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tapper Game</title>
+    <style>
+        /* General page and container styling */
+        body {
+            background-color: #f6f8fa;
+            color: #1c1c1c;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .game-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #005fa3;
+            margin-bottom: 20px;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background-color: #e8f4ff;
+            color: #005fa3;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        #game-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            max-width: 400px;
+            border: 2px solid #a3e6ff;
+            background-color: #d8e6f1;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .game-cell {
+            background-color: #e8f4ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            border-radius: 8px;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+        }
+
+        .game-cell.target {
+            background-color: #007bff;
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+        }
+
+        .game-cell:not(.target):hover {
+            background-color: #c9d6e4;
+        }
+
+        .game-instructions {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e8f4ff;
+            border: 1px solid #a3e6ff;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            width: 100%;
+        }
+
+        .game-instructions h2 {
+            color: #005fa3;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .game-instructions p {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .game-title { font-size: 2rem; }
+            .stats-container { flex-direction: column; gap: 10px; }
+            .stat-box { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="game-title">Fast Tapper</h1>
+        <div class="stats-container">
+            <div class="stat-box">Score: <span id="score-value">0</span></div>
+            <div class="stat-box">Time: <span id="time-value">30</span>s</div>
+        </div>
+        <div id="game-grid">
+            <!-- Game cells will be dynamically generated here -->
+        </div>
+        <div class="game-instructions">
+            <h2>Fast Tapper: How to Play</h2>
+            <p>Welcome to **Fast Tapper**, a speed and accuracy game where you can earn points for your account! The goal is to tap the changing targets as quickly as possible to earn points before the timer runs out.</p>
+            
+            <h3>How to Play</h3>
+            <p><strong>1. Watch the Grid:</strong> The game grid has multiple cells. One cell will randomly become the target, highlighted with a blue background. </p>
+            <p><strong>2. Tap the Target:</strong> Your goal is to click or tap the highlighted target cell as quickly as you can. When you hit the target, it will disappear and a new one will appear somewhere else.</p>
+            <p><strong>3. Beat the Clock:</strong> You have 30 seconds to earn as many points as possible. The game ends when the timer runs out.</p>
+            
+            <h3>Earning Points</h3>
+            <p>Each time you successfully tap a target, you earn **10 points**. Your total score at the end of the 30-second round will be automatically added to your account and reflected on your dashboard.</p>
+        </div>
+    </div>
+</body>
+</html>
