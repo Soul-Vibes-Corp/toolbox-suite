@@ -453,21 +453,32 @@
 
 
   <script>
-    document.getElementById('copy-referral-link').addEventListener('click', function () {
-      const link = document.getElementById('referral-link');
-      link.select();
-      document.execCommand('copy');
-      alert('Referral link copied!');
-    });
+   let userPoints = 0;
+const pointsDisplay = document.getElementById('userPointsDisplay');
 
-    document.getElementById('claim-signup-bonus').addEventListener('click', function () {
-      alert('🎉 Welcome bonus claimed!');
-    });
+function updatePoints(amount) {
+    userPoints += amount;
+    pointsDisplay.textContent = `${userPoints} Points`;
+    console.log(`Points updated: +${amount}. New total: ${userPoints}`);
+}
 
-    document.getElementById('redeem-code').addEventListener('click', function () {
-      const code = document.getElementById('bonus-code-input').value;
-      alert(`🔑 Code "${code}" redeemed!`);
-    });
+document.getElementById('copy-referral-link').addEventListener('click', function () {
+    const link = document.getElementById('referral-link');
+    link.select();
+    document.execCommand('copy');
+    alert('Referral link copied!');
+});
+
+document.getElementById('claim-signup-bonus').addEventListener('click', function () {
+    updatePoints(500); // Award 500 points for the sign-up bonus
+    alert('🎉 Welcome bonus claimed!');
+});
+
+document.getElementById('redeem-code').addEventListener('click', function () {
+    const code = document.getElementById('bonus-code-input').value;
+    updatePoints(100); // Award 100 points for a valid code
+    alert(`🔑 Code "${code}" redeemed!`);
+});
   </script>
 </body>
 </html>
