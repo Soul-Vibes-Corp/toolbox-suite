@@ -48,6 +48,27 @@
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
         }
 
+        .game-instructions {
+            max-width: 600px;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e8f4ff;
+            border: 1px solid #a3e6ff;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .game-instructions h2 {
+            color: #005fa3;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .game-instructions p {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
         /* Responsive adjustments */
         @media (max-width: 600px) {
             .game-title {
@@ -64,6 +85,18 @@
         <h1 class="game-title">Mahjong Match</h1>
         <div class="score-display">Score: <span id="score-value">0</span></div>
         <canvas id="gameCanvas"></canvas>
+        <div class="game-instructions">
+            <h2>Mahjong Match: How to Play</h2>
+            <p>Welcome to **Mahjong Match**, a relaxing puzzle game where you can earn points for your account! The goal is simple: clear the board by matching all the pairs of identical tiles.</p>
+            
+            <h3>How to Play</h3>
+            <p><strong>1. Select a Tile:</strong> Click or tap on any tile to select it. The tile will be highlighted to show it's active.</p>
+            <p><strong>2. Find a Match:</strong> Find and select a second tile with the exact same icon. If the two tiles match, they will be removed from the board and you'll earn points!</p>
+            <p><strong>3. Clear the Board:</strong> Continue matching pairs until you have cleared the entire board. Once all tiles are gone, you win the game!</p>
+            
+            <h3>Earning Points</h3>
+            <p>Each time you successfully match a pair of tiles, you earn **100 points**. When you clear the entire board, you'll be awarded a bonus of **500 points**. These points are automatically added to your account and will be reflected on your dashboard.</p>
+        </div>
     </div>
 
     <script type="module">
@@ -240,7 +273,7 @@
         
         function awardPointsForWin(points) {
             // You can adjust the points awarded here
-            const pointsToAward = points;
+            const pointsToAward = points + 500; // Bonus for winning the game
             console.log(`Sending message to parent to award ${pointsToAward} points.`);
             
             // This is the key line that links the game to the dashboard
