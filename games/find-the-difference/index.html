@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Find the Difference</title>
+    <title>Casino Slots</title>
     <style>
         body {
-            background-color: #f6f8fa;
-            color: #1c1c1c;
+            background-color: #1e2a38;
+            color: #f6f8fa;
             font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             flex-direction: column;
@@ -24,110 +24,182 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            max-width: 900px;
+            max-width: 600px;
             width: 100%;
+            background: #2b3a4a;
+            border: 2px solid #5ec9f0;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
         }
 
         .game-title {
             font-size: 2.5rem;
             font-weight: bold;
-            color: #005fa3;
+            color: #5ec9f0;
             margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
         }
-
+        
         .stats-container {
             display: flex;
             justify-content: space-between;
             width: 100%;
             max-width: 400px;
             margin-bottom: 20px;
+            gap: 15px;
         }
 
         .stat-box {
-            background-color: #e8f4ff;
-            color: #005fa3;
+            background-color: #1e2a38;
+            color: #f6f8fa;
             padding: 10px 20px;
             border-radius: 8px;
             font-weight: bold;
             text-align: center;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            flex: 1;
+            border: 1px solid #5ec9f0;
         }
         
-        #game-area {
+        .reels-container {
+            display: flex;
+            gap: 10px;
+            background-color: #1e2a38;
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid #5ec9f0;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 450px;
+            height: 180px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .reel {
+            flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            width: 100%;
-            max-width: 800px;
-        }
-
-        .image-container {
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+            text-align: center;
             position: relative;
-            width: 100%;
-            border: 2px solid #a3e6ff;
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            transform: translateY(0);
         }
 
-        .game-image {
-            width: 100%;
-            height: auto;
-            border-radius: 10px;
-            display: block;
+        .reel.spinning {
+            animation: spin 0.1s linear infinite;
         }
-
-        .game-overlay {
+        
+        .reel-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
-            cursor: crosshair;
+        }
+        
+        .reel-content span {
+            height: 120px; /* Adjust to be same as reel height for proper stopping */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
         }
 
-        .difference-spot {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            border: 2px solid #28a745;
-            border-radius: 50%;
-            display: none;
-            box-shadow: 0 0 10px rgba(40, 167, 69, 0.7);
-            pointer-events: none;
+        @keyframes spin {
+            from { transform: translateY(0); }
+            to { transform: translateY(-100%); }
         }
 
         .controls {
             margin-top: 20px;
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
         }
         
-        #start-button {
-            padding: 10px 20px;
+        .bet-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .bet-button {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            border-radius: 6px;
+            border: 1px solid #5ec9f0;
+            background-color: #1e2a38;
+            color: #5ec9f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .bet-button.active {
+            background-color: #5ec9f0;
+            color: #1e2a38;
+        }
+
+        .bet-button:hover:not(.active) {
+            background-color: #2b3a4a;
+        }
+
+        #spin-button {
+            padding: 15px 30px;
             font-size: 1.2rem;
             font-weight: bold;
             border-radius: 8px;
             border: none;
             cursor: pointer;
-            background-color: #28a745;
+            background-color: #007bff;
             color: white;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
 
-        #start-button:hover {
-            background-color: #218838;
+        #spin-button:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+        
+        #spin-button:active:not(:disabled) {
+            transform: translateY(2px);
+        }
+
+        #spin-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .win-message {
+            margin-top: 15px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffc107;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            display: none;
         }
 
         .game-instructions {
             margin-top: 30px;
             padding: 20px;
-            background-color: #e8f4ff;
-            border: 1px solid #a3e6ff;
+            background-color: #1e2a38;
+            border: 1px solid #5ec9f0;
             border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             width: 100%;
+            color: #e8f4ff;
         }
 
         .game-instructions h2 {
-            color: #005fa3;
+            color: #5ec9f0;
             margin-bottom: 15px;
             text-align: center;
         }
@@ -137,59 +209,73 @@
             line-height: 1.6;
         }
 
+        .game-instructions ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .game-instructions li {
+            margin-bottom: 5px;
+        }
+
         /* Responsive adjustments */
-        @media (min-width: 768px) {
-            #game-area {
-                flex-direction: row;
-            }
+        @media (max-width: 480px) {
+            .game-title { font-size: 2rem; }
+            .stats-container { flex-direction: column; gap: 10px; }
+            .stat-box { width: 100%; }
+            .reels-container { gap: 10px; }
+            .reel { width: 60px; height: 90px; font-size: 2.5rem; }
+            .reel-content span { height: 90px; }
         }
     </style>
 </head>
 <body>
     <div class="game-container">
-        <h1 class="game-title">Find the Difference</h1>
+        <h1 class="game-title">Casino Slots</h1>
         <div class="stats-container">
-            <div class="stat-box">Found: <span id="found-value">0</span>/5</div>
-            <div class="stat-box">Tries: <span id="tries-value">0</span></div>
+            <div class="stat-box">Points: <span id="points-value">10000</span></div>
+            <div class="stat-box">Bet: <span id="bet-value">500</span></div>
         </div>
-        <div id="game-area">
-            <div class="image-container">
-                <img id="image1" class="game-image" 
-                     src="https://images.unsplash.com/photo-1594901509971-6101150410ec?q=80&w=800&h=600&auto=format&fit=crop" 
-                     onerror="this.src='https://placehold.co/800x600/D8E6F1/005fa3?text=Image+Unavailable'"
-                     alt="Original Image">
-                <div id="overlay1" class="game-overlay"></div>
-            </div>
-            <div class="image-container">
-                <img id="image2" class="game-image" 
-                     src="https://images.unsplash.com/photo-1594901509971-6101150410ec?q=80&w=800&h=600&auto=format&fit=crop" 
-                     onerror="this.src='https://placehold.co/800x600/D8E6F1/005fa3?text=Image+Unavailable'"
-                     alt="Modified Image">
-                <div id="overlay2" class="game-overlay"></div>
-            </div>
+        <div class="reels-container">
+            <div class="reel" id="reel1"></div>
+            <div class="reel" id="reel2"></div>
+            <div class="reel" id="reel3"></div>
         </div>
         <div class="controls">
-            <button id="start-button">Start Game</button>
+            <div class="bet-buttons">
+                <button class="bet-button" data-bet="100">Bet 100</button>
+                <button class="bet-button active" data-bet="500">Bet 500</button>
+                <button class="bet-button" data-bet="1000">Bet 1000</button>
+            </div>
+            <button id="spin-button">Spin</button>
         </div>
+        <div class="win-message" id="win-message"></div>
         <div class="game-instructions">
-            <h2>Find the Difference: How to Play</h2>
-            <p>Welcome to **Find the Difference**, a classic game that will sharpen your observation skills! The goal is to find <strong>5 subtle differences</strong> between the two images below. .</p>
+            <h2>Casino Slots: How to Play</h2>
+            <p>Welcome to the Casino Slots, where you can wager your points to win big! The goal is to get matching icons on the reels. You start with **10,000 points** to play.</p>
             
             <h3>How to Play</h3>
-            <p><strong>1. Find the Difference:</strong> Carefully examine both images and click or tap on a spot in either image where you see a difference. You can use your device's touch screen or a mouse.</p>
-            <p><strong>2. Score Points:</strong> Each time you find a correct difference, a green circle will appear, and your score will go up!</p>
-            <p><strong>3. Win the Game:</strong> The game ends when you have found all 5 differences. You will earn points based on your performance.</p>
+            <p><strong>1. Select Your Bet:</strong> Choose your bet amount (100, 500, or 1000 points) before you spin. The cost of each spin is deducted from your total points.</p>
+            <p><strong>2. Pull the Handle:</strong> Click the "Spin" button to start the reels. They will spin and stop one by one, revealing your fate!</p>
             
             <h3>Earning Points</h3>
-            <p>Every time you find a correct difference, you earn **100 points**. When you find all 5 differences to complete the puzzle, you will get a bonus of **500 points**. These points are automatically added to your account!</p>
+            <p>If you get matching icons, you win! The larger the bet, the bigger the potential payout.
+            <ul>
+                <li><strong>Triple Sevens:</strong> Win <strong>20,000 points</strong> (Jackpot!)</li>
+                <li><strong>Triple Stars:</strong> Win <strong>10,000 points</strong></li>
+                <li><strong>Triple Bells:</strong> Win <strong>5,000 points</strong></li>
+                <li><strong>Any three matching icons:</strong> Win <strong>2,500 points</strong></li>
+            </ul>
+            <p>Your point total is automatically updated in real-time. Good luck!</p>
         </div>
     </div>
+    
     <script type="module">
         import { getAuth, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
-        import { getFirestore, doc, setDoc, increment } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, increment } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
 
-        // Firebase-specific Canvas variables for authentication
+        // Use canvas variables if they exist, otherwise use fallbacks
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
@@ -212,106 +298,133 @@
         let isAuthReady = false;
 
         // --- Game Setup ---
-        const foundValueSpan = document.getElementById('found-value');
-        const triesValueSpan = document.getElementById('tries-value');
-        const startButton = document.getElementById('start-button');
-        const image1 = document.getElementById('image1');
-        const image2 = document.getElementById('image2');
-        const overlay1 = document = document.getElementById('overlay1');
-        const overlay2 = document.getElementById('overlay2');
+        const pointsValueSpan = document.getElementById('points-value');
+        const betValueSpan = document.getElementById('bet-value');
+        const spinButton = document.getElementById('spin-button');
+        const reelsContainer = document.querySelector('.reels-container');
+        const winMessageElement = document.getElementById('win-message');
         
-        let foundCount = 0;
-        let triesCount = 0;
-        const totalDifferences = 5;
-        let gameActive = false;
-        
-        // Define the differences in relative coordinates (as a percentage)
-        // These are the coordinates for the images above
-        const differences = [
-            { id: 1, x: 25, y: 15, found: false },
-            { id: 2, x: 75, y: 30, found: false },
-            { id: 3, x: 50, y: 55, found: false },
-            { id: 4, x: 10, y: 80, found: false },
-            { id: 5, x: 90, y: 90, found: false }
+        const reelElements = [
+            document.getElementById('reel1'),
+            document.getElementById('reel2'),
+            document.getElementById('reel3')
         ];
+        
+        const symbols = ['🍒', '🍇', '🍋', '🔔', '💰', '⭐', '7️⃣'];
+        const payouts = {
+            '7️⃣': 20000,
+            '⭐': 10000,
+            '🔔': 5000,
+            'default': 2500
+        };
 
-        function handleImageClick(e) {
-            if (!gameActive) return;
+        let currentPoints = 10000;
+        let currentBet = 500;
+        let spinning = false;
 
-            const rect = e.target.getBoundingClientRect();
-            const clickX = (e.clientX - rect.left) / rect.width;
-            const clickY = (e.clientY - rect.top) / rect.height;
+        // Populate reels with symbols
+        function populateReels() {
+            const symbolsPerReel = 30; // Number of symbols to create the spinning illusion
+            reelElements.forEach(reel => {
+                reel.innerHTML = '';
+                const reelContent = document.createElement('div');
+                reelContent.classList.add('reel-content');
+                for (let i = 0; i < symbolsPerReel; i++) {
+                    const symbol = document.createElement('span');
+                    symbol.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                    reelContent.appendChild(symbol);
+                }
+                reel.appendChild(reelContent);
+            });
+        }
+        
+        function updateUI() {
+            pointsValueSpan.textContent = currentPoints;
+            betValueSpan.textContent = currentBet;
+        }
+
+        function setBet(amount) {
+            if (spinning) return;
+            currentBet = amount;
+            document.querySelectorAll('.bet-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.bet-button[data-bet="${amount}"]`).classList.add('active');
+            updateUI();
+        }
+
+        function spinReels() {
+            if (spinning || currentPoints < currentBet) {
+                if (currentPoints < currentBet) {
+                    alert('Not enough points to spin!');
+                }
+                return;
+            }
             
-            triesCount++;
-            triesValueSpan.textContent = triesCount;
+            spinning = true;
+            spinButton.disabled = true;
+            winMessageElement.style.display = 'none';
 
-            for (let i = 0; i < differences.length; i++) {
-                const diff = differences[i];
-                if (!diff.found) {
-                    const diffX = diff.x / 100;
-                    const diffY = diff.y / 100;
-                    const tolerance = 0.05; // 5% tolerance
-                    
-                    if (Math.abs(clickX - diffX) < tolerance && Math.abs(clickY - diffY) < tolerance) {
-                        foundDifference(diff.id);
-                        return;
+            currentPoints -= currentBet;
+            updateUI();
+
+            const finalResults = [];
+            let stopCount = 0;
+
+            const spinDurations = [2500, 3500, 4500]; // Stagger reel stops
+
+            reelElements.forEach((reel, index) => {
+                const reelContent = reel.querySelector('.reel-content');
+                const finalIndex = Math.floor(Math.random() * symbols.length);
+                finalResults[index] = symbols[finalIndex];
+
+                // Animate the reel to stop on the final symbol
+                reelContent.style.transition = `transform ${spinDurations[index] / 1000}s cubic-bezier(0.2, 0.8, 0.5, 1)`;
+                reelContent.style.transform = `translateY(-${(finalIndex / symbols.length) * 100}%)`;
+                
+                setTimeout(() => {
+                    reelContent.style.transition = 'none';
+                    reelContent.style.transform = 'translateY(0)';
+                    reel.textContent = finalResults[index];
+                    stopCount++;
+
+                    if (stopCount === 3) {
+                        setTimeout(() => {
+                            checkWin(finalResults);
+                        }, 500);
                     }
-                }
-            }
+                }, spinDurations[index]);
+            });
         }
         
-        function foundDifference(id) {
-            const diff = differences.find(d => d.id === id);
-            if (diff && !diff.found) {
-                diff.found = true;
-                foundCount++;
-                foundValueSpan.textContent = foundCount;
-                
-                // Add visual markers to both images
-                createVisualMarker(overlay1, diff.x, diff.y);
-                createVisualMarker(overlay2, diff.x, diff.y);
-                
-                awardPointsForWin(100);
+        function checkWin(results) {
+            const result1 = results[0];
+            const result2 = results[1];
+            const result3 = results[2];
+            
+            let winAmount = 0;
 
-                if (foundCount === totalDifferences) {
-                    endGame();
-                }
+            if (result1 === result2 && result2 === result3) {
+                // Three of a kind
+                winAmount = payouts[result1] || payouts['default'];
             }
-        }
-        
-        function createVisualMarker(overlay, x, y) {
-            const marker = document.createElement('div');
-            marker.classList.add('difference-spot');
-            marker.style.left = `calc(${x}% - 15px)`; // Subtract half the marker width
-            marker.style.top = `calc(${y}% - 15px)`;  // Subtract half the marker height
-            marker.style.display = 'block';
-            overlay.appendChild(marker);
-        }
-
-        function endGame() {
-            gameActive = false;
-            alert(`You found all ${totalDifferences} differences! You've earned ${foundCount * 100 + 500} points!`);
-            awardPointsForWin(500); // Bonus for winning
-            startButton.style.display = 'block';
-        }
-
-        function startGame() {
-            startButton.style.display = 'none';
-            foundCount = 0;
-            triesCount = 0;
-            gameActive = true;
-            foundValueSpan.textContent = '0';
-            triesValueSpan.textContent = '0';
             
-            // Clear old markers
-            document.querySelectorAll('.difference-spot').forEach(marker => marker.remove());
+            if (winAmount > 0) {
+                currentPoints += winAmount;
+                winMessageElement.textContent = `You won ${winAmount} points!`;
+                winMessageElement.style.display = 'block';
+                awardPoints(winAmount);
+            } else {
+                winMessageElement.textContent = 'No win this time. Try again!';
+                winMessageElement.style.display = 'block';
+            }
             
-            // Reset differences
-            differences.forEach(d => d.found = false);
+            spinning = false;
+            spinButton.disabled = false;
         }
         
         // --- Point System Integration with Dashboard ---
-        async function updatePoints(amount) {
+        async function updatePointsInFirestore(amount) {
             if (!userId || !isAuthReady) {
                 console.error("User not authenticated or authentication is not ready.");
                 return;
@@ -325,18 +438,38 @@
             }
         }
         
-        function awardPointsForWin(points) {
-            window.parent.postMessage({ type: 'points_earned', value: points }, '*');
+        function awardPoints(amount) {
+            window.parent.postMessage({ type: 'points_earned', value: amount }, '*');
+            updatePointsInFirestore(amount);
         }
 
         // --- Event Listeners and Initial Call ---
+        document.querySelectorAll('.bet-button').forEach(button => {
+            button.addEventListener('click', () => setBet(parseInt(button.dataset.bet)));
+        });
+        
+        spinButton.addEventListener('click', spinReels);
+        
         window.onload = () => {
              onAuthStateChanged(auth, async (user) => {
                 if (user) {
                     userId = user.uid;
                     isAuthReady = true;
-                    console.log("Find the Difference game loaded for user:", userId);
-                    // Game starts when the user clicks the button
+                    console.log("Casino Slots game loaded for user:", userId);
+                    const userRef = doc(db, `artifacts/${appId}/users/${userId}/data/user_points`);
+                    const docSnap = await getDoc(userRef);
+                    if (docSnap.exists()) {
+                        currentPoints = docSnap.data().points;
+                        if (currentPoints < 10000) {
+                            await setDoc(userRef, { points: 10000 }, { merge: true });
+                            currentPoints = 10000;
+                        }
+                    } else {
+                        await setDoc(userRef, { points: 10000 }, { merge: true });
+                        currentPoints = 10000;
+                    }
+                    updateUI();
+                    populateReels();
                 } else {
                     try {
                         if (initialAuthToken) {
@@ -350,10 +483,6 @@
                 }
             });
         };
-
-        image1.addEventListener('click', handleImageClick);
-        image2.addEventListener('click', handleImageClick);
-        startButton.addEventListener('click', startGame);
     </script>
 </body>
 </html>
