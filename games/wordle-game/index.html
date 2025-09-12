@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Guessing Game</title>
+    <link rel="icon" href="assets/favicon.png" type="image/png" />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        body {
+            background-color: #f6f8fa;
+            color: #1c1c1c;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .game-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #005fa3;
+            margin-bottom: 20px;
+        }
+
+        .message-area {
+            min-height: 30px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .board-container {
+            display: grid;
+            grid-template-rows: repeat(6, 1fr);
+            gap: 5px;
+            width: 100%;
+            max-width: 350px;
+        }
+
+        .board-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+        }
+
+        .board-cell {
+            width: 60px;
+            height: 60px;
+            border: 2px solid #a3e6ff;
+            background-color: #e8f4ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .keyboard-container {
+            margin-top: 20px;
+            user-select: none;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 5px;
+        }
+
+        .keyboard-button {
+            background-color: #d3d6da;
+            border: none;
+            border-radius: 4px;
+            padding: 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin: 0 3px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            flex: 1;
+        }
+        
+        .keyboard-button.large {
+            flex: 1.5;
+        }
+
+        .keyboard-button:hover {
+            background-color: #c0c3c6;
+        }
+
+        .keyboard-button:active {
+            transform: translateY(1px);
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="game-title">Word Guess</h1>
+        <div class="message-area"></div>
+        <div class="board-container" id="game-board">
+            <!-- Rows will be filled dynamically by JavaScript -->
+        </div>
+        <div class="keyboard-container" id="keyboard">
+            <!-- Keyboard will be filled dynamically -->
+        </div>
+    </div>
+</body>
+</html>
