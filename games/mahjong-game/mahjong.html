@@ -104,6 +104,9 @@
         import { getFirestore, doc, setDoc, getDoc, increment } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
 
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        
         // Firebase configuration from your dashboard
         const firebaseConfig = {
             apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
