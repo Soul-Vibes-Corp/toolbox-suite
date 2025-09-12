@@ -143,7 +143,7 @@
         </div>
         <div class="game-instructions">
             <h2>Find the Difference: How to Play</h2>
-            <p>Welcome to **Find the Difference**, a classic game that will sharpen your observation skills! The goal is to find <strong>5 subtle differences</strong> between the two images below.</p>
+            <p>Welcome to **Find the Difference**, a classic game that will sharpen your observation skills! The goal is to find <strong>5 subtle differences</strong> between the two images below. </p>
             
             <h3>How to Play</h3>
             <p><strong>1. Find the Difference:</strong> Carefully examine both images and click or tap on a spot in either image where you see a difference. You can use your device's touch screen or a mouse.</p>
@@ -154,5 +154,167 @@
             <p>Every time you find a correct difference, you earn **100 points**. When you find all 5 differences to complete the puzzle, you will get a bonus of **500 points**. These points are automatically added to your account!</p>
         </div>
     </div>
+    <script type="module">
+        import { getAuth, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+        import { getFirestore, doc, setDoc, increment } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
+
+        // Firebase-specific Canvas variables for authentication
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        // Firebase configuration from your dashboard
+        const firebaseConfig = {
+            apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
+            authDomain: "chat-code-forum.firebaseapp.com",
+            projectId: "chat-code-forum",
+            storageBucket: "chat-code-forum.appspot.com",
+            messagingSenderId: "496765673859",
+            appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
+            measurementId: "G-XJKWXHF8WN"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        let userId = null;
+        let isAuthReady = false;
+
+        // --- Game Setup ---
+        const foundValueSpan = document.getElementById('found-value');
+        const triesValueSpan = document.getElementById('tries-value');
+        const messageArea = document.querySelector('.game-container');
+        
+        let foundCount = 0;
+        let triesCount = 0;
+        const totalDifferences = 5;
+        let gameActive = false;
+        
+        // Define the differences in relative coordinates (as a percentage)
+        // These will be used for both images
+        const differences = [
+            { id: 1, x: 25, y: 15, found: false },
+            { id: 2, x: 75, y: 30, found: false },
+            { id: 3, x: 50, y: 55, found: false },
+            { id: 4, x: 10, y: 80, found: false },
+            { id: 5, x: 90, y: 90, found: false }
+        ];
+
+        function handleImageClick(e) {
+            if (!gameActive) return;
+
+            const rect = e.target.getBoundingClientRect();
+            const clickX = (e.clientX - rect.left) / rect.width;
+            const clickY = (e.clientY - rect.top) / rect.height;
+            
+            triesCount++;
+            triesValueSpan.textContent = triesCount;
+
+            for (let i = 0; i < differences.length; i++) {
+                const diff = differences[i];
+                if (!diff.found) {
+                    const diffX = diff.x / 100;
+                    const diffY = diff.y / 100;
+                    const tolerance = 0.05; // 5% tolerance
+                    
+                    if (Math.abs(clickX - diffX) < tolerance && Math.abs(clickY - diffY) < tolerance) {
+                        foundDifference(diff.id);
+                        return;
+                    }
+                }
+            }
+        }
+        
+        function foundDifference(id) {
+            const diff = differences.find(d => d.id === id);
+            if (diff && !diff.found) {
+                diff.found = true;
+                foundCount++;
+                foundValueSpan.textContent = foundCount;
+                
+                // Add visual markers to both images
+                const overlay1 = document.getElementById('overlay1');
+                const overlay2 = document.getElementById('overlay2');
+                
+                createVisualMarker(overlay1, diff.x, diff.y);
+                createVisualMarker(overlay2, diff.x, diff.y);
+
+                if (foundCount === totalDifferences) {
+                    endGame();
+                }
+            }
+        }
+        
+        function createVisualMarker(overlay, x, y) {
+            const marker = document.createElement('div');
+            marker.classList.add('difference-spot');
+            marker.style.left = `calc(${x}% - 15px)`; // Subtract half the marker width
+            marker.style.top = `calc(${y}% - 15px)`;  // Subtract half the marker height
+            marker.style.display = 'block';
+            overlay.appendChild(marker);
+        }
+
+        function endGame() {
+            gameActive = false;
+            alert(`You found all ${totalDifferences} differences! You've earned ${foundCount * 100 + 500} points!`);
+            awardPointsForWin(foundCount * 100 + 500);
+        }
+
+        function startGame() {
+            foundCount = 0;
+            triesCount = 0;
+            gameActive = true;
+            foundValueSpan.textContent = '0';
+            triesValueSpan.textContent = '0';
+            
+            // Clear old markers
+            document.querySelectorAll('.difference-spot').forEach(marker => marker.remove());
+        }
+        
+        // --- Point System Integration with Dashboard ---
+        async function updatePoints(amount) {
+            if (!userId || !isAuthReady) {
+                console.error("User not authenticated or authentication is not ready.");
+                return;
+            }
+            const userRef = doc(db, `artifacts/${appId}/users/${userId}/data/user_points`);
+            try {
+                await setDoc(userRef, { points: increment(amount) }, { merge: true });
+                console.log(`Points updated in Firestore: +${amount}`);
+            } catch (error) {
+                console.error("Error updating points:", error);
+            }
+        }
+        
+        function awardPointsForWin(points) {
+            window.parent.postMessage({ type: 'points_earned', value: points }, '*');
+        }
+
+        // --- Event Listeners and Initial Call ---
+        window.onload = () => {
+             onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    userId = user.uid;
+                    isAuthReady = true;
+                    console.log("Find the Difference game loaded for user:", userId);
+                    startGame();
+                } else {
+                    try {
+                        if (initialAuthToken) {
+                            await signInWithCustomToken(auth, initialAuthToken);
+                        } else {
+                            console.error("No authentication token available. Cannot sign in.");
+                        }
+                    } catch (error) {
+                        console.error("Error signing in:", error);
+                    }
+                }
+            });
+        };
+
+        document.getElementById('image1').addEventListener('click', handleImageClick);
+        document.getElementById('image2').addEventListener('click', handleImageClick);
+    </script>
 </body>
 </html>
