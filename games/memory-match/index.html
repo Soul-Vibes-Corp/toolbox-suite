@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Game</title>
+    <style>
+        /* General page and container styling */
+        body {
+            background-color: #f6f8fa;
+            color: #1c1c1c;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .game-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #005fa3;
+            margin-bottom: 20px;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background-color: #e8f4ff;
+            color: #005fa3;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        #game-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            width: 100%;
+            max-width: 400px;
+            aspect-ratio: 1 / 1;
+            padding: 10px;
+            background-color: #d8e6f1;
+            border: 2px solid #a3e6ff;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .card {
+            background-color: #005fa3;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+            position: relative;
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 8px;
+        }
+
+        .card-front {
+            background-color: #e8f4ff;
+            color: #005fa3;
+            transform: rotateY(180deg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card-back {
+            background-color: #005fa3;
+        }
+
+        .game-instructions {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e8f4ff;
+            border: 1px solid #a3e6ff;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            width: 100%;
+        }
+
+        .game-instructions h2 {
+            color: #005fa3;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .game-instructions p {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        
+        .controls {
+            margin-top: 20px;
+        }
+        
+        #new-game-button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+        
+        #new-game-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .game-title { font-size: 2rem; }
+            .stats-container { flex-direction: column; gap: 10px; max-width: 300px; }
+            .stat-box { width: 100%; }
+            #game-grid { max-width: 300px; }
+            .card { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="game-title">Memory Match</h1>
+        <div class="stats-container">
+            <div class="stat-box">Matches: <span id="matches-value">0</span></div>
+            <div class="stat-box">Tries: <span id="tries-value">0</span></div>
+        </div>
+        <div id="game-grid">
+            <!-- Game cards will be dynamically generated here -->
+        </div>
+        <div class="controls">
+            <button id="new-game-button">New Game</button>
+        </div>
+        <div class="game-instructions">
+            <h2>Memory Match: How to Play</h2>
+            <p>Welcome to **Memory Match**, a classic card game that tests your memory and rewards you for every match! The goal is to find all the matching pairs of cards on the board.</p>
+            
+            <h3>How to Play</h3>
+            <p><strong>1. Flip Cards:</strong> Click or tap on any two cards to flip them over. You can only flip two cards at a time.</p>
+            <p><strong>2. Make a Match:</strong> If the two cards you flip have the same icon, it's a match! The cards will remain face-up. You'll also earn points for each successful match.</p>
+            <p><strong>3. Keep Trying:</strong> If the cards don't match, they will automatically flip back over. Use your memory to remember where each card is located.</p>
+            
+            <h3>Earning Points</h3>
+            <p>Each time you find a successful match, you earn **100 points**. When you clear the entire board by finding all the pairs, you will get a bonus of **500 points**. These points are automatically added to your account!</p>
+        </div>
+    </div>
+</body>
+</html>
