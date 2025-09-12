@@ -509,24 +509,56 @@
             }
         });
         
-        async function updatePoints(amount) {
-            if (!userId) {
-                console.error("User not authenticated.");
-                return;
-            }
-            const userRef = doc(db, 'artifacts/' + appId + '/users/' + userId + '/data/user_points');
-            try {
-                await setDoc(userRef, { points: increment(amount) }, { merge: true });
-                console.log(`Points updated in Firestore: +${amount}`);
-            } catch (error) {
-                console.error("Error updating points:", error);
-            }
+        async function claimWelcomeBonus() {
+    if (!userId) {
+        console.error("User not authenticated.");
+        alert("Please wait for authentication to complete.");
+        return;
+    }
+
+    const todayDate = getTodayDateString();
+    const userRef = doc(db, 'artifacts/' + appId + '/users/' + userId + '/data/user_points');
+
+    try {
+        const docSnap = await getDoc(userRef);
+        let claimsToday = 0;
+        let lastClaimDate = null;
+
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            claimsToday = data.claimsToday || 0;
+            lastClaimDate = data.lastClaimDate || null;
         }
+
+        if (lastClaimDate === todayDate) {
+            if (claimsToday < 2) {
+                await setDoc(userRef, {
+                    points: increment(500),
+                    claimsToday: increment(1),
+                }, { merge: true });
+                alert('🎉 Welcome bonus claimed! You can claim it again today.');
+            } else {
+                alert('🚫 You have already claimed the welcome bonus twice today.');
+            }
+        } else {
+            // First claim of a new day
+            await setDoc(userRef, {
+                points: increment(500),
+                claimsToday: 1,
+                lastClaimDate: todayDate,
+            }, { merge: true });
+            alert('🎉 Welcome bonus claimed for the first time today!');
+        }
+
+    } catch (error) {
+        console.error("Error claiming bonus:", error);
+        alert("An error occurred. Please try again.");
+    }
+}
         
-        document.getElementById('claim-signup-bonus').addEventListener('click', function () {
-            updatePoints(500);
-            alert('🎉 Welcome bonus claimed!');
-        });
+       document.getElementById('claim-signup-bonus').addEventListener('click', function () {
+    claimWelcomeBonus();
+});
         
         document.getElementById('redeem-code').addEventListener('click', function () {
             const code = document.getElementById('bonus-code-input').value;
@@ -544,6 +576,15 @@
             document.execCommand('copy');
             alert('Referral link copied!');
         });
+
+
+  function getTodayDateString() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
     </script>
   
 </body>
