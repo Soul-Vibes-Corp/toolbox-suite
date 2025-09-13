@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blackjack</title>
+    <style>
+        body {
+            background-color: #2e7d32;
+            color: #f6f8fa;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .game-container {
+            background-color: #1e5a20;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            max-width: 800px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .game-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ffc107;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+        }
+
+        .game-area {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0 20px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #f6f8fa;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .player-hand, .dealer-hand {
+            border: 2px solid #a3e6ff;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.3);
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hand-label {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #5ec9f0;
+        }
+
+        .cards {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            min-height: 80px;
+        }
+
+        .card {
+            background-color: #fff;
+            color: #1c1c1c;
+            width: 70px;
+            height: 100px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            font-weight: bold;
+        }
+
+        .card.hidden {
+            background-color: #444;
+            color: #444;
+        }
+
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .controls-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .controls button {
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            min-width: 100px;
+        }
+
+        #bet-button, #deal-button {
+            background-color: #28a745;
+            color: white;
+        }
+        #bet-button:hover, #deal-button:hover { background-color: #218838; }
+
+        #hit-button {
+            background-color: #ffc107;
+            color: #1c1c1c;
+        }
+        #hit-button:hover { background-color: #e0ac08; }
+
+        #stand-button {
+            background-color: #dc3545;
+            color: white;
+        }
+        #stand-button:hover { background-color: #c82333; }
+        
+        .controls button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .message-area {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffc107;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            margin-top: 20px;
+            min-height: 30px;
+        }
+
+        .game-instructions {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 1px solid #a3e6ff;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 100%;
+        }
+
+        .game-instructions h2 {
+            color: #ffc107;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .game-instructions p {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .game-title { font-size: 2rem; }
+            .stats-container { flex-direction: column; gap: 10px; }
+            .controls-row { flex-wrap: wrap; justify-content: center; }
+            .controls button { min-width: 45%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="game-title">Blackjack</h1>
+        <div class="stats-container">
+            <div class="stat-box">Points: <span id="points-value">10000</span></div>
+            <div class="stat-box">Bet: <span id="bet-value">100</span></div>
+        </div>
+        <div class="game-area">
+            <div class="dealer-hand">
+                <div class="hand-label">Dealer: <span id="dealer-score"></span></div>
+                <div class="cards" id="dealer-cards"></div>
+            </div>
+            <div class="player-hand">
+                <div class="hand-label">Player: <span id="player-score"></span></div>
+                <div class="cards" id="player-cards"></div>
+            </div>
+        </div>
+        <div class="message-area" id="message-area">Place your bet and click Deal!</div>
+        <div class="controls">
+            <div class="controls-row">
+                <button id="deal-button">Deal</button>
+                <button id="hit-button" disabled>Hit</button>
+                <button id="stand-button" disabled>Stand</button>
+            </div>
+            <div class="controls-row">
+                <button id="bet-button" data-bet="100">Bet 100</button>
+                <button id="bet-button" data-bet="250">Bet 250</button>
+                <button id="bet-button" data-bet="500">Bet 500</button>
+            </div>
+        </div>
+        <div class="game-instructions">
+            <h2>Blackjack: How to Play</h2>
+            <p>Welcome to **Blackjack**, a classic card game where you play against the dealer! The goal is to get a hand value as close to 21 as possible without going over. You start with **10,000 points** to play with.</p>
+            
+            <h3>How to Play</h3>
+            <p><strong>1. Place Your Bet:</strong> Before the game starts, select your bet amount. Each game costs this amount, which is deducted from your points.</p>
+            <p><strong>2. Get Your Cards:</strong> Click "Deal" to start the game. You and the dealer will each receive two cards. One of the dealer's cards will be hidden.</p>
+            <p><strong>3. Hit or Stand:</strong> Your turn begins. You can "Hit" to take another card or "Stand" to keep your current hand. Be careful not to go over 21!</p>
+            
+            <h3>Scoring</h3>
+            <ul>
+                <li>Numbered cards are worth their face value.</li>
+                <li>J, Q, and K are all worth 10.</li>
+                <li>Aces are worth either 1 or 11.</li>
+            </ul>
+            
+            <h3>Winning and Losing</h3>
+            <p>If your final score is higher than the dealer's without going over 21, you win double your bet. If you get a Blackjack (21 on your first two cards), you win 1.5 times your bet. If you and the dealer tie, it's a "push," and you get your bet back.</p>
+        </div>
+    </div>
+</body>
+</html>
