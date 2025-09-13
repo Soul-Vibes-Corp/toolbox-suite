@@ -225,10 +225,10 @@
                 <button id="hit-button" disabled>Hit</button>
                 <button id="stand-button" disabled>Stand</button>
             </div>
-            <div class="controls-row">
-                <button id="bet-button" data-bet="100">Bet 100</button>
-                <button id="bet-button" data-bet="250">Bet 250</button>
-                <button id="bet-button" data-bet="500">Bet 500</button>
+            <div class="controls-row bet-buttons">
+                <button class="bet-button" data-bet="100">Bet 100</button>
+                <button class="bet-button" data-bet="250">Bet 250</button>
+                <button class="bet-button" data-bet="500">Bet 500</button>
             </div>
         </div>
         <div class="game-instructions">
@@ -251,5 +251,292 @@
             <p>If your final score is higher than the dealer's without going over 21, you win double your bet. If you get a Blackjack (21 on your first two cards), you win 1.5 times your bet. If you and the dealer tie, it's a "push," and you get your bet back.</p>
         </div>
     </div>
+    
+    <script type="module">
+        import { getAuth, onAuthStateChanged, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, increment } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
+
+        // Use canvas variables if they exist, otherwise use fallbacks
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        
+        // Firebase configuration from your dashboard
+        const firebaseConfig = {
+            apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
+            authDomain: "chat-code-forum.firebaseapp.com",
+            projectId: "chat-code-forum",
+            storageBucket: "chat-code-forum.appspot.com",
+            messagingSenderId: "496765673859",
+            appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
+            measurementId: "G-XJKWXHF8WN"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        let userId = null;
+        let isAuthReady = false;
+
+        // --- Game Setup ---
+        const pointsValueSpan = document.getElementById('points-value');
+        const betValueSpan = document.getElementById('bet-value');
+        const dealButton = document.getElementById('deal-button');
+        const hitButton = document.getElementById('hit-button');
+        const standButton = document.getElementById('stand-button');
+        const messageArea = document.getElementById('message-area');
+        
+        const dealerCardsElement = document.getElementById('dealer-cards');
+        const playerCardsElement = document.getElementById('player-cards');
+        const dealerScoreElement = document.getElementById('dealer-score');
+        const playerScoreElement = document.getElementById('player-score');
+
+        let deck = [];
+        let playerHand = [];
+        let dealerHand = [];
+        let currentBet = 100;
+        let currentPoints = 10000;
+        let isGameActive = false;
+
+        // Card values
+        const cardValues = {
+            '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10,
+            'J': 10, 'Q': 10, 'K': 10, 'A': 11
+        };
+
+        function createDeck() {
+            const suits = ['♠', '♥', '♦', '♣'];
+            const ranks = Object.keys(cardValues);
+            deck = [];
+            for (const suit of suits) {
+                for (const rank of ranks) {
+                    deck.push({ rank, suit });
+                }
+            }
+            shuffleDeck();
+        }
+
+        function shuffleDeck() {
+            for (let i = deck.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [deck[i], deck[j]] = [deck[j], deck[i]];
+            }
+        }
+
+        function dealCard(hand, isHidden = false) {
+            const card = deck.pop();
+            hand.push(card);
+            return card;
+        }
+
+        function renderCards(cards, element, hideFirst = false) {
+            element.innerHTML = '';
+            cards.forEach((card, index) => {
+                const cardDiv = document.createElement('div');
+                cardDiv.classList.add('card');
+                if (hideFirst && index === 0) {
+                    cardDiv.classList.add('hidden');
+                    cardDiv.textContent = '?';
+                } else {
+                    cardDiv.textContent = card.rank;
+                }
+                element.appendChild(cardDiv);
+            });
+        }
+
+        function calculateScore(hand) {
+            let score = 0;
+            let hasAce = false;
+            for (const card of hand) {
+                if (card.rank === 'A') {
+                    hasAce = true;
+                }
+                score += cardValues[card.rank];
+            }
+            if (hasAce && score > 21) {
+                score -= 10; // Change Ace from 11 to 1
+            }
+            return score;
+        }
+
+        function checkButtons() {
+            dealButton.disabled = isGameActive;
+            hitButton.disabled = !isGameActive;
+            standButton.disabled = !isGameActive;
+            document.querySelectorAll('.bet-button').forEach(btn => btn.disabled = isGameActive);
+        }
+        
+        function updateUI() {
+            pointsValueSpan.textContent = currentPoints;
+            betValueSpan.textContent = currentBet;
+        }
+
+        function setBet(amount) {
+            if (isGameActive) return;
+            currentBet = amount;
+            document.querySelectorAll('.bet-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.bet-button[data-bet="${amount}"]`).classList.add('active');
+            updateUI();
+        }
+
+        function deal() {
+            if (currentPoints < currentBet) {
+                messageArea.textContent = 'Not enough points to bet!';
+                return;
+            }
+            isGameActive = true;
+            currentPoints -= currentBet;
+            updateUI();
+            
+            playerHand = [];
+            dealerHand = [];
+            messageArea.textContent = '';
+            
+            createDeck();
+            
+            dealCard(playerHand);
+            dealCard(dealerHand);
+            dealCard(playerHand);
+            dealCard(dealerHand, true);
+            
+            renderCards(playerHand, playerCardsElement);
+            renderCards(dealerHand, dealerCardsElement, true);
+            
+            playerScoreElement.textContent = calculateScore(playerHand);
+            dealerScoreElement.textContent = '';
+
+            checkButtons();
+            
+            if (calculateScore(playerHand) === 21) {
+                endGame(true, 'Blackjack!');
+            }
+        }
+        
+        function hit() {
+            dealCard(playerHand);
+            renderCards(playerHand, playerCardsElement);
+            playerScoreElement.textContent = calculateScore(playerHand);
+
+            if (calculateScore(playerHand) > 21) {
+                endGame(false, 'Bust!');
+            }
+        }
+
+        function stand() {
+            hitButton.disabled = true;
+            standButton.disabled = true;
+            
+            renderCards(dealerHand, dealerCardsElement, false);
+            let dealerScore = calculateScore(dealerHand);
+            dealerScoreElement.textContent = dealerScore;
+            
+            while (dealerScore < 17) {
+                setTimeout(() => {
+                    dealCard(dealerHand);
+                    renderCards(dealerHand, dealerCardsElement, false);
+                    dealerScore = calculateScore(dealerHand);
+                    dealerScoreElement.textContent = dealerScore;
+                    if (dealerScore > 21) {
+                        endGame(true, 'Dealer bust!');
+                    }
+                }, 1000);
+            }
+            
+            setTimeout(() => {
+                const playerScore = calculateScore(playerHand);
+                if (dealerScore > 21) {
+                    endGame(true, 'Dealer bust!');
+                } else if (playerScore > dealerScore) {
+                    endGame(true, 'You win!');
+                } else if (playerScore < dealerScore) {
+                    endGame(false, 'You lose!');
+                } else {
+                    endGame(null, 'Push!');
+                }
+            }, 1000);
+        }
+
+        function endGame(winStatus, message) {
+            isGameActive = false;
+            checkButtons();
+            
+            renderCards(dealerHand, dealerCardsElement, false);
+            dealerScoreElement.textContent = calculateScore(dealerHand);
+
+            if (winStatus === true) {
+                let prize = currentBet * 2;
+                if (message === 'Blackjack!') {
+                    prize = Math.floor(currentBet * 2.5);
+                }
+                currentPoints += prize;
+                messageArea.textContent = `${message} You won ${prize} points!`;
+                awardPoints(prize);
+            } else if (winStatus === false) {
+                messageArea.textContent = `${message} You lost ${currentBet} points.`;
+                awardPoints(-currentBet);
+            } else {
+                currentPoints += currentBet;
+                messageArea.textContent = `${message} Your bet is returned.`;
+                awardPoints(0);
+            }
+            updateUI();
+        }
+
+        // --- Point System Integration with Dashboard ---
+        async function updatePointsInFirestore(amount) {
+            if (!userId || !isAuthReady) {
+                console.error("User not authenticated or authentication is not ready.");
+                return;
+            }
+            const userRef = doc(db, `artifacts/${appId}/users/${userId}/data/user_points`);
+            try {
+                await setDoc(userRef, { points: increment(amount) }, { merge: true });
+                console.log(`Points updated in Firestore: +${amount}`);
+            } catch (error) {
+                console.error("Error updating points:", error);
+            }
+        }
+        
+        function awardPoints(amount) {
+            window.parent.postMessage({ type: 'points_earned', value: amount }, '*');
+            updatePointsInFirestore(amount);
+        }
+
+        // --- Event Listeners and Initial Call ---
+        document.querySelectorAll('.bet-button').forEach(button => {
+            button.addEventListener('click', () => setBet(parseInt(button.dataset.bet)));
+        });
+        dealButton.addEventListener('click', deal);
+        hitButton.addEventListener('click', hit);
+        standButton.addEventListener('click', stand);
+        
+        window.onload = () => {
+             onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    userId = user.uid;
+                    isAuthReady = true;
+                    console.log("Blackjack game loaded for user:", userId);
+                    const userRef = doc(db, `artifacts/${appId}/users/${userId}/data/user_points`);
+                    const docSnap = await getDoc(userRef);
+                    if (docSnap.exists()) {
+                        currentPoints = docSnap.data().points;
+                    }
+                    updateUI();
+                } else {
+                    try {
+                        if (initialAuthToken) {
+                            await signInWithCustomToken(auth, initialAuthToken);
+                        } else {
+                            console.error("No authentication token available. Cannot sign in.");
+                        }
+                    } catch (error) {
+                        console.error("Error signing in:", error);
+                    }
+                }
+            });
+        };
+    </script>
 </body>
 </html>
+
