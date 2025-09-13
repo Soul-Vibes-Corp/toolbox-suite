@@ -67,6 +67,15 @@
             align-items: center;
             backdrop-filter: blur(5px);
             animation: fadeIn 0.5s ease-out;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s 0.5s, opacity 0.5s ease;
+        }
+
+        .modal.visible {
+            visibility: visible;
+            opacity: 1;
+            transition: visibility 0s, opacity 0.5s ease;
         }
 
         @keyframes fadeIn {
@@ -127,7 +136,7 @@
     <canvas id="gameCanvas"></canvas>
 </div>
 
-<div id="startModal" class="modal">
+<div id="startModal" class="modal visible">
     <div class="modal-content">
         <h2 class="modal-title">COSMIC SNAKE</h2>
         <p class="modal-text">Use Arrow Keys or Swipe to Play</p>
@@ -136,7 +145,7 @@
     </div>
 </div>
 
-<div id="gameOverModal" class="modal" style="display: none;">
+<div id="gameOverModal" class="modal">
     <div class="modal-content">
         <h2 class="modal-title">GAME OVER</h2>
         <p class="modal-text">Final Score: <span id="finalScore">0</span></p>
@@ -161,10 +170,6 @@
         const startBtn = document.getElementById('startBtn');
         const restartBtn = document.getElementById('restartBtn');
 
-        // --- Firebase Setup ---
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-        
         const firebaseConfig = {
             apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
             authDomain: "chat-code-forum.firebaseapp.com",
@@ -183,7 +188,6 @@
         let isAuthReady = false;
         let currentHighScore = 0;
 
-        // --- Game Settings ---
         const gridSize = 20;
         let canvasSize = Math.min(window.innerWidth, window.innerHeight) * 0.8;
         canvasSize = Math.floor(canvasSize / gridSize) * gridSize;
@@ -191,38 +195,25 @@
         canvas.height = canvasSize;
         const tileCount = canvas.width / gridSize;
 
-        // --- Game State ---
-        let snake = [{ x: 10, y: 10 }];
-        let food = { x: 15, y: 15 };
-        let dx = 0;
-        let dy = 0;
-        let score = 0;
-        let changingDirection = false;
-        let gameSpeed = 120;
-        let gameLoop;
+        let snake, food, dx, dy, score, changingDirection, gameSpeed, gameLoop;
         let gameRunning = false;
         let audioReady = false;
-
-        // --- Sound Effects ---
         let eatSound, gameOverSound;
 
-        function setupAudio() {
-            if (audioReady) return;
-            eatSound = new Tone.Synth({
-                oscillator: { type: 'triangle' },
-                envelope: { attack: 0.01, decay: 0.2, sustain: 0.1, release: 0.1 }
-            }).toDestination();
-            gameOverSound = new Tone.Synth({
-                oscillator: { type: 'sine' },
-                envelope: { attack: 0.01, decay: 0.5, sustain: 0, release: 0.2 }
-            }).toDestination();
-            audioReady = true;
+        async function initializeAudio() {
+            if (audioReady || typeof Tone === 'undefined') return;
+            try {
+                await Tone.start();
+                eatSound = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.1, release: 0.1 } }).toDestination();
+                gameOverSound = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.01, decay: 0.5, sustain: 0, release: 0.2 } }).toDestination();
+                audioReady = true;
+            } catch (e) {
+                console.error("Audio could not start.", e);
+            }
         }
-        
-        // --- Game Logic ---
+
         function main() {
             if (!gameRunning) return;
-
             gameLoop = setTimeout(() => {
                 changingDirection = false;
                 clearCanvas();
@@ -235,136 +226,98 @@
             }, gameSpeed);
         }
 
-        async function startGame() {
-            await Tone.start();
-            setupAudio();
-
-            snake = [{ x: 10, y: 10 }];
-            dx = 0;
-            dy = 0;
-            score = 0;
-            gameSpeed = 120;
-            scoreEl.textContent = 0;
+        function startGame() {
+            initializeAudio();
             gameRunning = true;
-            startModal.style.display = 'none';
-            gameOverModal.style.display = 'none';
+            const startPos = Math.floor(tileCount / 2); // THE FIX IS HERE
+            snake = [{ x: startPos, y: startPos }];      // Snake now starts in the center
+            food = {}; 
+            dx = 0; dy = 0;
+            score = 0;
+            gameSpeed = 180; 
+            scoreEl.textContent = 0;
             generateFood();
+            startModal.classList.remove('visible');
+            gameOverModal.classList.remove('visible');
             main();
         }
         
         function endGame() {
             gameRunning = false;
             clearTimeout(gameLoop);
-            gameOverSound.triggerAttackRelease('C3', '8n');
+            if (audioReady && gameOverSound) gameOverSound.triggerAttackRelease('C3', '8n');
             finalScoreEl.textContent = score;
-            
             if (score > currentHighScore) {
                 currentHighScore = score;
                 highScoreEl.textContent = currentHighScore;
                 saveHighScore();
             }
-
-            gameOverModal.style.display = 'flex';
+            gameOverModal.classList.add('visible');
         }
 
-        // --- Firebase Functions ---
         async function saveHighScore() {
-            if (!userId || !isAuthReady) {
-                console.error("User not authenticated. Cannot save high score.");
-                return;
-            }
+            if (!userId || !isAuthReady) return;
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
             const userRef = doc(db, `artifacts/${appId}/users/${userId}/data/snake_game`);
-            try {
-                await setDoc(userRef, { highScore: currentHighScore }, { merge: true });
-                console.log("High score saved to Firestore:", currentHighScore);
-            } catch (error) {
-                console.error("Error saving high score:", error);
-            }
+            try { await setDoc(userRef, { highScore: currentHighScore }, { merge: true }); } catch (e) { console.error("Error saving high score:", e); }
         }
 
         async function loadHighScore() {
-            if (!userId || !isAuthReady) {
-                console.error("User not authenticated. Cannot load high score.");
-                return;
-            }
+            if (!userId || !isAuthReady) return;
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
             const userRef = doc(db, `artifacts/${appId}/users/${userId}/data/snake_game`);
             try {
                 const docSnap = await getDoc(userRef);
-                if (docSnap.exists()) {
-                    currentHighScore = docSnap.data().highScore || 0;
-                } else {
-                    currentHighScore = 0;
-                }
+                currentHighScore = (docSnap.exists() && docSnap.data().highScore) ? docSnap.data().highScore : 0;
                 highScoreEl.textContent = currentHighScore;
-                console.log("High score loaded from Firestore:", currentHighScore);
-            } catch (error) {
-                console.error("Error loading high score:", error);
-            }
+            } catch (e) { console.error("Error loading high score:", e); }
         }
 
-        // --- Drawing & Collision ---
         function clearCanvas() {
-            ctx.fillStyle = '#050810';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#050810'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--grid-color');
             ctx.beginPath();
-            for (let x = 0; x <= canvas.width; x += gridSize) {
-                ctx.moveTo(x, 0);
-                ctx.lineTo(x, canvas.height);
-            }
-            for (let y = 0; y <= canvas.height; y += gridSize) {
-                ctx.moveTo(0, y);
-                ctx.lineTo(canvas.width, y);
-            }
-            ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--grid-color').trim();
+            for (let i = 0; i <= canvas.width; i += gridSize) { ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); }
+            for (let i = 0; i <= canvas.height; i += gridSize) { ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); }
             ctx.stroke();
-        }
-        
-        function drawSnakePart(snakePart) {
-            const x = snakePart.x * gridSize;
-            const y = snakePart.y * gridSize;
-            const snakeColor = getComputedStyle(document.documentElement).getPropertyValue('--snake-color').trim();
-
-            ctx.fillStyle = snakeColor;
-            ctx.shadowColor = snakeColor;
-            ctx.shadowBlur = 10;
-            ctx.fillRect(x + 2, y + 2, gridSize - 4, gridSize - 4);
-            ctx.shadowBlur = 0;
         }
 
         function drawSnake() {
-            snake.forEach(drawSnakePart);
+            const snakeColor = getComputedStyle(document.documentElement).getPropertyValue('--snake-color').trim();
+            for (let i = snake.length - 1; i >= 0; i--) {
+                const segment = snake[i]; const x = segment.x * gridSize + gridSize / 2; const y = segment.y * gridSize + gridSize / 2;
+                let radius = (i === 0) ? gridSize / 2 : (gridSize / 2 - 1) * Math.max(0.7, 1 - (i / snake.length) * 0.5);
+                ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.fillStyle = snakeColor;
+                ctx.shadowColor = snakeColor; ctx.shadowBlur = (i === 0) ? 15 : 10; ctx.fill();
+            }
+            ctx.shadowBlur = 0;
+            const head = snake[0]; const headX = head.x * gridSize + gridSize / 2; const headY = head.y * gridSize + gridSize / 2;
+            const eyeRadius = gridSize * 0.1; const eyeColor = '#050810'; const eyeOffset = gridSize * 0.25;
+            let eye1X, eye1Y, eye2X, eye2Y;
+            if (dx === 1) { eye1X = headX + eyeOffset; eye1Y = headY - eyeOffset; eye2X = headX + eyeOffset; eye2Y = headY + eyeOffset; } 
+            else if (dx === -1) { eye1X = headX - eyeOffset; eye1Y = headY - eyeOffset; eye2X = headX - eyeOffset; eye2Y = headY + eyeOffset; } 
+            else if (dy === 1) { eye1X = headX - eyeOffset; eye1Y = headY + eyeOffset; eye2X = headX + eyeOffset; eye2Y = headY + eyeOffset; } 
+            else if (dy === -1) { eye1X = headX - eyeOffset; eye1Y = headY - eyeOffset; eye2X = headX + eyeOffset; eye2Y = headY - eyeOffset; } 
+            else { eye1X = headX + eyeOffset; eye1Y = headY - eyeOffset; eye2X = headX + eyeOffset; eye2Y = headY + eyeOffset; }
+            ctx.beginPath(); ctx.arc(eye1X, eye1Y, eyeRadius, 0, Math.PI * 2); ctx.fillStyle = eyeColor; ctx.fill();
+            ctx.beginPath(); ctx.arc(eye2X, eye2Y, eyeRadius, 0, Math.PI * 2); ctx.fillStyle = eyeColor; ctx.fill();
         }
 
         function drawFood() {
-            const x = food.x * gridSize + gridSize / 2;
-            const y = food.y * gridSize + gridSize / 2;
-            const radius = gridSize / 2 - 2;
             const foodColor = getComputedStyle(document.documentElement).getPropertyValue('--food-color').trim();
-            
-            ctx.beginPath();
-            ctx.arc(x, y, radius, 0, Math.PI * 2);
-            ctx.fillStyle = foodColor;
-            ctx.shadowColor = foodColor;
-            ctx.shadowBlur = 15;
-            ctx.fill();
-            ctx.shadowBlur = 0;
+            const x = food.x * gridSize + gridSize / 2; const y = food.y * gridSize + gridSize / 2; const radius = gridSize / 2 - 2;
+            ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.fillStyle = foodColor; ctx.shadowColor = foodColor; ctx.shadowBlur = 15; ctx.fill(); ctx.shadowBlur = 0;
         }
-
+        
         function moveSnake() {
             const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+            if (didGameEnd(head)) { endGame(); return; }
             snake.unshift(head);
-
-            if (didGameEnd(head)) {
-                endGame();
-                return;
-            }
-
-            const didEatFood = snake[0].x === food.x && snake[0].y === food.y;
-            if (didEatFood) {
+            if (snake[0].x === food.x && snake[0].y === food.y) {
                 score += 10;
-                eatSound.triggerAttackRelease('G5', '8n');
+                if (audioReady) eatSound.triggerAttackRelease('G5', '8n');
                 scoreEl.textContent = score;
-                gameSpeed = Math.max(50, gameSpeed - 2);
+                gameSpeed = Math.max(50, gameSpeed - 3); // Gradually increase speed
                 generateFood();
             } else {
                 snake.pop();
@@ -372,98 +325,62 @@
         }
 
         function didGameEnd(head) {
-            for (let i = 4; i < snake.length; i++) {
-                if (snake[i].x === head.x && snake[i].y === head.y) return true;
+            for (let i = 4; i < snake.length; i++) { 
+                if (snake[i].x === head.x && snake[i].y === head.y) return true; 
             }
-            const hitLeftWall = head.x < 0;
-            const hitRightWall = head.x >= tileCount;
-            const hitTopWall = head.y < 0;
-            const hitBottomWall = head.y >= tileCount;
-            return hitLeftWall || hitRightWall || hitTopWall || hitBottomWall;
+            return head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount;
         }
 
         function generateFood() {
             food.x = Math.floor(Math.random() * tileCount);
             food.y = Math.floor(Math.random() * tileCount);
-            snake.forEach(part => {
-                if (part.x === food.x && part.y === food.y) {
-                    generateFood();
-                }
-            });
+            snake.forEach(part => { if (part.x === food.x && part.y === food.y) generateFood(); });
         }
 
-        // --- Control Handling ---
+        let touchStartX = 0, touchStartY = 0;
+
         function changeDirection(event) {
             if (changingDirection || !gameRunning) return;
-            
             const keyPressed = event.keyCode;
-            const goingUp = dy === -1;
-            const goingDown = dy === 1;
-            const goingRight = dx === 1;
-            const goingLeft = dx === -1;
-
-            if ((keyPressed === 37 || keyPressed === 65) && !goingRight) { dx = -1; dy = 0; changingDirection = true;} // Left or A
-            if ((keyPressed === 38 || keyPressed === 87) && !goingDown) { dx = 0; dy = -1; changingDirection = true;}  // Up or W
-            if ((keyPressed === 39 || keyPressed === 68) && !goingLeft) { dx = 1; dy = 0; changingDirection = true;}   // Right or D
-            if ((keyPressed === 40 || keyPressed === 83) && !goingUp) { dx = 0; dy = 1; changingDirection = true;}    // Down or S
+            const goingUp = dy === -1, goingDown = dy === 1, goingRight = dx === 1, goingLeft = dx === -1;
+            if ((keyPressed === 37 || keyPressed === 65) && !goingRight) { dx = -1; dy = 0; }
+            else if ((keyPressed === 38 || keyPressed === 87) && !goingDown) { dx = 0; dy = -1; }
+            else if ((keyPressed === 39 || keyPressed === 68) && !goingLeft) { dx = 1; dy = 0; }
+            else if ((keyPressed === 40 || keyPressed === 83) && !goingUp) { dx = 0; dy = 1; }
+            else return;
+            changingDirection = true;
         }
         
-        let touchStartX = 0, touchStartY = 0;
         function handleSwipe(e) {
             if (changingDirection || !gameRunning) return;
-            const touchEndX = e.changedTouches[0].screenX;
-            const touchEndY = e.changedTouches[0].screenY;
-            const deltaX = touchEndX - touchStartX;
-            const deltaY = touchEndY - touchStartY;
+            const touch = e.changedTouches[0];
+            const deltaX = touch.screenX - touchStartX, deltaY = touch.screenY - touchStartY;
             if (Math.abs(deltaX) < 10 && Math.abs(deltaY) < 10) return;
-            const goingUp = dy === -1;
-            const goingDown = dy === 1;
-            const goingRight = dx === 1;
-            const goingLeft = dx === -1;
+            const goingUp = dy === -1, goingDown = dy === 1, goingRight = dx === 1, goingLeft = dx === -1;
             if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                if (deltaX > 0 && !goingLeft) { dx = 1; dy = 0; }
+                if (deltaX > 0 && !goingLeft) { dx = 1; dy = 0; } 
                 else if (deltaX < 0 && !goingRight) { dx = -1; dy = 0; }
             } else {
-                if (deltaY > 0 && !goingUp) { dx = 0; dy = 1; }
+                if (deltaY > 0 && !goingUp) { dx = 0; dy = 1; } 
                 else if (deltaY < 0 && !goingDown) { dx = 0; dy = -1; }
             }
             changingDirection = true;
         }
 
-        // --- Event Listeners and Initial Call ---
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                userId = user.uid;
-                isAuthReady = true;
-                console.log("Cosmic Snake loaded for user:", userId);
-                await loadHighScore();
-            } else {
-                try {
-                    if (initialAuthToken) {
-                        await signInWithCustomToken(auth, initialAuthToken);
-                    } else {
-                        // Fallback for environments without the token
-                        await signInAnonymously(auth); 
-                    }
-                } catch (error) {
-                    console.error("Error signing in:", error);
-                }
-            }
-        });
-        
-        canvas.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-            touchStartY = e.changedTouches[0].screenY;
-        }, { passive: true });
-        canvas.addEventListener('touchend', handleSwipe, { passive: false });
-        document.addEventListener("keydown", changeDirection);
         startBtn.addEventListener('click', startGame);
         restartBtn.addEventListener('click', startGame);
+        document.addEventListener("keydown", changeDirection);
+        canvas.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; touchStartY = e.changedTouches[0].screenY; }, { passive: true });
+        canvas.addEventListener('touchend', handleSwipe, { passive: false });
+
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        onAuthStateChanged(auth, async (user) => {
+            if (user) { userId = user.uid; isAuthReady = true; await loadHighScore(); } 
+            else { try { if (initialAuthToken) await signInWithCustomToken(auth, initialAuthToken); else await signInAnonymously(auth); } catch (e) { console.error("Error signing in:", e); } }
+        });
     });
 </script>
-
 </body>
 </html>
-
 
 
