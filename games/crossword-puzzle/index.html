@@ -148,6 +148,15 @@
             margin-bottom: 10px;
             line-height: 1.6;
         }
+        
+        .message-area {
+            min-height: 30px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #346f99;
+        }
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
@@ -161,7 +170,9 @@
         <h1 class="game-title">Crossword Puzzle</h1>
         <div class="stats-container">
             <div class="stat-box">Score: <span id="score-value">0</span></div>
+            <div class="stat-box">Clues: <span id="clues-left-value">6/6</span></div>
         </div>
+        <div class="message-area" id="message-area"></div>
         <div id="crossword-grid">
             <!-- Grid will be dynamically generated here -->
         </div>
@@ -198,11 +209,9 @@
         import { getFirestore, doc, setDoc, getDoc, increment } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
 
-        // Use canvas variables if they exist, otherwise use fallbacks
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
         
-        // Firebase configuration from your dashboard
         const firebaseConfig = {
             apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
             authDomain: "chat-code-forum.firebaseapp.com",
@@ -220,18 +229,18 @@
         let userId = null;
         let isAuthReady = false;
 
-        // --- Game Setup ---
         const GRID_SIZE = 10;
         const scoreValueSpan = document.getElementById('score-value');
+        const cluesLeftSpan = document.getElementById('clues-left-value');
         const acrossCluesList = document.getElementById('across-clues').querySelector('ul');
         const downCluesList = document.getElementById('down-clues').querySelector('ul');
         const crosswordGridElement = document.getElementById('crossword-grid');
-        
+        const messageArea = document.getElementById('message-area');
+
         let score = 0;
-        let activeCell = null;
         let puzzleSolved = false;
+        let solvedWords = new Set();
         
-        // The puzzle data, including words, positions, and clues
         const puzzleData = {
             across: [
                 { word: 'PYTHON', startRow: 1, startCol: 1, clue: '1. A popular programming language.' },
@@ -250,29 +259,27 @@
                 { word: 'APP', startRow: 8, startCol: 2, clue: '6. A software application.' }
             ]
         };
-        
-        let boardState = Array.from({ length: GRID_SIZE }, () => Array(GRID_SIZE).fill(null));
+
+        let activeCell = null;
+        let activeWordDirection = null;
 
         function createBoard() {
             crosswordGridElement.innerHTML = '';
-            boardState = Array.from({ length: GRID_SIZE }, () => Array(GRID_SIZE).fill(null));
+            let grid = Array.from({ length: GRID_SIZE }, () => Array(GRID_SIZE).fill(null));
 
-            // Populate the board with words
+            // Populate grid with words and clue numbers
             const allWords = [...puzzleData.across, ...puzzleData.down];
-            let clueCounter = 1;
-            
             allWords.forEach(wordData => {
-                const { word, startRow, startCol, clue } = wordData;
-                let isAcross = puzzleData.across.some(a => a.word === word);
+                const isAcross = puzzleData.across.some(a => a.word === wordData.word);
+                const { word, startRow, startCol } = wordData;
                 
-                wordData.clueNumber = clueCounter++;
                 if (isAcross) {
                     for (let i = 0; i < word.length; i++) {
-                        boardState[startRow][startCol + i] = word[i];
+                        grid[startRow][startCol + i] = { char: word[i], clueNumber: (i === 0) ? wordData.clue.split('.')[0] : null };
                     }
                 } else {
                     for (let i = 0; i < word.length; i++) {
-                        boardState[startRow + i][startCol] = word[i];
+                        grid[startRow + i][startCol] = { char: word[i], clueNumber: (i === 0) ? wordData.clue.split('.')[0] : null };
                     }
                 }
             });
@@ -285,59 +292,70 @@
                     cell.dataset.row = r;
                     cell.dataset.col = c;
                     
-                    if (boardState[r][c] === null) {
+                    if (grid[r][c] === null) {
                         cell.classList.add('blank');
                     } else {
                         const input = document.createElement('input');
                         input.type = 'text';
                         input.maxLength = 1;
                         cell.appendChild(input);
+                        
+                        if (grid[r][c].clueNumber) {
+                            const numberSpan = document.createElement('span');
+                            numberSpan.textContent = grid[r][c].clueNumber;
+                            numberSpan.classList.add('clue-number');
+                            cell.appendChild(numberSpan);
+                        }
                     }
                     crosswordGridElement.appendChild(cell);
                 }
             }
             renderClues();
         }
-
+        
         function renderClues() {
             acrossCluesList.innerHTML = '';
             puzzleData.across.forEach(clue => {
                 const li = document.createElement('li');
-                li.innerHTML = `<strong>${clue.clueNumber}.</strong> ${clue.clue}`;
+                li.innerHTML = `<strong>${clue.clue.split('.')[0]}.</strong> ${clue.clue.split('. ')[1]}`;
                 acrossCluesList.appendChild(li);
             });
 
             downCluesList.innerHTML = '';
             puzzleData.down.forEach(clue => {
                 const li = document.createElement('li');
-                li.innerHTML = `<strong>${clue.clueNumber}.</strong> ${clue.clue}`;
+                li.innerHTML = `<strong>${clue.clue.split('.')[0]}.</strong> ${clue.clue.split('. ')[1]}`;
                 downCluesList.appendChild(li);
             });
+            cluesLeftSpan.textContent = `${puzzleData.across.length + puzzleData.down.length}/${puzzleData.across.length + puzzleData.down.length}`;
         }
         
         function handleCellClick(e) {
-            if (activeCell) {
-                activeCell.classList.remove('active');
-            }
-            if (e.target.classList.contains('blank')) {
+            const targetCell = e.target.closest('.crossword-cell');
+            if (!targetCell || targetCell.classList.contains('blank')) {
+                if (activeCell) activeCell.classList.remove('active');
                 activeCell = null;
                 return;
             }
-            activeCell = e.target.closest('.crossword-cell');
+            
             if (activeCell) {
-                activeCell.classList.add('active');
-                const input = activeCell.querySelector('input');
-                if (input) {
-                    input.focus();
-                }
+                activeCell.classList.remove('active');
+            }
+            activeCell = targetCell;
+            activeCell.classList.add('active');
+
+            const input = activeCell.querySelector('input');
+            if (input) {
+                input.focus();
             }
         }
-
+        
         function handleInput(e) {
-            if (e.key.length === 1 && /[a-z]/i.test(e.key)) {
-                e.target.value = e.key.toUpperCase();
-                // Move to the next cell automatically
-                const nextCell = e.target.parentElement.nextElementSibling;
+            const input = e.target;
+            const cell = input.closest('.crossword-cell');
+            
+            if (input.value.length === 1) {
+                const nextCell = cell.nextElementSibling;
                 if (nextCell && !nextCell.classList.contains('blank')) {
                     nextCell.querySelector('input').focus();
                 }
@@ -346,57 +364,56 @@
         }
 
         function checkWordComplete() {
-            let solvedWords = 0;
-            let totalWords = puzzleData.across.length + puzzleData.down.length;
+            // This is a simplified check that awards points for each word as it's completed
             const cells = crosswordGridElement.querySelectorAll('.crossword-cell');
-
-            // Check across words
-            puzzleData.across.forEach(wordData => {
+            const totalWords = puzzleData.across.length + puzzleData.down.length;
+            
+            function checkWord(wordData, isAcross) {
+                if (solvedWords.has(wordData.word)) return;
+                
                 let isSolved = true;
                 let currentWord = '';
                 for (let i = 0; i < wordData.word.length; i++) {
-                    const cellIndex = wordData.startRow * GRID_SIZE + wordData.startCol + i;
+                    const r = isAcross ? wordData.startRow : wordData.startRow + i;
+                    const c = isAcross ? wordData.startCol + i : wordData.startCol;
+                    const cellIndex = r * GRID_SIZE + c;
                     const cell = cells[cellIndex];
-                    const inputValue = cell.querySelector('input').value;
-                    currentWord += inputValue;
-                    if (inputValue !== wordData.word[i]) {
+                    const input = cell.querySelector('input');
+                    
+                    if (input && input.value.toUpperCase() !== wordData.word[i]) {
                         isSolved = false;
+                        break;
+                    }
+                    currentWord += input ? input.value : '';
+                }
+                
+                if (isSolved && currentWord.length === wordData.word.length) {
+                    solvedWords.add(wordData.word);
+                    score += 100;
+                    scoreValueSpan.textContent = score;
+                    cluesLeftSpan.textContent = `${totalWords - solvedWords.size}/${totalWords}`;
+                    showMessage(`You solved a word! +100 points.`, 'win');
+                    updatePointsInFirestore(100);
+                    
+                    if (solvedWords.size === totalWords) {
+                        endGame();
                     }
                 }
-                if (isSolved && currentWord.length === wordData.word.length) {
-                    solvedWords++;
-                    // Optional: add a class to solved cells
-                }
-            });
-
-            // Check down words
-            puzzleData.down.forEach(wordData => {
-                let isSolved = true;
-                let currentWord = '';
-                for (let i = 0; i < wordData.word.length; i++) {
-                    const cellIndex = (wordData.startRow + i) * GRID_SIZE + wordData.startCol;
-                    const cell = cells[cellIndex];
-                    const inputValue = cell.querySelector('input').value;
-                    currentWord += inputValue;
-                    if (inputValue !== wordData.word[i]) {
-                        isSolved = false;
-                    }
-                }
-                if (isSolved && currentWord.length === wordData.word.length) {
-                    solvedWords++;
-                    // Optional: add a class to solved cells
-                }
-            });
-
-            if (solvedWords === totalWords && !puzzleSolved) {
-                puzzleSolved = true;
-                showMessage("Puzzle solved! You've earned 500 points!", "win");
-                awardPointsForWin(500);
             }
+            
+            puzzleData.across.forEach(wordData => checkWord(wordData, true));
+            puzzleData.down.forEach(wordData => checkWord(wordData, false));
+        }
+
+        function endGame() {
+            puzzleSolved = true;
+            score += 500;
+            scoreValueSpan.textContent = score;
+            showMessage("Congratulations! You solved the entire puzzle! +500 bonus points!", "win");
+            updatePointsInFirestore(500);
         }
         
         function showMessage(text, type) {
-            const messageArea = document.querySelector('.message-area');
             messageArea.textContent = text;
             messageArea.style.color = type === "win" ? "green" : "red";
         }
@@ -416,9 +433,8 @@
             }
         }
         
-        function awardPointsForWin(points) {
-            window.parent.postMessage({ type: 'points_earned', value: points }, '*');
-            updatePointsInFirestore(points);
+        function awardPoints(amount) {
+            window.parent.postMessage({ type: 'points_earned', value: amount }, '*');
         }
 
         // --- Event Listeners and Initial Call ---
