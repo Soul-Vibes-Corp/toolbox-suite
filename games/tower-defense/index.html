@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Desert Defense</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
         :root {
@@ -208,20 +207,14 @@
         
         let TILE_SIZE;
         let funds, lives, wave, score, highScore = 0;
-        let selectedTowerType = null, gameRunning = true, waveBonusAwarded = true;
+        let selectedTowerType = null, waveBonusAwarded = true;
+        let gameRunning = false; // Start paused
 
         let userId, isAuthReady;
         const towers = [], enemies = [], projectiles = [];
         
-        const path = [
-            {x: 0, y: 5}, {x: 3, y: 5}, {x: 3, y: 2}, {x: 7, y: 2}, 
-            {x: 7, y: 8}, {x: 12, y: 8}, {x: 12, y: 4}, {x: 15, y: 4}, {x: 15, y: 10}, {x: 20, y: 10}
-        ];
-
-        const towerSpots = [
-            {x: 1, y: 3}, {x: 3, y: 3}, {x: 5, y: 0}, {x: 5, y: 3}, {x: 7, y: 4},
-            {x: 9, y: 6}, {x: 10, y: 2}, {x: 12, y: 6}, {x: 14, y: 6}, {x: 17, y: 8}
-        ];
+        const path = [ {x: 0, y: 5}, {x: 3, y: 5}, {x: 3, y: 2}, {x: 7, y: 2}, {x: 7, y: 8}, {x: 12, y: 8}, {x: 12, y: 4}, {x: 15, y: 4}, {x: 15, y: 10}, {x: 20, y: 10} ];
+        const towerSpots = [ {x: 1, y: 3}, {x: 3, y: 3}, {x: 5, y: 0}, {x: 5, y: 3}, {x: 7, y: 4}, {x: 9, y: 6}, {x: 10, y: 2}, {x: 12, y: 6}, {x: 14, y: 6}, {x: 17, y: 8} ];
 
         function resizeCanvas() {
             const gameContainer = document.querySelector('.game-container');
@@ -234,140 +227,25 @@
         }
 
         class Enemy {
-            constructor(speed, hp) {
-                this.x = -TILE_SIZE;
-                this.y = path[0].y * TILE_SIZE + TILE_SIZE / 2;
-                this.pathIndex = 0;
-                this.speed = speed * (TILE_SIZE / 40);
-                this.hp = hp;
-                this.maxHp = hp;
-            }
-            update() {
-                if (this.pathIndex >= path.length - 1) {
-                    lives--;
-                    updateStats();
-                    this.hp = 0;
-                    if (lives <= 0) gameOver();
-                    return;
-                }
-                const target = path[this.pathIndex + 1];
-                const targetX = target.x * TILE_SIZE + TILE_SIZE / 2;
-                const targetY = target.y * TILE_SIZE + TILE_SIZE / 2;
-                const dx = targetX - this.x;
-                const dy = targetY - this.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance < this.speed) {
-                    this.x = targetX; this.y = targetY; this.pathIndex++;
-                } else {
-                    this.x += (dx / distance) * this.speed; this.y += (dy / distance) * this.speed;
-                }
-            }
-            draw() {
-                ctx.fillStyle = '#a0522d';
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, TILE_SIZE * 0.3, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.fillStyle = '#6B8E23';
-                ctx.beginPath();
-                ctx.arc(this.x, this.y - TILE_SIZE * 0.1, TILE_SIZE * 0.25, 0, Math.PI, true);
-                ctx.fill();
-                ctx.fillStyle = '#8B0000';
-                ctx.fillRect(this.x - TILE_SIZE * 0.4, this.y - TILE_SIZE * 0.6, TILE_SIZE * 0.8, 5);
-                ctx.fillStyle = '#32CD32';
-                ctx.fillRect(this.x - TILE_SIZE * 0.4, this.y - TILE_SIZE * 0.6, (TILE_SIZE * 0.8) * (this.hp / this.maxHp), 5);
-            }
+            constructor(speed, hp) { this.x = -TILE_SIZE; this.y = path[0].y * TILE_SIZE + TILE_SIZE / 2; this.pathIndex = 0; this.speed = speed * (TILE_SIZE / 40); this.hp = hp; this.maxHp = hp; }
+            update() { if (this.pathIndex >= path.length - 1) { lives--; updateStats(); this.hp = 0; if (lives <= 0) gameOver(); return; } const target = path[this.pathIndex + 1]; const targetX = target.x * TILE_SIZE + TILE_SIZE / 2; const targetY = target.y * TILE_SIZE + TILE_SIZE / 2; const dx = targetX - this.x; const dy = targetY - this.y; const distance = Math.sqrt(dx * dx + dy * dy); if (distance < this.speed) { this.x = targetX; this.y = targetY; this.pathIndex++; } else { this.x += (dx / distance) * this.speed; this.y += (dy / distance) * this.speed; } }
+            draw() { ctx.fillStyle = '#a0522d'; ctx.beginPath(); ctx.arc(this.x, this.y, TILE_SIZE * 0.3, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#6B8E23'; ctx.beginPath(); ctx.arc(this.x, this.y - TILE_SIZE * 0.1, TILE_SIZE * 0.25, 0, Math.PI, true); ctx.fill(); ctx.fillStyle = '#8B0000'; ctx.fillRect(this.x - TILE_SIZE * 0.4, this.y - TILE_SIZE * 0.6, TILE_SIZE * 0.8, 5); ctx.fillStyle = '#32CD32'; ctx.fillRect(this.x - TILE_SIZE * 0.4, this.y - TILE_SIZE * 0.6, (TILE_SIZE * 0.8) * (this.hp / this.maxHp), 5); }
         }
         
         class Tower {
-            constructor(x, y, type) {
-                this.x = x * TILE_SIZE + TILE_SIZE / 2;
-                this.y = y * TILE_SIZE + TILE_SIZE / 2;
-                this.type = type;
-                this.cooldown = 0;
-                this.angle = 0;
-                if(type === 'turret') {
-                    this.range = TILE_SIZE * 3;
-                    this.fireRate = 30;
-                    this.projectileSpeed = 7;
-                    this.damage = 25;
-                } else if (type === 'rocket') {
-                    this.range = TILE_SIZE * 4;
-                    this.fireRate = 120;
-                    this.projectileSpeed = 4;
-                    this.damage = 75;
-                }
-            }
-            update() {
-                this.cooldown--;
-                let target = null;
-                let minDistance = this.range;
-                for(const enemy of enemies) {
-                    const dx = enemy.x - this.x;
-                    const dy = enemy.y - this.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    if (distance < minDistance) {
-                        minDistance = distance;
-                        target = enemy;
-                    }
-                }
-                if(target) {
-                    this.angle = Math.atan2(target.y - this.y, target.x - this.x);
-                    if (this.cooldown <= 0) {
-                        projectiles.push(new Projectile(this.x, this.y, target, this.projectileSpeed, this.damage, this.type));
-                        this.cooldown = this.fireRate;
-                    }
-                }
-            }
-            draw() {
-                ctx.save();
-                ctx.translate(this.x, this.y);
-                ctx.fillStyle = '#6B8E23';
-                ctx.beginPath();
-                ctx.arc(0, 0, TILE_SIZE * 0.4, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.rotate(this.angle);
-                ctx.fillStyle = '#556B2F';
-                if(this.type === 'turret') {
-                    ctx.fillRect(0, -TILE_SIZE * 0.1, TILE_SIZE * 0.5, TILE_SIZE * 0.2);
-                } else {
-                    ctx.fillRect(0, -TILE_SIZE * 0.15, TILE_SIZE * 0.6, TILE_SIZE * 0.3);
-                }
-                ctx.restore();
-            }
+            constructor(x, y, type) { this.x = x * TILE_SIZE + TILE_SIZE / 2; this.y = y * TILE_SIZE + TILE_SIZE / 2; this.type = type; this.cooldown = 0; this.angle = 0; if(type === 'turret') { this.range = TILE_SIZE * 3; this.fireRate = 30; this.projectileSpeed = 7; this.damage = 25; } else if (type === 'rocket') { this.range = TILE_SIZE * 4; this.fireRate = 120; this.projectileSpeed = 4; this.damage = 75; } }
+            update() { this.cooldown--; let target = null; let minDistance = this.range; for(const enemy of enemies) { const dx = enemy.x - this.x; const dy = enemy.y - this.y; const distance = Math.sqrt(dx * dx + dy * dy); if (distance < minDistance) { minDistance = distance; target = enemy; } } if(target) { this.angle = Math.atan2(target.y - this.y, target.x - this.x); if (this.cooldown <= 0) { projectiles.push(new Projectile(this.x, this.y, target, this.projectileSpeed, this.damage, this.type)); this.cooldown = this.fireRate; } } }
+            draw() { ctx.save(); ctx.translate(this.x, this.y); ctx.fillStyle = '#6B8E23'; ctx.beginPath(); ctx.arc(0, 0, TILE_SIZE * 0.4, 0, Math.PI * 2); ctx.fill(); ctx.rotate(this.angle); ctx.fillStyle = '#556B2F'; if(this.type === 'turret') { ctx.fillRect(0, -TILE_SIZE * 0.1, TILE_SIZE * 0.5, TILE_SIZE * 0.2); } else { ctx.fillRect(0, -TILE_SIZE * 0.15, TILE_SIZE * 0.6, TILE_SIZE * 0.3); } ctx.restore(); }
         }
 
         class Projectile {
-            constructor(x, y, target, speed, damage, type) {
-                this.x = x; this.y = y; this.target = target;
-                this.speed = speed * (TILE_SIZE / 40);
-                this.damage = damage;
-                this.type = type;
-            }
-            update() {
-                if(this.target.hp <= 0) { this.x = -1000; return; }
-                const dx = this.target.x - this.x;
-                const dy = this.target.y - this.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance < this.speed) {
-                    this.target.hp -= this.damage;
-                    this.x = -1000;
-                } else {
-                    this.x += (dx / distance) * this.speed;
-                    this.y += (dy / distance) * this.speed;
-                }
-            }
-            draw() {
-                ctx.fillStyle = this.type === 'turret' ? '#FFD700' : '#FF4500';
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, TILE_SIZE * (this.type === 'turret' ? 0.1 : 0.2), 0, Math.PI * 2);
-                ctx.fill();
-            }
+            constructor(x, y, target, speed, damage, type) { this.x = x; this.y = y; this.target = target; this.speed = speed * (TILE_SIZE / 40); this.damage = damage; this.type = type; }
+            update() { if(this.target.hp <= 0) { this.x = -1000; return; } const dx = this.target.x - this.x; const dy = this.target.y - this.y; const distance = Math.sqrt(dx * dx + dy * dy); if (distance < this.speed) { this.target.hp -= this.damage; this.x = -1000; } else { this.x += (dx / distance) * this.speed; this.y += (dy / distance) * this.speed; } }
+            draw() { ctx.fillStyle = this.type === 'turret' ? '#FFD700' : '#FF4500'; ctx.beginPath(); ctx.arc(this.x, this.y, TILE_SIZE * (this.type === 'turret' ? 0.1 : 0.2), 0, Math.PI * 2); ctx.fill(); }
         }
         
         function spawnWave() {
-            wave++;
-            waveBonusAwarded = false;
-            updateStats();
+            wave++; waveBonusAwarded = false; updateStats();
             let enemyCount = wave * 5, enemyHp = 50 + wave * 25, enemySpeed = 1 + wave * 0.1;
             for (let i = 0; i < enemyCount; i++) {
                 setTimeout(() => { if(gameRunning) enemies.push(new Enemy(enemySpeed, enemyHp)); }, i * 500);
@@ -376,104 +254,70 @@
         }
 
         function updateStats() {
-            scoreEl.textContent = score;
-            fundsEl.textContent = funds;
-            livesEl.textContent = lives;
-            waveEl.textContent = wave;
+            scoreEl.textContent = score; fundsEl.textContent = funds;
+            livesEl.textContent = lives; waveEl.textContent = wave;
         }
         
         function gameLoop() {
-            if (!gameRunning) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            drawScenery();
-            drawPath();
-            drawTowerSpots();
+            drawScenery(); drawPath(); drawTowerSpots();
 
-            for (let i = enemies.length - 1; i >= 0; i--) {
-                enemies[i].update();
-                if (enemies[i].hp <= 0) { 
-                    funds += 10; 
-                    score += 5;
-                    updateStats(); 
-                    enemies.splice(i, 1); 
-                } else { enemies[i].draw(); }
+            if (gameRunning) {
+                for (let i = enemies.length - 1; i >= 0; i--) {
+                    enemies[i].update();
+                    if (enemies[i].hp <= 0) { funds += 10; score += 5; updateStats(); enemies.splice(i, 1); } else { enemies[i].draw(); }
+                }
+                towers.forEach(t => { t.update(); });
+                for (let i = projectiles.length - 1; i >= 0; i--) {
+                    projectiles[i].update();
+                    if (projectiles[i].x < 0) { projectiles.splice(i, 1); }
+                }
+                if (enemies.length === 0 && !waveBonusAwarded) { 
+                    startWaveBtn.disabled = false;
+                    score += wave * 25;
+                    waveBonusAwarded = true;
+                    updateStats();
+                }
             }
-            towers.forEach(t => { t.update(); t.draw(); });
-            for (let i = projectiles.length - 1; i >= 0; i--) {
-                projectiles[i].update();
-                if (projectiles[i].x < 0) { projectiles.splice(i, 1); } else { projectiles[i].draw(); }
-            }
-            if (enemies.length === 0 && gameRunning && !waveBonusAwarded) { 
-                startWaveBtn.disabled = false;
-                score += wave * 25; // Wave bonus
-                waveBonusAwarded = true;
-                updateStats();
-            }
+            
+            towers.forEach(t => t.draw());
+            projectiles.forEach(p => p.draw());
+            enemies.forEach(e => e.draw()); // Re-draw in case of pause
+
             requestAnimationFrame(gameLoop);
         }
         
         function drawScenery() {
             const baseX = 19 * TILE_SIZE, baseY = 10 * TILE_SIZE;
-            ctx.fillStyle = '#6B8E23';
-            ctx.fillRect(baseX, baseY, TILE_SIZE * 1.5, TILE_SIZE * 1.5);
-            ctx.fillStyle = '#556B2F';
-            ctx.fillRect(baseX + TILE_SIZE * 0.2, baseY + TILE_SIZE * 0.2, TILE_SIZE * 1.1, TILE_SIZE * 1.1);
-            ctx.fillStyle = '#aaffaa'; // Antenna
-            ctx.fillRect(baseX + TILE_SIZE * 0.7, baseY - TILE_SIZE * 0.5, TILE_SIZE * 0.1, TILE_SIZE * 0.5);
-            ctx.fillStyle = '#2a2015';
-            ctx.beginPath();
-            ctx.arc(0, 5.5 * TILE_SIZE, TILE_SIZE * 1.5, -Math.PI / 2, Math.PI / 2);
-            ctx.fill();
-            ctx.fillStyle = '#000';
-            ctx.beginPath();
-            ctx.arc(0, 5.5 * TILE_SIZE, TILE_SIZE * 1.2, -Math.PI / 2, Math.PI / 2);
-            ctx.fill();
-            drawTree(1, 1);
-            drawTree(5, 5);
-            drawTree(10, 0);
-            drawTree(14, 2);
-            drawTree(18, 5);
-            drawTree(9, 10);
+            ctx.fillStyle = '#6B8E23'; ctx.fillRect(baseX, baseY, TILE_SIZE * 1.5, TILE_SIZE * 1.5);
+            ctx.fillStyle = '#556B2F'; ctx.fillRect(baseX + TILE_SIZE * 0.2, baseY + TILE_SIZE * 0.2, TILE_SIZE * 1.1, TILE_SIZE * 1.1);
+            ctx.fillStyle = '#aaffaa'; ctx.fillRect(baseX + TILE_SIZE * 0.7, baseY - TILE_SIZE * 0.5, TILE_SIZE * 0.1, TILE_SIZE * 0.5);
+            ctx.fillStyle = '#2a2015'; ctx.beginPath(); ctx.arc(0, 5.5 * TILE_SIZE, TILE_SIZE * 1.5, -Math.PI / 2, Math.PI / 2); ctx.fill();
+            ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(0, 5.5 * TILE_SIZE, TILE_SIZE * 1.2, -Math.PI / 2, Math.PI / 2); ctx.fill();
+            drawTree(1, 1); drawTree(5, 5); drawTree(10, 0);
+            drawTree(14, 2); drawTree(18, 5); drawTree(9, 10);
         }
         
         function drawTree(tileX, tileY) {
-            const x = tileX * TILE_SIZE + TILE_SIZE / 2;
-            const y = tileY * TILE_SIZE + TILE_SIZE;
-            ctx.fillStyle = '#5a4a2f';
-            ctx.fillRect(x - TILE_SIZE * 0.1, y - TILE_SIZE * 0.4, TILE_SIZE * 0.2, TILE_SIZE * 0.4);
-            ctx.fillStyle = '#228B22';
-            ctx.beginPath();
-            ctx.arc(x, y - TILE_SIZE * 0.5, TILE_SIZE * 0.4, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#3CB371';
-            ctx.beginPath();
-            ctx.arc(x - TILE_SIZE * 0.2, y - TILE_SIZE * 0.4, TILE_SIZE * 0.3, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#2E8B57';
-            ctx.beginPath();
-            ctx.arc(x + TILE_SIZE * 0.2, y - TILE_SIZE * 0.4, TILE_SIZE * 0.3, 0, Math.PI * 2);
-            ctx.fill();
+            const x = tileX * TILE_SIZE + TILE_SIZE / 2; const y = tileY * TILE_SIZE + TILE_SIZE;
+            ctx.fillStyle = '#5a4a2f'; ctx.fillRect(x - TILE_SIZE * 0.1, y - TILE_SIZE * 0.4, TILE_SIZE * 0.2, TILE_SIZE * 0.4);
+            ctx.fillStyle = '#228B22'; ctx.beginPath(); ctx.arc(x, y - TILE_SIZE * 0.5, TILE_SIZE * 0.4, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#3CB371'; ctx.beginPath(); ctx.arc(x - TILE_SIZE * 0.2, y - TILE_SIZE * 0.4, TILE_SIZE * 0.3, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#2E8B57'; ctx.beginPath(); ctx.arc(x + TILE_SIZE * 0.2, y - TILE_SIZE * 0.4, TILE_SIZE * 0.3, 0, Math.PI * 2); ctx.fill();
         }
 
         function drawPath() {
-            ctx.strokeStyle = '#5a4a2f';
-            ctx.lineWidth = TILE_SIZE;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            ctx.beginPath();
+            ctx.strokeStyle = '#5a4a2f'; ctx.lineWidth = TILE_SIZE;
+            ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.beginPath();
             ctx.moveTo(path[0].x * TILE_SIZE, path[0].y * TILE_SIZE + TILE_SIZE/2);
-            for(let i=0; i < path.length; i++) {
-                ctx.lineTo(path[i].x * TILE_SIZE + TILE_SIZE/2, path[i].y * TILE_SIZE + TILE_SIZE/2);
-            }
+            for(let i=0; i < path.length; i++) { ctx.lineTo(path[i].x * TILE_SIZE + TILE_SIZE/2, path[i].y * TILE_SIZE + TILE_SIZE/2); }
             ctx.lineTo(canvas.width, path[path.length-1].y * TILE_SIZE + TILE_SIZE/2);
             ctx.stroke();
         }
         
         function drawTowerSpots() {
             ctx.fillStyle = "rgba(170, 255, 170, 0.1)";
-            towerSpots.forEach(spot => {
-                ctx.fillRect(spot.x * TILE_SIZE, spot.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-            });
+            towerSpots.forEach(spot => { ctx.fillRect(spot.x * TILE_SIZE, spot.y * TILE_SIZE, TILE_SIZE, TILE_SIZE); });
         }
 
         function placeTower(e) {
@@ -485,11 +329,7 @@
             const spotOccupied = towers.some(t => t.x === x * TILE_SIZE + TILE_SIZE/2 && t.y === y * TILE_SIZE + TILE_SIZE/2);
             if (spotValid && !spotOccupied) {
                 let cost = (selectedTowerType === 'turret') ? 100 : 150;
-                if (funds >= cost) {
-                    funds -= cost;
-                    towers.push(new Tower(x, y, selectedTowerType));
-                    updateStats();
-                }
+                if (funds >= cost) { funds -= cost; towers.push(new Tower(x, y, selectedTowerType)); updateStats(); }
             }
         }
 
@@ -497,10 +337,7 @@
             gameRunning = false;
             wavesSurvivedEl.textContent = wave;
             finalScoreEl.textContent = score;
-            if (score > highScore) {
-                highScore = score;
-                saveHighScore();
-            }
+            if (score > highScore) { highScore = score; saveHighScore(); }
             highScoreEl.textContent = highScore;
             gameOverModal.classList.add('visible');
         }
@@ -513,11 +350,12 @@
             updateStats();
             gameOverModal.classList.remove('visible');
             startWaveBtn.disabled = false;
-            gameLoop();
         }
         
         // Firebase Setup
-        const firebaseConfig = { apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU", authDomain: "chat-code-forum.firebaseapp.com", projectId: "chat-code-forum", storageBucket: "chat-code-forum.appspot.com", messagingSenderId: "496765673859", appId: "1:496765673859:web:6c2e6695be447d6e32d6b6" };
+        const firebaseConfig = typeof __firebase_config !== 'undefined' 
+            ? JSON.parse(__firebase_config) 
+            : { apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU", authDomain: "chat-code-forum.firebaseapp.com", projectId: "chat-code-forum", storageBucket: "chat-code-forum.appspot.com", messagingSenderId: "496765673859", appId: "1:496765673859:web:6c2e6695be447d6e32d6b6" };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
@@ -540,25 +378,18 @@
         }
 
         onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                userId = user.uid;
-                isAuthReady = true;
-                await loadHighScore();
-            } else {
-                try {
-                    if (initialAuthToken) {
-                        await signInWithCustomToken(auth, initialAuthToken);
-                    } else {
-                        await signInAnonymously(auth);
-                    }
-                } catch (error) {
+            if (user) { userId = user.uid; isAuthReady = true; await loadHighScore(); } 
+            else { 
+                try { 
+                    if (initialAuthToken) await signInWithCustomToken(auth, initialAuthToken); 
+                    else await signInAnonymously(auth); 
+                } catch (error) { 
                     console.error("Firebase Sign-In Failed:", error.code);
-                    isAuthReady = true;
+                    isAuthReady = false; 
                     userId = null;
-                }
+                } 
             }
         });
-
 
         window.addEventListener('resize', resizeCanvas);
         startWaveBtn.addEventListener('click', spawnWave);
@@ -573,17 +404,12 @@
             });
         });
 
-        resetGame();
-        gameRunning = false; 
-        startWaveBtn.disabled = false;
-
+        // Initial Setup
         resizeCanvas();
-        drawScenery();
-        drawPath();
-        drawTowerSpots();
+        resetGame();
+        gameLoop();
     });
 </script>
 </body>
 </html>
-
 
