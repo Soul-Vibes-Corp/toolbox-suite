@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Gemstone Blitz</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+        :root {
+            --bg-color: #1a1a2e;
+            --grid-bg: rgba(16, 16, 32, 0.7);
+            --text-color: #e0f2fe;
+            --primary-glow: #e94560;
+            --secondary-glow: #0f3460;
+        }
+        html, body {
+            height: 100%; width: 100%; margin: 0; padding: 0;
+            overflow: hidden; background-color: var(--bg-color);
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .game-container {
+            display: flex; flex-direction: column; align-items: center;
+            width: 100%; height: 100%; box-sizing: border-box; padding: 10px;
+        }
+        .header-panel {
+            width: 100%; max-width: 500px;
+            background-color: var(--grid-bg);
+            border: 2px solid var(--primary-glow);
+            border-radius: 15px; padding: 10px 20px; margin-bottom: 15px;
+            box-sizing: border-box; display: flex; justify-content: space-between;
+            align-items: center; box-shadow: 0 0 15px var(--primary-glow);
+        }
+        .stat-display {
+            font-size: 1.5rem; font-weight: 600;
+            text-shadow: 0 0 5px var(--primary-glow);
+        }
+        #game-board {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            background-color: var(--grid-bg);
+            border: 2px solid var(--secondary-glow);
+            border-radius: 15px;
+            padding: 10px;
+            box-shadow: 0 0 20px var(--secondary-glow);
+            touch-action: none;
+            width: 95vmin;
+            height: 95vmin;
+            max-width: 500px;
+            max-height: 500px;
+            box-sizing: border-box;
+        }
+        .game-cell {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem; /* Will be adjusted by JS */
+            cursor: pointer;
+            transition: transform 0.2s ease-out;
+        }
+        .game-cell.selected {
+            transform: scale(1.1);
+            background-color: rgba(233, 69, 96, 0.3);
+            border-radius: 10px;
+        }
+        .game-cell.matched {
+            animation: popOut 0.3s forwards;
+        }
+        @keyframes popOut {
+            0% { transform: scale(1.1); }
+            100% { transform: scale(0); }
+        }
+        .modal {
+            display: flex; position: fixed; z-index: 100; left: 0; top: 0;
+            width: 100%; height: 100%; background-color: rgba(16, 16, 32, 0.9);
+            justify-content: center; align-items: center; visibility: hidden; opacity: 0;
+            transition: visibility 0s 0.5s, opacity 0.5s ease; backdrop-filter: blur(5px);
+        }
+        .modal.visible { visibility: visible; opacity: 1; transition: visibility 0s, opacity 0.5s ease; }
+        .modal-content {
+            background: var(--grid-bg); padding: 2rem 4rem;
+            border: 2px solid var(--primary-glow); border-radius: 1rem;
+            text-align: center; box-shadow: 0 0 30px var(--primary-glow);
+        }
+        .modal-title { font-size: 3rem; margin-bottom: 1rem; text-shadow: 0 0 10px var(--primary-glow); color: var(--primary-glow); }
+        .modal-text { font-size: 1.5rem; margin-bottom: 1rem; }
+        .high-score { color: #0f3460; font-weight: 700; }
+        .action-btn {
+            padding: 10px 20px; font-family: 'Poppins', sans-serif; font-size: 1.2rem;
+            font-weight: 700; color: var(--text-color);
+            background: linear-gradient(45deg, var(--primary-glow), var(--secondary-glow));
+            border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s ease;
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
+        .action-btn:hover { transform: scale(1.05); box-shadow: 0 0 20px var(--primary-glow); }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <div class="header-panel">
+        <div class="stat-display">Score: <span id="score-value">0</span></div>
+        <div class="stat-display">Time: <span id="time-value">60</span></div>
+    </div>
+    <div id="game-board"></div>
+</div>
+
+<div id="startModal" class="modal visible">
+    <div class="modal-content">
+        <h2 class="modal-title">GEMSTONE BLITZ</h2>
+        <p class="modal-text">Match gems to score points before time runs out!</p>
+        <p class="modal-text high-score">High Score: <span id="highScore">0</span></p>
+        <button id="start-button" class="action-btn">START GAME</button>
+    </div>
+</div>
+
+<div id="gameOverModal" class="modal">
+    <div class="modal-content">
+        <h2 class="modal-title">TIME'S UP!</h2>
+        <p class="modal-text">Final Score: <span id="finalScore">0</span></p>
+        <button id="restart-button" class="action-btn">PLAY AGAIN</button>
+    </div>
+</div>
+
+<script type="module">
+    import { getAuth, onAuthStateChanged, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const gameBoard = document.getElementById('game-board');
+        const scoreValueSpan = document.getElementById('score-value');
+        const timeValueSpan = document.getElementById('time-value');
+        const startButton = document.getElementById('start-button');
+        const restartButton = document.getElementById('restart-button');
+        const startModal = document.getElementById('startModal');
+        const gameOverModal = document.getElementById('gameOverModal');
+        const finalScoreEl = document.getElementById('finalScore');
+        const highScoreEl = document.getElementById('highScore');
+
+        const boardSize = 8;
+        const gemEmojis = ['💎', '💍', '👑', '💰', '✨', '⭐'];
+
+        let board = [];
+        let selectedCell = null;
+        let score = 0;
+        let timeLeft = 60;
+        let gameInterval = null;
+        let isProcessing = false;
+        let highScore = 0;
+        
+        let userId, isAuthReady;
+        let swapSound, matchSound, gameOverSound;
+        let audioReady = false;
+
+        async function initializeAudio() {
+            if (audioReady || typeof Tone === 'undefined') return;
+            try {
+                await Tone.start();
+                swapSound = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.1, release: 0.1 } }).toDestination();
+                matchSound = new Tone.PolySynth(Tone.Synth, { oscillator: { type: 'triangle' }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.1, release: 0.2 } }).toDestination();
+                gameOverSound = new Tone.Synth({ oscillator: { type: 'sawtooth' }, envelope: { attack: 0.01, decay: 0.5, sustain: 0, release: 0.2 } }).toDestination();
+                audioReady = true;
+            } catch (e) { console.error("Audio could not start.", e); }
+        }
+
+        function createBoard() {
+            gameBoard.innerHTML = '';
+            board = [];
+            const cellSize = gameBoard.clientWidth / boardSize; 
+
+            for (let r = 0; r < boardSize; r++) {
+                board[r] = [];
+                for (let c = 0; c < boardSize; c++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('game-cell');
+                    cell.dataset.row = r;
+                    cell.dataset.col = c;
+                    cell.style.fontSize = `${cellSize * 0.6}px`;
+                    gameBoard.appendChild(cell);
+                    
+                    let randomGem;
+                    do {
+                        randomGem = gemEmojis[Math.floor(Math.random() * gemEmojis.length)];
+                    } while (
+                        (c >= 2 && randomGem === board[r][c - 1] && randomGem === board[r][c - 2]) ||
+                        (r >= 2 && randomGem === board[r - 1][c] && randomGem === board[r - 2][c])
+                    );
+                    board[r][c] = randomGem;
+                    cell.textContent = randomGem;
+                }
+            }
+        }
+
+        function drawBoard() {
+            for (let r = 0; r < boardSize; r++) {
+                for (let c = 0; c < boardSize; c++) {
+                    const cell = gameBoard.children[r * boardSize + c];
+                    cell.textContent = board[r][c];
+                }
+            }
+        }
+        
+        function handleCellClick(e) {
+            if (isProcessing || !gameInterval) return;
+            const clickedCell = e.target.closest('.game-cell');
+            if (!clickedCell) return;
+
+            if (!selectedCell) {
+                selectedCell = clickedCell;
+                clickedCell.classList.add('selected');
+            } else {
+                const r1 = parseInt(selectedCell.dataset.row);
+                const c1 = parseInt(selectedCell.dataset.col);
+                const r2 = parseInt(clickedCell.dataset.row);
+                const c2 = parseInt(clickedCell.dataset.col);
+                
+                const isAdjacent = Math.abs(r1 - r2) + Math.abs(c1 - c2) === 1;
+                
+                if (isAdjacent) {
+                    swapGems(r1, c1, r2, c2);
+                }
+                
+                selectedCell.classList.remove('selected');
+                selectedCell = null;
+            }
+        }
+
+        async function swapGems(r1, c1, r2, c2) {
+            if (audioReady) swapSound.triggerAttackRelease('C4', '8n');
+            isProcessing = true;
+            let temp = board[r1][c1];
+            board[r1][c1] = board[r2][c2];
+            board[r2][c2] = temp;
+            drawBoard();
+
+            await new Promise(res => setTimeout(res, 200));
+
+            const matches = findMatches();
+            if (matches.length > 0) {
+                await processMatches(matches);
+            } else {
+                temp = board[r1][c1];
+                board[r1][c1] = board[r2][c2];
+                board[r2][c2] = temp;
+                drawBoard();
+            }
+            isProcessing = false;
+        }
+
+        function findMatches() {
+            const matches = new Set();
+            for (let r = 0; r < boardSize; r++) {
+                for (let c = 0; c < boardSize - 2; c++) {
+                    const gem = board[r][c];
+                    if (gem && gem === board[r][c+1] && gem === board[r][c+2]) {
+                        matches.add(`${r},${c}`); matches.add(`${r},${c+1}`); matches.add(`${r},${c+2}`);
+                    }
+                }
+            }
+            for (let c = 0; c < boardSize; c++) {
+                for (let r = 0; r < boardSize - 2; r++) {
+                    const gem = board[r][c];
+                    if (gem && gem === board[r+1][c] && gem === board[r+2][c]) {
+                        matches.add(`${r},${c}`); matches.add(`${r+1},${c}`); matches.add(`${r+2},${c}`);
+                    }
+                }
+            }
+            return Array.from(matches).map(coord => coord.split(',').map(Number));
+        }
+
+        async function processMatches(matches) {
+            if (audioReady) {
+                 const notes = ['C4', 'E4', 'G4', 'C5'];
+                 matchSound.triggerAttackRelease(notes.slice(0, Math.min(matches.length, 4)), '8n');
+            }
+            
+            for (const [r, c] of matches) {
+                score += 10;
+                board[r][c] = null;
+                gameBoard.children[r * boardSize + c].classList.add('matched');
+            }
+            scoreValueSpan.textContent = score;
+
+            await new Promise(res => setTimeout(res, 300));
+
+            for (const [r, c] of matches) {
+                 gameBoard.children[r * boardSize + c].classList.remove('matched');
+            }
+            
+            await collapseAndFill();
+            
+            const newMatches = findMatches();
+            if (newMatches.length > 0) {
+                await processMatches(newMatches);
+            }
+        }
+        
+        async function collapseAndFill() {
+            for (let c = 0; c < boardSize; c++) {
+                let emptyRow = boardSize - 1;
+                for (let r = boardSize - 1; r >= 0; r--) {
+                    if (board[r][c]) {
+                        [board[emptyRow][c], board[r][c]] = [board[r][c], board[emptyRow][c]];
+                        emptyRow--;
+                    }
+                }
+                for (let r = emptyRow; r >= 0; r--) {
+                    board[r][c] = gemEmojis[Math.floor(Math.random() * gemEmojis.length)];
+                }
+            }
+             drawBoard();
+             await new Promise(res => setTimeout(res, 200));
+        }
+
+        function gameLoop() {
+            timeLeft--;
+            timeValueSpan.textContent = timeLeft;
+            if (timeLeft <= 0) {
+                endGame();
+            }
+        }
+
+        function startGame() {
+            initializeAudio();
+            startModal.classList.remove('visible');
+            score = 0;
+            timeLeft = 60;
+            scoreValueSpan.textContent = score;
+            timeValueSpan.textContent = timeLeft;
+            createBoard();
+            gameInterval = setInterval(gameLoop, 1000);
+        }
+
+        function endGame() {
+            clearInterval(gameInterval);
+            gameInterval = null;
+            if(audioReady) gameOverSound.triggerAttackRelease('C3', '2n');
+            isProcessing = true;
+            finalScoreEl.textContent = score;
+            if (score > highScore) {
+                highScore = score;
+                saveHighScore();
+            }
+            highScoreEl.textContent = highScore; // Update high score display on game over
+            gameOverModal.classList.add('visible');
+        }
+
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU", authDomain: "chat-code-forum.firebaseapp.com", projectId: "chat-code-forum" };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        async function saveHighScore() {
+            if (!userId || !isAuthReady) return;
+            const userRef = doc(db, `artifacts/${appId}/users/${userId}/data/match3_game`);
+            try { await setDoc(userRef, { highScore: highScore }, { merge: true }); } catch (e) { console.error("Error saving high score:", e); }
+        }
+
+        async function loadHighScore() {
+            if (!userId || !isAuthReady) return;
+            const userRef = doc(db, `artifacts/${appId}/users/${userId}/data/match3_game`);
+            try {
+                const docSnap = await getDoc(userRef);
+                highScore = (docSnap.exists() && docSnap.data().highScore) ? docSnap.data().highScore : 0;
+                highScoreEl.textContent = highScore;
+            } catch (e) { console.error("Error loading high score:", e); highScore = 0; }
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) { userId = user.uid; isAuthReady = true; await loadHighScore(); } 
+            else { 
+                try { 
+                    if (initialAuthToken) await signInWithCustomToken(auth, initialAuthToken); 
+                    else await signInAnonymously(auth); 
+                } catch (error) { 
+                    console.error("Firebase Sign-In Failed:", error.code);
+                    isAuthReady = false; userId = null;
+                } 
+            }
+        });
+
+        startButton.addEventListener('click', startGame);
+        restartButton.addEventListener('click', () => {
+             gameOverModal.classList.remove('visible');
+             startGame();
+        });
+        gameBoard.addEventListener('click', handleCellClick);
+        
+        createBoard();
+    });
+    </script>
+</body>
+</html>
+
