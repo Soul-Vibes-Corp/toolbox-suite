@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tower Defense</title>
+    <style>
+        /* General page and container styling */
+        body {
+            background-color: #f6f8fa;
+            color: #1c1c1c;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .game-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #005fa3;
+            margin-bottom: 20px;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background-color: #e8f4ff;
+            color: #005fa3;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        #game-canvas {
+            border: 2px solid #005fa3;
+            background-color: #d8e6f1;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            cursor: crosshair;
+        }
+
+        .controls-container {
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .control-button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        .control-button:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+        
+        .control-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .game-instructions {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e8f4ff;
+            border: 1px solid #a3e6ff;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            width: 100%;
+        }
+
+        .game-instructions h2 {
+            color: #005fa3;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .game-instructions p {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        
+        .game-instructions ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .game-instructions li {
+            margin-bottom: 5px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .stats-container { flex-direction: column; gap: 10px; }
+            .game-title { font-size: 2rem; }
+            .controls-container { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="game-title">Tower Defense</h1>
+        <div class="stats-container">
+            <div class="stat-box">Points: <span id="points-value">0</span></div>
+            <div class="stat-box">Health: <span id="health-value">10</span></div>
+            <div class="stat-box">Wave: <span id="wave-value">0</span></div>
+        </div>
+        <canvas id="game-canvas" width="800" height="600"></canvas>
+        <div class="controls-container">
+            <button id="start-wave-button" class="control-button">Start Wave</button>
+            <button id="buy-tower-button" class="control-button">Buy Tower (100 Points)</button>
+        </div>
+        <div class="game-instructions">
+            <h2>Tower Defense: How to Play</h2>
+            <p>Welcome to **Tower Defense**, a strategic game where you must protect your base from waves of invading enemies! The goal is to survive as many waves as you can by building and upgrading towers to destroy the enemies before they reach the end of the path.</p>
+            
+            <h3>How to Play</h3>
+            <p><strong>1. The Path:</strong> Enemies will follow a set path from their starting point to your base. If an enemy reaches your base, you lose health.</p>
+            <p><strong>2. Build Towers:</strong> Click the "Buy Tower" button and then click on a spot on the canvas to place your tower. Towers will automatically attack enemies that enter their range.</p>
+            <p><strong>3. Survive Waves:</strong> Click "Start Wave" to begin the invasion. Each wave will be more challenging than the last. Use your points wisely to build more towers or replace damaged ones.</p>
+            
+            <h3>Earning Points</h3>
+            <ul>
+                <li>Every enemy defeated: **10 points**</li>
+                <li>Survive a full wave: **100 points** bonus</li>
+            </ul>
+            <p>The game is over when your health reaches zero. Your final score will be automatically added to your account and reflected on your dashboard.</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { getAuth, onAuthStateChanged, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, increment } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
+
+        // Use canvas variables if they exist, otherwise use fallbacks
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
+            authDomain: "chat-code-forum.firebaseapp.com",
+            projectId: "chat-code-forum",
+            storageBucket: "chat-code-forum.appspot.com",
+            messagingSenderId: "496765673859",
+            appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
+            measurementId: "G-XJKWXHF8WN"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        let userId = null;
+        let isAuthReady = false;
+
+        // --- Game Setup ---
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d');
+        const pointsValueSpan = document.getElementById('points-value');
+        const healthValueSpan = document.getElementById('health-value');
+        const waveValueSpan = document.getElementById('wave-value');
+        const startWaveButton = document.getElementById('start-wave-button');
+        const buyTowerButton = document.getElementById('buy-tower-button');
+
+        const TILE_SIZE = 40;
+        const MAP_WIDTH = canvas.width;
+        const MAP_HEIGHT = canvas.height;
+
+        let points = 500;
+        let health = 10;
+        let wave = 0;
+        let towers = [];
+        let enemies = [];
+        let projectiles = [];
+        let gameActive = false;
+        let placingTower = false;
+
+        const path = [
+            { x: 0, y: 300 },
+            { x: 200, y: 300 },
+            { x: 200, y: 100 },
+            { x: 600, y: 100 },
+            { x: 600, y: 500 },
+            { x: 800, y: 500 }
+        ];
+
+        // --- Game Classes ---
+        class Tower {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.radius = 20;
+                this.range = 100;
+                this.cost = 100;
+                this.damage = 1;
+                this.fireRate = 500;
+                this.lastShot = Date.now();
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = '#ffc107';
+                ctx.fill();
+                ctx.strokeStyle = '#e0ac08';
+                ctx.stroke();
+
+                // Draw range
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.range, 0, Math.PI * 2);
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.stroke();
+            }
+
+            shoot(enemy) {
+                if (Date.now() - this.lastShot >= this.fireRate) {
+                    projectiles.push(new Projectile(this.x, this.y, enemy));
+                    this.lastShot = Date.now();
+                }
+            }
+        }
+
+        class Enemy {
+            constructor(path) {
+                this.path = path;
+                this.pathIndex = 0;
+                this.x = path[0].x;
+                this.y = path[0].y;
+                this.radius = 10;
+                this.speed = 1;
+                this.health = 10;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = 'red';
+                ctx.fill();
+                ctx.strokeStyle = '#cc0000';
+                ctx.stroke();
+            }
+
+            update() {
+                const target = this.path[this.pathIndex];
+                const dx = target.x - this.x;
+                const dy = target.y - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < this.speed) {
+                    this.pathIndex++;
+                } else {
+                    this.x += (dx / distance) * this.speed;
+                    this.y += (dy / distance) * this.speed;
+                }
+            }
+        }
+
+        class Projectile {
+            constructor(x, y, target) {
+                this.x = x;
+                this.y = y;
+                this.target = target;
+                this.speed = 5;
+                this.radius = 3;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = 'yellow';
+                ctx.fill();
+            }
+
+            update() {
+                if (this.target.health <= 0) return;
+                
+                const dx = this.target.x - this.x;
+                const dy = this.target.y - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < this.speed) {
+                    this.target.health -= 1;
+                    return true;
+                } else {
+                    this.x += (dx / distance) * this.speed;
+                    this.y += (dy / distance) * this.speed;
+                    return false;
+                }
+            }
+        }
+
+        // --- Game Functions ---
+        function updateStats() {
+            pointsValueSpan.textContent = points;
+            healthValueSpan.textContent = health;
+            waveValueSpan.textContent = wave;
+        }
+
+        function drawPath() {
+            ctx.beginPath();
+            ctx.moveTo(path[0].x, path[0].y);
+            for(let i = 1; i < path.length; i++) {
+                ctx.lineTo(path[i].x, path[i].y);
+            }
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
+            ctx.lineWidth = TILE_SIZE / 2;
+            ctx.stroke();
+        }
+
+        function spawnWave() {
+            wave++;
+            for(let i = 0; i < wave * 5; i++) {
+                setTimeout(() => {
+                    enemies.push(new Enemy(path));
+                }, i * 500);
+            }
+        }
+
+        function gameLoop() {
+            ctx.clearRect(0, 0, MAP_WIDTH, MAP_HEIGHT);
+            drawPath();
+
+            if (placingTower) {
+                canvas.style.cursor = 'copy';
+            } else {
+                canvas.style.cursor = 'crosshair';
+            }
+
+            // Update and draw towers
+            towers.forEach(tower => {
+                tower.draw();
+                // Check for enemies in range
+                const enemyInRange = enemies.find(enemy => {
+                    const dx = enemy.x - tower.x;
+                    const dy = enemy.y - tower.y;
+                    return Math.sqrt(dx * dx + dy * dy) < tower.range;
+                });
+                if (enemyInRange) {
+                    tower.shoot(enemyInRange);
+                }
+            });
+
+            // Update and draw enemies
+            for(let i = enemies.length - 1; i >= 0; i--) {
+                const enemy = enemies[i];
+                if (enemy.pathIndex >= enemy.path.length) {
+                    health--;
+                    enemies.splice(i, 1);
+                    if (health <= 0) {
+                        endGame();
+                        return;
+                    }
+                } else {
+                    enemy.update();
+                    enemy.draw();
+                }
+            }
+            
+            // Update and draw projectiles
+            for(let i = projectiles.length - 1; i >= 0; i--) {
+                const projectile = projectiles[i];
+                if (projectile.update()) {
+                    projectiles.splice(i, 1);
+                    const target = projectile.target;
+                    if (target.health <= 0) {
+                        points += 10;
+                        enemies.splice(enemies.indexOf(target), 1);
+                        if (enemies.length === 0) {
+                            endWave();
+                        }
+                    }
+                } else {
+                    projectile.draw();
+                }
+            }
+            
+            updateStats();
+            requestAnimationFrame(gameLoop);
+        }
+
+        function endGame() {
+            gameActive = false;
+            alert(`Game Over! You survived ${wave} waves. Total points: ${points}`);
+            awardPoints(points);
+        }
+
+        function endWave() {
+            alert(`Wave ${wave} complete! Bonus points awarded!`);
+            points += 100;
+            updateStats();
+            startWaveButton.disabled = false;
+        }
+
+        function buyTower() {
+            if (points >= 100) {
+                placingTower = true;
+                buyTowerButton.disabled = true;
+            } else {
+                alert("Not enough points to buy a tower!");
+            }
+        }
+        
+        function placeTower(e) {
+            if (!placingTower) return;
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            towers.push(new Tower(x, y));
+            points -= 100;
+            placingTower = false;
+            buyTowerButton.disabled = false;
+        }
+
+        // --- Point System Integration with Dashboard ---
+        async function updatePointsInFirestore(amount) {
+            if (!userId || !isAuthReady) {
+                console.error("User not authenticated or authentication is not ready.");
+                return;
+            }
+            const userRef = doc(db, `artifacts/${appId}/users/${userId}/data/user_points`);
+            try {
+                await setDoc(userRef, { points: increment(amount) }, { merge: true });
+                console.log(`Points updated in Firestore: +${amount}`);
+            } catch (error) {
+                console.error("Error updating points:", error);
+            }
+        }
+        
+        function awardPoints(amount) {
+            window.parent.postMessage({ type: 'points_earned', value: amount }, '*');
+        }
+
+        // --- Event Listeners and Initial Call ---
+        startWaveButton.addEventListener('click', spawnWave);
+        buyTowerButton.addEventListener('click', buyTower);
+        canvas.addEventListener('click', placeTower);
+
+        window.onload = () => {
+             onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    userId = user.uid;
+                    isAuthReady = true;
+                    console.log("Tower Defense game loaded for user:", userId);
+                    updateStats();
+                    gameLoop();
+                } else {
+                    try {
+                        if (initialAuthToken) {
+                            await signInWithCustomToken(auth, initialAuthToken);
+                        } else {
+                            console.error("No authentication token available. Cannot sign in.");
+                        }
+                    } catch (error) {
+                        console.error("Error signing in:", error);
+                    }
+                }
+            });
+        };
+    </script>
+</body>
+</html>
