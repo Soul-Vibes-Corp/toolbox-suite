@@ -51,6 +51,7 @@
             border-radius: 1rem;
             box-shadow: 0 0 15px var(--primary-glow), inset 0 0 10px rgba(0,0,0,0.5);
             border: 1px solid var(--primary-glow);
+            touch-action: none;
         }
 
         .modal {
@@ -90,9 +91,15 @@
         
         .modal-text {
             font-size: 1.5rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
         }
         
+        .high-score-text {
+            font-size: 1.2rem;
+            color: var(--food-color);
+            margin-bottom: 2rem;
+        }
+
         .action-button {
             background: linear-gradient(45deg, var(--food-color), #87CEEB);
             color: #0a0f1e;
@@ -124,6 +131,7 @@
     <div class="modal-content">
         <h2 class="modal-title">COSMIC SNAKE</h2>
         <p class="modal-text">Use Arrow Keys or Swipe to Play</p>
+        <p class="high-score-text">High Score: <span id="highScore">0</span></p>
         <button id="startBtn" class="action-button">START</button>
     </div>
 </div>
@@ -136,237 +144,326 @@
     </div>
 </div>
 
-<script>
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    const scoreEl = document.getElementById('score');
-    
-    const startModal = document.getElementById('startModal');
-    const gameOverModal = document.getElementById('gameOverModal');
-    const finalScoreEl = document.getElementById('finalScore');
-    const startBtn = document.getElementById('startBtn');
-    const restartBtn = document.getElementById('restartBtn');
+<script type="module">
+    import { getAuth, onAuthStateChanged, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
 
-    // --- Game Settings ---
-    const gridSize = 20;
-    let canvasSize = Math.min(window.innerWidth, window.innerHeight) * 0.8;
-    canvasSize = Math.floor(canvasSize / gridSize) * gridSize;
-    canvas.width = canvasSize;
-    canvas.height = canvasSize;
-
-    const tileCount = canvas.width / gridSize;
-
-    // --- Game State ---
-    let snake = [{ x: 10, y: 10 }];
-    let food = { x: 15, y: 15 };
-    let dx = 0;
-    let dy = 0;
-    let score = 0;
-    let changingDirection = false;
-    let gameSpeed = 120;
-    let gameLoop;
-    let gameRunning = false;
-
-    // --- Sound Effects ---
-    const eatSound = new Tone.Synth({
-        oscillator: { type: 'triangle' },
-        envelope: { attack: 0.01, decay: 0.2, sustain: 0.1, release: 0.1 }
-    }).toDestination();
-    const gameOverSound = new Tone.Synth({
-        oscillator: { type: 'sine' },
-        envelope: { attack: 0.01, decay: 0.5, sustain: 0, release: 0.2 }
-    }).toDestination();
-
-    // --- Game Logic ---
-    function main() {
-        if (!gameRunning) return;
-
-        gameLoop = setTimeout(() => {
-            changingDirection = false;
-            clearCanvas();
-            drawFood();
-            moveSnake();
-            if(gameRunning) {
-                drawSnake();
-                main();
-            }
-        }, gameSpeed);
-    }
-
-    function startGame() {
-        if (Tone.context.state !== 'running') {
-            Tone.context.resume();
-        }
-        snake = [{ x: 10, y: 10 }];
-        dx = 0;
-        dy = 0;
-        score = 0;
-        gameSpeed = 120;
-        scoreEl.textContent = 0;
-        gameRunning = true;
-        startModal.style.display = 'none';
-        gameOverModal.style.display = 'none';
-        generateFood();
-        main();
-    }
-    
-    function endGame() {
-        gameRunning = false;
-        clearTimeout(gameLoop);
-        gameOverSound.triggerAttackRelease('C3', '8n');
-        finalScoreEl.textContent = score;
-        gameOverModal.style.display = 'flex';
-    }
-
-    function clearCanvas() {
-        ctx.fillStyle = '#050810';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    document.addEventListener('DOMContentLoaded', () => {
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreEl = document.getElementById('score');
         
-        ctx.beginPath();
-        for (let x = 0; x <= canvas.width; x += gridSize) {
-            ctx.moveTo(x, 0);
-            ctx.lineTo(x, canvas.height);
-        }
-        for (let y = 0; y <= canvas.height; y += gridSize) {
-            ctx.moveTo(0, y);
-            ctx.lineTo(canvas.width, y);
-        }
-        ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--grid-color').trim();
-        ctx.stroke();
-    }
-    
-    // --- Drawing Functions ---
-    function drawSnakePart(snakePart) {
-        const x = snakePart.x * gridSize;
-        const y = snakePart.y * gridSize;
-        const snakeColor = getComputedStyle(document.documentElement).getPropertyValue('--snake-color').trim();
+        const startModal = document.getElementById('startModal');
+        const gameOverModal = document.getElementById('gameOverModal');
+        const finalScoreEl = document.getElementById('finalScore');
+        const highScoreEl = document.getElementById('highScore');
+        const startBtn = document.getElementById('startBtn');
+        const restartBtn = document.getElementById('restartBtn');
 
-        ctx.fillStyle = snakeColor;
-        ctx.shadowColor = snakeColor;
-        ctx.shadowBlur = 10;
-        ctx.fillRect(x + 2, y + 2, gridSize - 4, gridSize - 4);
-        ctx.shadowBlur = 0;
-    }
-
-    function drawSnake() {
-        snake.forEach(drawSnakePart);
-    }
-
-    function drawFood() {
-        const x = food.x * gridSize + gridSize / 2;
-        const y = food.y * gridSize + gridSize / 2;
-        const radius = gridSize / 2 - 2;
-        const foodColor = getComputedStyle(document.documentElement).getPropertyValue('--food-color').trim();
+        // --- Firebase Setup ---
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
         
-        ctx.beginPath();
-        ctx.arc(x, y, radius, 0, Math.PI * 2);
-        ctx.fillStyle = foodColor;
-        ctx.shadowColor = foodColor;
-        ctx.shadowBlur = 15;
-        ctx.fill();
-        ctx.shadowBlur = 0;
-    }
+        const firebaseConfig = {
+            apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
+            authDomain: "chat-code-forum.firebaseapp.com",
+            projectId: "chat-code-forum",
+            storageBucket: "chat-code-forum.appspot.com",
+            messagingSenderId: "496765673859",
+            appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
+            measurementId: "G-XJKWXHF8WN"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        let userId = null;
+        let isAuthReady = false;
+        let currentHighScore = 0;
 
-    // --- Movement & Collision ---
-    function moveSnake() {
-        const head = { x: snake[0].x + dx, y: snake[0].y + dy };
-        snake.unshift(head);
+        // --- Game Settings ---
+        const gridSize = 20;
+        let canvasSize = Math.min(window.innerWidth, window.innerHeight) * 0.8;
+        canvasSize = Math.floor(canvasSize / gridSize) * gridSize;
+        canvas.width = canvasSize;
+        canvas.height = canvasSize;
+        const tileCount = canvas.width / gridSize;
 
-        if (didGameEnd(head)) {
-            endGame();
-            return;
+        // --- Game State ---
+        let snake = [{ x: 10, y: 10 }];
+        let food = { x: 15, y: 15 };
+        let dx = 0;
+        let dy = 0;
+        let score = 0;
+        let changingDirection = false;
+        let gameSpeed = 120;
+        let gameLoop;
+        let gameRunning = false;
+        let audioReady = false;
+
+        // --- Sound Effects ---
+        let eatSound, gameOverSound;
+
+        function setupAudio() {
+            if (audioReady) return;
+            eatSound = new Tone.Synth({
+                oscillator: { type: 'triangle' },
+                envelope: { attack: 0.01, decay: 0.2, sustain: 0.1, release: 0.1 }
+            }).toDestination();
+            gameOverSound = new Tone.Synth({
+                oscillator: { type: 'sine' },
+                envelope: { attack: 0.01, decay: 0.5, sustain: 0, release: 0.2 }
+            }).toDestination();
+            audioReady = true;
+        }
+        
+        // --- Game Logic ---
+        function main() {
+            if (!gameRunning) return;
+
+            gameLoop = setTimeout(() => {
+                changingDirection = false;
+                clearCanvas();
+                drawFood();
+                moveSnake();
+                if(gameRunning) {
+                    drawSnake();
+                    main();
+                }
+            }, gameSpeed);
         }
 
-        const didEatFood = snake[0].x === food.x && snake[0].y === food.y;
-        if (didEatFood) {
-            score += 10;
-            eatSound.triggerAttackRelease('G5', '8n');
-            scoreEl.textContent = score;
-            gameSpeed = Math.max(50, gameSpeed - 2);
+        async function startGame() {
+            await Tone.start();
+            setupAudio();
+
+            snake = [{ x: 10, y: 10 }];
+            dx = 0;
+            dy = 0;
+            score = 0;
+            gameSpeed = 120;
+            scoreEl.textContent = 0;
+            gameRunning = true;
+            startModal.style.display = 'none';
+            gameOverModal.style.display = 'none';
             generateFood();
-        } else {
-            snake.pop();
+            main();
         }
-    }
+        
+        function endGame() {
+            gameRunning = false;
+            clearTimeout(gameLoop);
+            gameOverSound.triggerAttackRelease('C3', '8n');
+            finalScoreEl.textContent = score;
+            
+            if (score > currentHighScore) {
+                currentHighScore = score;
+                highScoreEl.textContent = currentHighScore;
+                saveHighScore();
+            }
 
-    function didGameEnd(head) {
-        for (let i = 4; i < snake.length; i++) {
-            if (snake[i].x === head.x && snake[i].y === head.y) return true;
+            gameOverModal.style.display = 'flex';
         }
-        const hitLeftWall = head.x < 0;
-        const hitRightWall = head.x >= tileCount;
-        const hitTopWall = head.y < 0;
-        const hitBottomWall = head.y >= tileCount;
-        return hitLeftWall || hitRightWall || hitTopWall || hitBottomWall;
-    }
 
-    function generateFood() {
-        food.x = Math.floor(Math.random() * tileCount);
-        food.y = Math.floor(Math.random() * tileCount);
-        snake.forEach(part => {
-            if (part.x === food.x && part.y === food.y) {
+        // --- Firebase Functions ---
+        async function saveHighScore() {
+            if (!userId || !isAuthReady) {
+                console.error("User not authenticated. Cannot save high score.");
+                return;
+            }
+            const userRef = doc(db, `artifacts/${appId}/users/${userId}/data/snake_game`);
+            try {
+                await setDoc(userRef, { highScore: currentHighScore }, { merge: true });
+                console.log("High score saved to Firestore:", currentHighScore);
+            } catch (error) {
+                console.error("Error saving high score:", error);
+            }
+        }
+
+        async function loadHighScore() {
+            if (!userId || !isAuthReady) {
+                console.error("User not authenticated. Cannot load high score.");
+                return;
+            }
+            const userRef = doc(db, `artifacts/${appId}/users/${userId}/data/snake_game`);
+            try {
+                const docSnap = await getDoc(userRef);
+                if (docSnap.exists()) {
+                    currentHighScore = docSnap.data().highScore || 0;
+                } else {
+                    currentHighScore = 0;
+                }
+                highScoreEl.textContent = currentHighScore;
+                console.log("High score loaded from Firestore:", currentHighScore);
+            } catch (error) {
+                console.error("Error loading high score:", error);
+            }
+        }
+
+        // --- Drawing & Collision ---
+        function clearCanvas() {
+            ctx.fillStyle = '#050810';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            for (let x = 0; x <= canvas.width; x += gridSize) {
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+            }
+            for (let y = 0; y <= canvas.height; y += gridSize) {
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+            }
+            ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--grid-color').trim();
+            ctx.stroke();
+        }
+        
+        function drawSnakePart(snakePart) {
+            const x = snakePart.x * gridSize;
+            const y = snakePart.y * gridSize;
+            const snakeColor = getComputedStyle(document.documentElement).getPropertyValue('--snake-color').trim();
+
+            ctx.fillStyle = snakeColor;
+            ctx.shadowColor = snakeColor;
+            ctx.shadowBlur = 10;
+            ctx.fillRect(x + 2, y + 2, gridSize - 4, gridSize - 4);
+            ctx.shadowBlur = 0;
+        }
+
+        function drawSnake() {
+            snake.forEach(drawSnakePart);
+        }
+
+        function drawFood() {
+            const x = food.x * gridSize + gridSize / 2;
+            const y = food.y * gridSize + gridSize / 2;
+            const radius = gridSize / 2 - 2;
+            const foodColor = getComputedStyle(document.documentElement).getPropertyValue('--food-color').trim();
+            
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.fillStyle = foodColor;
+            ctx.shadowColor = foodColor;
+            ctx.shadowBlur = 15;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+        }
+
+        function moveSnake() {
+            const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+            snake.unshift(head);
+
+            if (didGameEnd(head)) {
+                endGame();
+                return;
+            }
+
+            const didEatFood = snake[0].x === food.x && snake[0].y === food.y;
+            if (didEatFood) {
+                score += 10;
+                eatSound.triggerAttackRelease('G5', '8n');
+                scoreEl.textContent = score;
+                gameSpeed = Math.max(50, gameSpeed - 2);
                 generateFood();
+            } else {
+                snake.pop();
+            }
+        }
+
+        function didGameEnd(head) {
+            for (let i = 4; i < snake.length; i++) {
+                if (snake[i].x === head.x && snake[i].y === head.y) return true;
+            }
+            const hitLeftWall = head.x < 0;
+            const hitRightWall = head.x >= tileCount;
+            const hitTopWall = head.y < 0;
+            const hitBottomWall = head.y >= tileCount;
+            return hitLeftWall || hitRightWall || hitTopWall || hitBottomWall;
+        }
+
+        function generateFood() {
+            food.x = Math.floor(Math.random() * tileCount);
+            food.y = Math.floor(Math.random() * tileCount);
+            snake.forEach(part => {
+                if (part.x === food.x && part.y === food.y) {
+                    generateFood();
+                }
+            });
+        }
+
+        // --- Control Handling ---
+        function changeDirection(event) {
+            if (changingDirection || !gameRunning) return;
+            
+            const keyPressed = event.keyCode;
+            const goingUp = dy === -1;
+            const goingDown = dy === 1;
+            const goingRight = dx === 1;
+            const goingLeft = dx === -1;
+
+            if ((keyPressed === 37 || keyPressed === 65) && !goingRight) { dx = -1; dy = 0; changingDirection = true;} // Left or A
+            if ((keyPressed === 38 || keyPressed === 87) && !goingDown) { dx = 0; dy = -1; changingDirection = true;}  // Up or W
+            if ((keyPressed === 39 || keyPressed === 68) && !goingLeft) { dx = 1; dy = 0; changingDirection = true;}   // Right or D
+            if ((keyPressed === 40 || keyPressed === 83) && !goingUp) { dx = 0; dy = 1; changingDirection = true;}    // Down or S
+        }
+        
+        let touchStartX = 0, touchStartY = 0;
+        function handleSwipe(e) {
+            if (changingDirection || !gameRunning) return;
+            const touchEndX = e.changedTouches[0].screenX;
+            const touchEndY = e.changedTouches[0].screenY;
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
+            if (Math.abs(deltaX) < 10 && Math.abs(deltaY) < 10) return;
+            const goingUp = dy === -1;
+            const goingDown = dy === 1;
+            const goingRight = dx === 1;
+            const goingLeft = dx === -1;
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                if (deltaX > 0 && !goingLeft) { dx = 1; dy = 0; }
+                else if (deltaX < 0 && !goingRight) { dx = -1; dy = 0; }
+            } else {
+                if (deltaY > 0 && !goingUp) { dx = 0; dy = 1; }
+                else if (deltaY < 0 && !goingDown) { dx = 0; dy = -1; }
+            }
+            changingDirection = true;
+        }
+
+        // --- Event Listeners and Initial Call ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                userId = user.uid;
+                isAuthReady = true;
+                console.log("Cosmic Snake loaded for user:", userId);
+                await loadHighScore();
+            } else {
+                try {
+                    if (initialAuthToken) {
+                        await signInWithCustomToken(auth, initialAuthToken);
+                    } else {
+                        // Fallback for environments without the token
+                        await signInAnonymously(auth); 
+                    }
+                } catch (error) {
+                    console.error("Error signing in:", error);
+                }
             }
         });
-    }
-
-    // --- Control Handling ---
-    function changeDirection(event) {
-        if (changingDirection || !gameRunning) return;
         
-        const keyPressed = event.keyCode;
-        const goingUp = dy === -1;
-        const goingDown = dy === 1;
-        const goingRight = dx === 1;
-        const goingLeft = dx === -1;
-
-        if ((keyPressed === 37 || keyPressed === 65) && !goingRight) { dx = -1; dy = 0; changingDirection = true;} // Left or A
-        if ((keyPressed === 38 || keyPressed === 87) && !goingDown) { dx = 0; dy = -1; changingDirection = true;}  // Up or W
-        if ((keyPressed === 39 || keyPressed === 68) && !goingLeft) { dx = 1; dy = 0; changingDirection = true;}   // Right or D
-        if ((keyPressed === 40 || keyPressed === 83) && !goingUp) { dx = 0; dy = 1; changingDirection = true;}    // Down or S
-    }
-
-    // --- Mobile Swipe Controls ---
-    let touchStartX = 0, touchStartY = 0;
-
-    function handleSwipe(e) {
-        if (changingDirection || !gameRunning) return;
-        
-        const touchEndX = e.changedTouches[0].screenX;
-        const touchEndY = e.changedTouches[0].screenY;
-        const deltaX = touchEndX - touchStartX;
-        const deltaY = touchEndY - touchStartY;
-        
-        if (Math.abs(deltaX) < 10 && Math.abs(deltaY) < 10) return; // Ignore taps
-
-        const goingUp = dy === -1;
-        const goingDown = dy === 1;
-        const goingRight = dx === 1;
-        const goingLeft = dx === -1;
-
-        if (Math.abs(deltaX) > Math.abs(deltaY)) {
-            if (deltaX > 0 && !goingLeft) { dx = 1; dy = 0; }
-            else if (deltaX < 0 && !goingRight) { dx = -1; dy = 0; }
-        } else {
-            if (deltaY > 0 && !goingUp) { dx = 0; dy = 1; }
-            else if (deltaY < 0 && !goingDown) { dx = 0; dy = -1; }
-        }
-        changingDirection = true;
-    }
-
-    canvas.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-        touchStartY = e.changedTouches[0].screenY;
-    }, { passive: false });
-
-    canvas.addEventListener('touchend', handleSwipe, { passive: false });
-
-
-    document.addEventListener("keydown", changeDirection);
-    startBtn.addEventListener('click', startGame);
-    restartBtn.addEventListener('click', startGame);
+        canvas.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
+        canvas.addEventListener('touchend', handleSwipe, { passive: false });
+        document.addEventListener("keydown", changeDirection);
+        startBtn.addEventListener('click', startGame);
+        restartBtn.addEventListener('click', startGame);
+    });
 </script>
 
 </body>
 </html>
+
+
 
