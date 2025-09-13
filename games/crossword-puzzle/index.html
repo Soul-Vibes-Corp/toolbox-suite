@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crossword Puzzle</title>
+    <style>
+        body {
+            background-color: #f6f8fa;
+            color: #1c1c1c;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .game-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #005fa3;
+            margin-bottom: 20px;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background-color: #e8f4ff;
+            color: #005fa3;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        #crossword-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            border: 2px solid #005fa3;
+            width: 100%;
+            max-width: 400px;
+            aspect-ratio: 1 / 1;
+        }
+
+        .crossword-cell {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 1 / 1;
+            background-color: #d8e6f1;
+            border: 1px solid #c9d6e4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1c1c1c;
+            text-transform: uppercase;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .crossword-cell.blank {
+            background-color: #1c1c1c;
+            cursor: default;
+        }
+        
+        .crossword-cell.active {
+            background-color: #a3e6ff;
+        }
+        
+        .crossword-cell input {
+            width: 80%;
+            height: 80%;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            border: none;
+            background: transparent;
+            outline: none;
+            caret-color: #005fa3;
+        }
+
+        .clues-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 800px;
+            margin-top: 20px;
+        }
+        
+        .clues {
+            flex: 1;
+            padding: 10px;
+        }
+
+        .clues h3 {
+            color: #005fa3;
+            margin-bottom: 10px;
+        }
+        
+        .clues ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .clues li {
+            margin-bottom: 5px;
+        }
+
+        .game-instructions {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e8f4ff;
+            border: 1px solid #a3e6ff;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            width: 100%;
+        }
+
+        .game-instructions h2 {
+            color: #005fa3;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .game-instructions p {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .clues-container { flex-direction: column; gap: 20px; }
+            #crossword-grid { max-width: 350px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="game-title">Crossword Puzzle</h1>
+        <div class="stats-container">
+            <div class="stat-box">Score: <span id="score-value">0</span></div>
+        </div>
+        <div id="crossword-grid">
+            <!-- Grid will be dynamically generated here -->
+        </div>
+        <div class="clues-container">
+            <div class="clues" id="across-clues">
+                <h3>Across</h3>
+                <ul>
+                    <!-- Clues will be dynamically generated here -->
+                </ul>
+            </div>
+            <div class="clues" id="down-clues">
+                <h3>Down</h3>
+                <ul>
+                    <!-- Clues will be dynamically generated here -->
+                </ul>
+            </div>
+        </div>
+        <div class="game-instructions">
+            <h2>Crossword Puzzle: How to Play</h2>
+            <p>Welcome to the **Crossword Puzzle**, a brain-teasing game where you can earn points for your account! The goal is to fill the grid with the correct words based on the clues provided.</p>
+            
+            <h3>How to Play</h3>
+            <p><strong>1. Select a Cell:</strong> Click on an empty cell in the grid to highlight it and its corresponding word. The clue will also be highlighted to guide you.</p>
+            <p><strong>2. Type Your Answer:</strong> Use your keyboard to type the word into the grid. The game will automatically check your answers.</p>
+            <p><strong>3. Solve the Puzzle:</strong> Once you have filled in all the words correctly, you win the game!</p>
+            
+            <h3>Earning Points</h3>
+            <p>Each time you correctly complete an entire word, you earn **100 points**. When you successfully solve the entire puzzle, you'll be awarded a bonus of **500 points**. These points are automatically added to your account and will be reflected on your dashboard.</p>
+        </div>
+    </div>
+    
+    <script type="module">
+        import { getAuth, onAuthStateChanged, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, increment } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
+
+        // Use canvas variables if they exist, otherwise use fallbacks
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        
+        // Firebase configuration from your dashboard
+        const firebaseConfig = {
+            apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
+            authDomain: "chat-code-forum.firebaseapp.com",
+            projectId: "chat-code-forum",
+            storageBucket: "chat-code-forum.appspot.com",
+            messagingSenderId: "496765673859",
+            appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
+            measurementId: "G-XJKWXHF8WN"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        let userId = null;
+        let isAuthReady = false;
+
+        // --- Game Setup ---
+        const GRID_SIZE = 10;
+        const scoreValueSpan = document.getElementById('score-value');
+        const acrossCluesList = document.getElementById('across-clues').querySelector('ul');
+        const downCluesList = document.getElementById('down-clues').querySelector('ul');
+        const crosswordGridElement = document.getElementById('crossword-grid');
+        
+        let score = 0;
+        let activeCell = null;
+        let puzzleSolved = false;
+        
+        // The puzzle data, including words, positions, and clues
+        const puzzleData = {
+            across: [
+                { word: 'PYTHON', startRow: 1, startCol: 1, clue: '1. A popular programming language.' },
+                { word: 'HTML', startRow: 2, startCol: 5, clue: '2. Markup language for web pages.' },
+                { word: 'CSS', startRow: 4, startCol: 2, clue: '3. Used for styling web pages.' },
+                { word: 'NODE', startRow: 5, startCol: 4, clue: '4. A JavaScript runtime.' },
+                { word: 'REACT', startRow: 7, startCol: 0, clue: '5. A popular frontend framework.' },
+                { word: 'SQL', startRow: 9, startCol: 1, clue: '6. Language for managing databases.' }
+            ],
+            down: [
+                { word: 'DATABASE', startRow: 0, startCol: 3, clue: '1. An organized collection of data.' },
+                { word: 'JAVASCRIPT', startRow: 1, startCol: 0, clue: '2. The programming language of the web.' },
+                { word: 'WEB', startRow: 1, startCol: 7, clue: '3. A network of computers.' },
+                { word: 'SERVER', startRow: 3, startCol: 9, clue: '4. Provides services to clients.' },
+                { word: 'API', startRow: 6, startCol: 4, clue: '5. An interface for software components.' },
+                { word: 'APP', startRow: 8, startCol: 2, clue: '6. A software application.' }
+            ]
+        };
+        
+        let boardState = Array.from({ length: GRID_SIZE }, () => Array(GRID_SIZE).fill(null));
+
+        function createBoard() {
+            crosswordGridElement.innerHTML = '';
+            boardState = Array.from({ length: GRID_SIZE }, () => Array(GRID_SIZE).fill(null));
+
+            // Populate the board with words
+            const allWords = [...puzzleData.across, ...puzzleData.down];
+            let clueCounter = 1;
+            
+            allWords.forEach(wordData => {
+                const { word, startRow, startCol, clue } = wordData;
+                let isAcross = puzzleData.across.some(a => a.word === word);
+                
+                wordData.clueNumber = clueCounter++;
+                if (isAcross) {
+                    for (let i = 0; i < word.length; i++) {
+                        boardState[startRow][startCol + i] = word[i];
+                    }
+                } else {
+                    for (let i = 0; i < word.length; i++) {
+                        boardState[startRow + i][startCol] = word[i];
+                    }
+                }
+            });
+
+            // Render the grid
+            for (let r = 0; r < GRID_SIZE; r++) {
+                for (let c = 0; c < GRID_SIZE; c++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('crossword-cell');
+                    cell.dataset.row = r;
+                    cell.dataset.col = c;
+                    
+                    if (boardState[r][c] === null) {
+                        cell.classList.add('blank');
+                    } else {
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.maxLength = 1;
+                        cell.appendChild(input);
+                    }
+                    crosswordGridElement.appendChild(cell);
+                }
+            }
+            renderClues();
+        }
+
+        function renderClues() {
+            acrossCluesList.innerHTML = '';
+            puzzleData.across.forEach(clue => {
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>${clue.clueNumber}.</strong> ${clue.clue}`;
+                acrossCluesList.appendChild(li);
+            });
+
+            downCluesList.innerHTML = '';
+            puzzleData.down.forEach(clue => {
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>${clue.clueNumber}.</strong> ${clue.clue}`;
+                downCluesList.appendChild(li);
+            });
+        }
+        
+        function handleCellClick(e) {
+            if (activeCell) {
+                activeCell.classList.remove('active');
+            }
+            if (e.target.classList.contains('blank')) {
+                activeCell = null;
+                return;
+            }
+            activeCell = e.target.closest('.crossword-cell');
+            if (activeCell) {
+                activeCell.classList.add('active');
+                const input = activeCell.querySelector('input');
+                if (input) {
+                    input.focus();
+                }
+            }
+        }
+
+        function handleInput(e) {
+            if (e.key.length === 1 && /[a-z]/i.test(e.key)) {
+                e.target.value = e.key.toUpperCase();
+                // Move to the next cell automatically
+                const nextCell = e.target.parentElement.nextElementSibling;
+                if (nextCell && !nextCell.classList.contains('blank')) {
+                    nextCell.querySelector('input').focus();
+                }
+            }
+            checkWordComplete();
+        }
+
+        function checkWordComplete() {
+            let solvedWords = 0;
+            let totalWords = puzzleData.across.length + puzzleData.down.length;
+            const cells = crosswordGridElement.querySelectorAll('.crossword-cell');
+
+            // Check across words
+            puzzleData.across.forEach(wordData => {
+                let isSolved = true;
+                let currentWord = '';
+                for (let i = 0; i < wordData.word.length; i++) {
+                    const cellIndex = wordData.startRow * GRID_SIZE + wordData.startCol + i;
+                    const cell = cells[cellIndex];
+                    const inputValue = cell.querySelector('input').value;
+                    currentWord += inputValue;
+                    if (inputValue !== wordData.word[i]) {
+                        isSolved = false;
+                    }
+                }
+                if (isSolved && currentWord.length === wordData.word.length) {
+                    solvedWords++;
+                    // Optional: add a class to solved cells
+                }
+            });
+
+            // Check down words
+            puzzleData.down.forEach(wordData => {
+                let isSolved = true;
+                let currentWord = '';
+                for (let i = 0; i < wordData.word.length; i++) {
+                    const cellIndex = (wordData.startRow + i) * GRID_SIZE + wordData.startCol;
+                    const cell = cells[cellIndex];
+                    const inputValue = cell.querySelector('input').value;
+                    currentWord += inputValue;
+                    if (inputValue !== wordData.word[i]) {
+                        isSolved = false;
+                    }
+                }
+                if (isSolved && currentWord.length === wordData.word.length) {
+                    solvedWords++;
+                    // Optional: add a class to solved cells
+                }
+            });
+
+            if (solvedWords === totalWords && !puzzleSolved) {
+                puzzleSolved = true;
+                showMessage("Puzzle solved! You've earned 500 points!", "win");
+                awardPointsForWin(500);
+            }
+        }
+        
+        function showMessage(text, type) {
+            const messageArea = document.querySelector('.message-area');
+            messageArea.textContent = text;
+            messageArea.style.color = type === "win" ? "green" : "red";
+        }
+
+        // --- Point System Integration with Dashboard ---
+        async function updatePointsInFirestore(amount) {
+            if (!userId || !isAuthReady) {
+                console.error("User not authenticated or authentication is not ready.");
+                return;
+            }
+            const userRef = doc(db, `artifacts/${appId}/users/${userId}/data/user_points`);
+            try {
+                await setDoc(userRef, { points: increment(amount) }, { merge: true });
+                console.log(`Points updated in Firestore: +${amount}`);
+            } catch (error) {
+                console.error("Error updating points:", error);
+            }
+        }
+        
+        function awardPointsForWin(points) {
+            window.parent.postMessage({ type: 'points_earned', value: points }, '*');
+            updatePointsInFirestore(points);
+        }
+
+        // --- Event Listeners and Initial Call ---
+        window.onload = () => {
+             onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    userId = user.uid;
+                    isAuthReady = true;
+                    console.log("Crossword game loaded for user:", userId);
+                    createBoard();
+                } else {
+                    try {
+                        if (initialAuthToken) {
+                            await signInWithCustomToken(auth, initialAuthToken);
+                        } else {
+                            console.error("No authentication token available. Cannot sign in.");
+                        }
+                    } catch (error) {
+                        console.error("Error signing in:", error);
+                    }
+                }
+            });
+        };
+        
+        crosswordGridElement.addEventListener('click', handleCellClick);
+        crosswordGridElement.addEventListener('input', handleInput);
+        
+    </script>
+</body>
+</html>
