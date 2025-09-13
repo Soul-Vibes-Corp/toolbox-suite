@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Starship Chicken Blaster</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background-color: #0c0a18;
+            color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        canvas {
+            background: url('https://www.transparenttextures.com/patterns/stardust.png'), #111827;
+            display: block;
+            border-radius: 1rem;
+            box-shadow: 0 0 30px rgba(76, 29, 149, 0.7);
+            cursor: none;
+        }
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+        .ui-panel {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 800px;
+            padding: 0 1rem;
+            color: #a78bfa;
+            font-size: 1.5rem;
+            text-shadow: 0 0 5px #a78bfa;
+        }
+        .touch-controls {
+            display: none; /* Hidden by default, enabled via JS for touch devices */
+            width: 100%;
+            max-width: 800px;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+        .control-button {
+            background-color: rgba(167, 139, 250, 0.2);
+            border: 2px solid #a78bfa;
+            color: #e0e0e0;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            font-size: 1.25rem;
+            user-select: none;
+            -webkit-user-select: none; /* For Safari */
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.2s;
+            box-shadow: 0 0 10px rgba(167, 139, 250, 0.5);
+        }
+        .control-button:active {
+            background-color: rgba(167, 139, 250, 0.4);
+            transform: scale(0.95);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #1e1b34;
+            padding: 2.5rem;
+            border: 2px solid #a78bfa;
+            border-radius: 1rem;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(167, 139, 250, 0.6);
+            animation: slideIn 0.5s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .modal-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #d8b4fe;
+            text-shadow: 0 0 10px #d8b4fe;
+        }
+        .modal-text {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+        }
+        .restart-button {
+            background: #7c3aed;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            box-shadow: 0 0 15px rgba(124, 58, 237, 0.7);
+        }
+        .restart-button:hover {
+            background: #a78bfa;
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <div class="ui-panel">
+        <div>SCORE: <span id="score">0</span></div>
+        <div>LIVES: <span id="lives">3</span></div>
+    </div>
+    <canvas id="gameCanvas"></canvas>
+    <div class="touch-controls" id="touchControls">
+        <div class="flex gap-4">
+            <button class="control-button" id="leftBtn">LEFT</button>
+            <button class="control-button" id="rightBtn">RIGHT</button>
+        </div>
+        <button class="control-button" id="shootBtn">SHOOT</button>
+    </div>
+</div>
+
+<div id="gameOverModal" class="modal">
+    <div class="modal-content">
+        <h2 class="modal-title">GAME OVER</h2>
+        <p class="modal-text">Final Score: <span id="finalScore">0</span></p>
+        <button id="restartBtn" class="restart-button">RESTART</button>
+    </div>
+</div>
+
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const scoreEl = document.getElementById('score');
+    const livesEl = document.getElementById('lives');
+    const gameOverModal = document.getElementById('gameOverModal');
+    const finalScoreEl = document.getElementById('finalScore');
+    const restartBtn = document.getElementById('restartBtn');
+    
+    // --- Game Configuration ---
+    let score = 0;
+    let lives = 3;
+    let gameRunning = true;
+
+    canvas.width = Math.min(800, window.innerWidth - 40);
+    canvas.height = 600;
+
+    // --- Player Spaceship ---
+    const player = {
+        x: canvas.width / 2,
+        y: canvas.height - 60,
+        width: 50,
+        height: 55,
+        speed: 8,
+        dx: 0
+    };
+    
+    function drawPlayer() {
+        const x = player.x;
+        const y = player.y;
+        const w = player.width;
+        const h = player.height;
+
+        // Main Body
+        ctx.fillStyle = '#9ca3af'; // Gray-400
+        ctx.beginPath();
+        ctx.moveTo(x, y); // Nose
+        ctx.lineTo(x - w / 2, y + h * 0.8); // Left bottom
+        ctx.lineTo(x + w / 2, y + h * 0.8); // Right bottom
+        ctx.closePath();
+        ctx.fill();
+        
+        // Cockpit
+        ctx.fillStyle = '#67e8f9'; // Cyan-300
+        ctx.beginPath();
+        ctx.moveTo(x, y + h * 0.1);
+        ctx.lineTo(x - w * 0.15, y + h * 0.4);
+        ctx.lineTo(x + w * 0.15, y + h * 0.4);
+        ctx.closePath();
+        ctx.fill();
+
+        // Wings
+        ctx.fillStyle = '#6d28d9'; // Violet-700
+        ctx.beginPath();
+        ctx.moveTo(x - w / 2, y + h * 0.8);
+        ctx.lineTo(x - w / 2 - 10, y + h);
+        ctx.lineTo(x - w / 2 + 10, y + h);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(x + w / 2, y + h * 0.8);
+        ctx.lineTo(x + w / 2 + 10, y + h);
+        ctx.lineTo(x + w / 2 - 10, y + h);
+        ctx.closePath();
+        ctx.fill();
+
+        // Blaster Cannon
+        ctx.fillStyle = '#4b5563'; // Gray-600
+        ctx.fillRect(x - 4, y - 10, 8, 10);
+        
+        // Thruster flame
+        ctx.fillStyle = '#fde047'; // Yellow-300
+        const flameHeight = Math.random() * 20 + 15;
+        ctx.beginPath();
+        ctx.moveTo(x, y + h * 0.8);
+        ctx.lineTo(x - w / 4, y + h);
+        ctx.lineTo(x + w / 4, y + h);
+        ctx.lineTo(x - w/5, y + h + flameHeight);
+        ctx.lineTo(x + w/5, y + h + flameHeight);
+        ctx.closePath();
+        ctx.fill();
+    }
+
+    // --- Projectiles ---
+    const projectiles = [];
+    const projectileSpeed = 10;
+    const projectileRadius = 5;
+
+    function drawProjectiles() {
+        projectiles.forEach(p => {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, projectileRadius, 0, Math.PI * 2);
+            ctx.fillStyle = '#fca5a5'; // Red-300
+            ctx.shadowColor = '#ef4444'; // Red-500
+            ctx.shadowBlur = 10;
+            ctx.fill();
+        });
+        ctx.shadowBlur = 0; // Reset shadow
+    }
+
+    // --- Chickens ---
+    const chickens = [];
+    let chickenSpawnTimer = 100;
+
+    function createChicken() {
+        const size = Math.random() * 25 + 15;
+        chickens.push({
+            x: Math.random() * canvas.width,
+            y: -size,
+            size,
+            speed: Math.random() * 2 + 1,
+            wobbleAngle: Math.random() * Math.PI * 2,
+            wobbleSpeed: Math.random() * 0.05 + 0.02
+        });
+    }
+
+    function drawChickens() {
+        chickens.forEach(c => {
+            ctx.save();
+            ctx.translate(c.x, c.y);
+            c.wobbleAngle += c.wobbleSpeed;
+            ctx.rotate(Math.sin(c.wobbleAngle) * 0.15);
+
+            // Body
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.ellipse(0, 0, c.size * 0.8, c.size, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Beak
+            ctx.fillStyle = '#f97316';
+            ctx.beginPath();
+            ctx.moveTo(0, -c.size * 0.9);
+            ctx.lineTo(c.size * 0.3, -c.size * 1.1);
+            ctx.lineTo(0, -c.size * 1.3);
+            ctx.fill();
+            
+            // Comb (Wattle)
+            ctx.fillStyle = '#ef4444';
+            ctx.beginPath();
+            ctx.arc(0, -c.size * 1.3, c.size * 0.2, Math.PI, 0);
+            ctx.fill();
+
+            // Eye
+            ctx.fillStyle = 'black';
+            ctx.beginPath();
+            ctx.arc(-c.size * 0.2, -c.size * 1.1, c.size * 0.08, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.restore();
+        });
+    }
+
+    // --- Particles (for explosions) ---
+    const particles = [];
+
+    function createExplosion(x, y, color) {
+        for (let i = 0; i < 30; i++) {
+            particles.push({
+                x,
+                y,
+                radius: Math.random() * 3 + 1,
+                color,
+                velocity: { x: (Math.random() - 0.5) * 8, y: (Math.random() - 0.5) * 8 },
+                alpha: 1,
+                friction: 0.98
+            });
+        }
+    }
+
+    function drawParticles() {
+        particles.forEach((p, index) => {
+            p.velocity.x *= p.friction;
+            p.velocity.y *= p.friction;
+            p.x += p.velocity.x;
+            p.y += p.velocity.y;
+            p.alpha -= 0.02;
+
+            if (p.alpha <= 0) {
+                particles.splice(index, 1);
+            } else {
+                ctx.save();
+                ctx.globalAlpha = p.alpha;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.fill();
+                ctx.restore();
+            }
+        });
+    }
+
+    // --- Game Logic ---
+    function update() {
+        if (!gameRunning) return;
+        requestAnimationFrame(update);
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        player.x += player.dx;
+        if (player.x - player.width / 2 < 0) player.x = player.width / 2;
+        if (player.x + player.width / 2 > canvas.width) player.x = canvas.width - player.width / 2;
+        drawPlayer();
+        
+        projectiles.forEach((p, index) => {
+            p.y -= projectileSpeed;
+            if (p.y < 0) projectiles.splice(index, 1);
+        });
+        drawProjectiles();
+
+        chickenSpawnTimer--;
+        if (chickenSpawnTimer <= 0) {
+            createChicken();
+            chickenSpawnTimer = Math.random() * 100 + 50;
+        }
+        
+        chickens.forEach((c, cIndex) => {
+            c.y += c.speed;
+            if (c.y - c.size > canvas.height) {
+                chickens.splice(cIndex, 1);
+            }
+        });
+        drawChickens();
+        drawParticles();
+        
+        handleCollisions();
+    }
+
+    function handleCollisions() {
+        projectiles.forEach((p, pIndex) => {
+            chickens.forEach((c, cIndex) => {
+                const dist = Math.hypot(p.x - c.x, p.y - c.y);
+                if (dist - c.size - projectileRadius < 1) {
+                    createExplosion(c.x, c.y, 'white');
+                    setTimeout(() => {
+                        chickens.splice(cIndex, 1);
+                        projectiles.splice(pIndex, 1);
+                    }, 0);
+                    updateScore(100);
+                }
+            });
+        });
+
+        chickens.forEach((c, cIndex) => {
+             const dist = Math.hypot(c.x - player.x, c.y - (player.y + player.height / 2));
+             if (dist < c.size + player.width / 2) {
+                createExplosion(player.x, player.y + player.height / 2, '#ef4444');
+                 setTimeout(() => {
+                    chickens.splice(cIndex, 1);
+                 }, 0);
+                updateLives(-1);
+             }
+        });
+    }
+
+    function updateScore(points) {
+        score += points;
+        scoreEl.textContent = score;
+    }
+
+    function updateLives(change) {
+        lives += change;
+        livesEl.textContent = lives;
+        if (lives <= 0) {
+            endGame();
+        }
+    }
+
+    function endGame() {
+        gameRunning = false;
+        finalScoreEl.textContent = score;
+        gameOverModal.style.display = 'flex';
+    }
+
+    function resetGame() {
+        score = 0;
+        lives = 3;
+        chickens.length = 0;
+        projectiles.length = 0;
+        particles.length = 0;
+        player.x = canvas.width / 2;
+        scoreEl.textContent = score;
+        livesEl.textContent = lives;
+        gameOverModal.style.display = 'none';
+        gameRunning = true;
+        update();
+    }
+
+    // --- Controls ---
+    const keys = {
+        ArrowLeft: false,
+        ArrowRight: false,
+        Space: false
+    };
+
+    function handleMovement() {
+        player.dx = 0;
+        if (keys.ArrowLeft) player.dx = -player.speed;
+        if (keys.ArrowRight) player.dx = player.speed;
+    }
+
+    let shootCooldown = false;
+    function handleShooting() {
+        if (gameRunning && keys.Space && !shootCooldown) {
+            projectiles.push({ x: player.x, y: player.y - 10 }); // Fire from the cannon
+            shootCooldown = true;
+            setTimeout(() => shootCooldown = false, 200);
+        }
+    }
+
+    function handleKeyDown(e) {
+        if (keys.hasOwnProperty(e.code)) {
+            keys[e.code] = true;
+        }
+        handleMovement();
+        handleShooting();
+    }
+    
+    function handleKeyUp(e) {
+        if (keys.hasOwnProperty(e.code)) {
+            keys[e.code] = false;
+        }
+        handleMovement();
+    }
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    restartBtn.addEventListener('click', resetGame);
+
+    // --- Touch Controls for Mobile ---
+    function setupTouchControls() {
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        if (!isTouchDevice) return;
+
+        document.getElementById('touchControls').style.display = 'flex';
+        const leftBtn = document.getElementById('leftBtn');
+        const rightBtn = document.getElementById('rightBtn');
+        const shootBtn = document.getElementById('shootBtn');
+
+        const startMove = (key) => { keys[key] = true; handleMovement(); };
+        const endMove = (key) => { keys[key] = false; handleMovement(); };
+        
+        leftBtn.addEventListener('touchstart', (e) => { e.preventDefault(); startMove('ArrowLeft'); }, { passive: false });
+        leftBtn.addEventListener('touchend', (e) => { e.preventDefault(); endMove('ArrowLeft'); });
+        
+        rightBtn.addEventListener('touchstart', (e) => { e.preventDefault(); startMove('ArrowRight'); }, { passive: false });
+        rightBtn.addEventListener('touchend', (e) => { e.preventDefault(); endMove('ArrowRight'); });
+
+        shootBtn.addEventListener('touchstart', (e) => { e.preventDefault(); keys.Space = true; handleShooting(); }, { passive: false });
+        shootBtn.addEventListener('touchend', (e) => { e.preventDefault(); keys.Space = false; });
+    }
+
+    // --- Start Game ---
+    window.onload = function() {
+        setupTouchControls();
+        update();
+    }
+
+    window.addEventListener('resize', () => {
+        canvas.width = Math.min(800, window.innerWidth - 40);
+        player.x = canvas.width / 2;
+    });
+
+</script>
+
+</body>
+</html>
+
