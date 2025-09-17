@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Jungle Dash 3D</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
+        :root {
+            --bg-color: #1a2a1a;
+            --text-color: #f0e6d2;
+            --glow-primary: #ffbf00; /* Gold */
+            --glow-secondary: #228B22; /* Forest Green */
+        }
+        html, body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: var(--bg-color);
+        }
+        body {
+            font-family: 'Cinzel', serif;
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        canvas {
+            display: block;
+        }
+        #ui-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            pointer-events: none;
+        }
+        #score {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-shadow: 0 0 10px var(--glow-primary);
+            color: white;
+        }
+        .modal {
+            display: flex; position: fixed; z-index: 100; left: 0; top: 0;
+            width: 100%; height: 100%; background-color: rgba(10, 20, 10, 0.9);
+            justify-content: center; align-items: center; visibility: hidden; opacity: 0;
+            transition: visibility 0s 0.5s, opacity 0.5s ease; backdrop-filter: blur(5px);
+            pointer-events: all;
+        }
+        .modal.visible { visibility: visible; opacity: 1; transition: visibility 0s, opacity 0.5s ease; }
+        .modal-content {
+            background: rgba(0,0,0,0.5); padding: 2rem 4rem;
+            border: 2px solid var(--glow-primary); border-radius: 1rem;
+            text-align: center; box-shadow: 0 0 30px var(--glow-primary);
+        }
+        .modal-title {
+            font-size: 3rem; margin-bottom: 1rem;
+            text-shadow: 0 0 10px var(--glow-primary); color: var(--glow-primary);
+        }
+        .modal-text { font-size: 1.5rem; margin-bottom: 1rem; }
+        .high-score { color: var(--glow-secondary); font-weight: 700; }
+        .action-btn {
+            padding: 10px 20px; font-family: 'Cinzel', serif; font-size: 1.2rem;
+            font-weight: 700; color: #1a2a1a;
+            background: linear-gradient(45deg, var(--glow-primary), #b8860b);
+            border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s ease;
+            box-shadow: 0 0 10px var(--glow-primary);
+        }
+        .action-btn:hover { transform: scale(1.05); box-shadow: 0 0 20px var(--glow-primary); }
+    </style>
+</head>
+<body>
+    <div id="ui-container">
+        <div id="score">Score: 0</div>
+    </div>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="startModal" class="modal visible">
+        <div class="modal-content">
+            <h2 class="modal-title">JUNGLE DASH 3D</h2>
+            <p class="modal-text">Arrows/Swipes to Move, Jump, and Slide</p>
+            <p class="modal-text high-score">High Score: <span id="highScore">0</span></p>
+            <button id="start-button" class="action-btn">START RUN</button>
+        </div>
+    </div>
+    
+    <div id="gameOverModal" class="modal">
+        <div class="modal-content">
+            <h2 class="modal-title">RUN ENDED!</h2>
+            <p class="modal-text">Score: <span id="finalScore">0</span></p>
+            <button id="restart-button" class="action-btn">RUN AGAIN</button>
+        </div>
+    </div>
+
+<script type="module">
+    import { getAuth, onAuthStateChanged, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const scoreEl = document.getElementById('score');
+        const startModal = document.getElementById('startModal');
+        const gameOverModal = document.getElementById('gameOverModal');
+        const startButton = document.getElementById('start-button');
+        const restartButton = document.getElementById('restart-button');
+        const highScoreEl = document.getElementById('highScore');
+        const finalScoreEl = document.getElementById('finalScore');
+        const canvas = document.getElementById('gameCanvas');
+
+        let scene, camera, renderer, clock;
+        let player, playerBody, playerHead, leftArm, rightArm, leftLeg, rightLeg, leftShoulder, rightShoulder, leftHip, rightHip;
+        let pathSegments = [], obstacles = [];
+        let score = 0, highScore = 0;
+        let gameSpeed = 18;
+        let isGameOver = true;
+        let laneWidth = 3.5;
+        let gameFrame = 0;
+
+        let userId, isAuthReady;
+        
+        function init() {
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x1a2a1a);
+            scene.fog = new THREE.Fog(0x1a2a1a, 50, 150);
+            clock = new THREE.Clock();
+
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 4, 8);
+            camera.lookAt(0, 1.5, 0);
+
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.shadowMap.enabled = true;
+            
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+            scene.add(ambientLight);
+
+            const dirLight = new THREE.DirectionalLight(0xf0e6d2, 1);
+            dirLight.position.set(10, 20, 5);
+            dirLight.castShadow = true;
+            scene.add(dirLight);
+
+            createPlayer();
+            for (let i = 0; i < 25; i++) {
+                createPathSegment(i * -10);
+            }
+            resizeCanvas();
+            animate();
+        }
+        
+        function resizeCanvas() {
+            if (!camera || !renderer) return;
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+        }
+        
+        function createPlayer() {
+            player = new THREE.Group();
+            scene.add(player);
+            
+            const skinMat = new THREE.MeshLambertMaterial({ color: 0xdeb887 });
+            const shirtMat = new THREE.MeshLambertMaterial({ color: 0xff69b4 }); // Pink shirt
+            const pantsMat = new THREE.MeshLambertMaterial({ color: 0x9acd32 }); // Tan pants
+            const hairMat = new THREE.MeshLambertMaterial({ color: 0x111111 });
+
+            const head = new THREE.Mesh(new THREE.SphereGeometry(0.4, 20, 20), skinMat);
+            head.position.y = 2.4;
+            head.castShadow = true;
+            const hair = new THREE.Mesh(new THREE.SphereGeometry(0.45, 20, 20), hairMat);
+            hair.position.y = 2.5; hair.scale.y = 0.5;
+            const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.3, 1.2, 8), shirtMat);
+            torso.position.y = 1.25;
+            torso.castShadow = true;
+            const hips = new THREE.Mesh(new THREE.SphereGeometry(0.35, 8, 8), pantsMat);
+            hips.position.y = 0.5; hips.scale.y = 0.8; hips.scale.x = 1.2;
+
+            player.add(head, hair, torso, hips);
+
+            // Articulated Limbs
+            leftShoulder = new THREE.Group();
+            rightShoulder = new THREE.Group();
+            leftHip = new THREE.Group();
+            rightHip = new THREE.Group();
+
+            leftShoulder.position.set(-0.6, 1.8, 0);
+            rightShoulder.position.set(0.6, 1.8, 0);
+            leftHip.position.set(-0.3, 0.5, 0);
+            rightHip.position.set(0.3, 0.5, 0);
+            player.add(leftShoulder, rightShoulder, leftHip, rightHip);
+
+            const upperArm = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.12, 0.8), skinMat);
+            upperArm.position.y = -0.4;
+            const forearm = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.1, 0.7), skinMat);
+            forearm.position.y = -0.7;
+            const hand = new THREE.Mesh(new THREE.SphereGeometry(0.12, 8, 8), skinMat);
+            hand.position.y = -1.1;
+            
+            const upperLeg = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.18, 1), pantsMat);
+            upperLeg.position.y = -0.5;
+            const lowerLeg = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.15, 1), pantsMat);
+            lowerLeg.position.y = -1.5;
+            const foot = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.2, 0.5), hairMat);
+            foot.position.y = -2.05; foot.position.z = 0.1;
+
+            leftArm = new THREE.Group();
+            rightArm = new THREE.Group();
+            leftLeg = new THREE.Group();
+            rightLeg = new THREE.Group();
+            
+            leftArm.add(upperArm.clone(), forearm.clone(), hand.clone());
+            rightArm.add(upperArm.clone(), forearm.clone(), hand.clone());
+            leftLeg.add(upperLeg.clone(), lowerLeg.clone(), foot.clone());
+            rightLeg.add(upperLeg.clone(), lowerLeg.clone(), foot.clone());
+
+            leftShoulder.add(leftArm);
+            rightShoulder.add(rightArm);
+            leftHip.add(leftLeg);
+            rightHip.add(rightLeg);
+            
+            player.position.y = 0.75;
+            player.vy = 0;
+            player.gravity = -0.04;
+            player.grounded = true;
+            player.lane = 0;
+            player.isSliding = false;
+        }
+
+        function createPathSegment(z) { /* ... unchanged ... */ }
+        function createObstacle(z) { /* ... unchanged ... */ }
+
+        function updatePlayer(delta) {
+            if(!player) return;
+            const targetX = player.lane * laneWidth;
+            player.position.x += (targetX - player.position.x) * 0.15;
+            
+            const leanAngle = (targetX - player.position.x) * -0.1;
+            player.rotation.z += (leanAngle - player.rotation.z) * 0.2;
+
+            if (!player.grounded) {
+                player.vy += player.gravity;
+                player.position.y += player.vy;
+            }
+            if (player.position.y <= 0.75) {
+                player.position.y = 0.75;
+                if(!player.grounded) { 
+                    player.scale.y = 0.9;
+                }
+                player.grounded = true;
+                player.vy = 0;
+            }
+            
+            player.scale.y += (1 - player.scale.y) * 0.1;
+
+            const t = clock.getElapsedTime() * 15;
+            if (isGameOver) {
+                leftShoulder.rotation.x = 0; rightShoulder.rotation.x = 0;
+                leftHip.rotation.x = 0; rightHip.rotation.x = 0;
+            } else if (player.isSliding) {
+                player.position.y = 0.2;
+                leftHip.rotation.x = 1.5; rightHip.rotation.x = -0.5;
+            } else if (!player.grounded) {
+                leftHip.rotation.x = 0.5; rightHip.rotation.x = -0.5;
+            } else { // Running
+                leftShoulder.rotation.x = Math.sin(t) * 1.2; 
+                rightShoulder.rotation.x = -Math.sin(t) * 1.2;
+                leftHip.rotation.x = -Math.sin(t) * 1.2;
+                rightHip.rotation.x = Math.sin(t) * 1.2;
+            }
+        }
+        
+        function updateWorld(delta) { /* ... unchanged ... */ }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const delta = clock.getDelta();
+            
+            updatePlayer(delta);
+            if(!isGameOver) {
+                 updateWorld(delta);
+                 score += delta * 10;
+                 gameSpeed += 0.001;
+                 gameFrame++;
+                 scoreEl.textContent = `Score: ${Math.floor(score)}`;
+            }
+            
+            renderer.render(scene, camera);
+        }
+
+        function startGame() { /* ... unchanged ... */ }
+        function gameOver() { /* ... unchanged ... */ }
+        
+        // --- Firebase (unchanged) ---
+        
+        function handleKeyDown(e) {
+            if(isGameOver || !player) return;
+            switch(e.code) {
+                case 'ArrowLeft': case 'KeyA': player.lane = Math.max(-1, player.lane - 1); break;
+                case 'ArrowRight': case 'KeyD': player.lane = Math.min(1, player.lane + 1); break;
+                case 'ArrowUp': case 'KeyW': case 'Space': 
+                    if(player.grounded) {
+                        player.vy = 0.6; 
+                        player.grounded = false;
+                    }
+                    break;
+                case 'ArrowDown': case 'KeyS': 
+                     if(!player.isSliding) {
+                         player.isSliding = true;
+                         setTimeout(() => { player.isSliding = false; }, 700);
+                     }
+                    break;
+            }
+        }
+        
+        let touchStartX = 0, touchStartY = 0;
+        function handleTouchStart(e) { touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY; }
+        function handleTouchEnd(e) {
+            if (isGameOver || !player) { return; }
+            const touchEndX = e.changedTouches[0].clientX;
+            const touchEndY = e.changedTouches[0].clientY;
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                if (deltaX > 30) player.lane = Math.min(1, player.lane + 1);
+                else if (deltaX < -30) player.lane = Math.max(-1, player.lane - 1);
+            } else {
+                if (deltaY < -30) { if (player.grounded) { player.vy = 0.6; player.grounded = false; } }
+                else if (deltaY > 30) { if (!player.isSliding) { player.isSliding = true; setTimeout(() => { player.isSliding = false; }, 700); } }
+            }
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        startButton.addEventListener('click', startGame);
+        restartButton.addEventListener('click', startGame);
+        window.addEventListener('keydown', handleKeyDown);
+        window.addEventListener('keyup', (e) => {});
+        window.addEventListener('touchstart', handleTouchStart);
+        window.addEventListener('touchend', handleTouchEnd);
+        
+        init();
+        
+        // --- Redacted Functions ---
+        onAuthStateChanged(auth, async (user) => { if (user) { userId = user.uid; isAuthReady = true; await loadHighScore(); } else { try { if (initialAuthToken) await signInWithCustomToken(auth, initialAuthToken); else await signInAnonymously(auth); } catch (error) { console.error("Firebase Sign-In Failed:", error.code); isAuthReady = false; userId = null; } } });
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU", authDomain: "chat-code-forum.firebaseapp.com", projectId: "chat-code-forum" }; const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app); const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id'; const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null; async function saveHighScore() { if (!userId || !isAuthReady) return; const userRef = doc(db, `artifacts/${appId}/users/${userId}/data/jungle_dash_game`); try { await setDoc(userRef, { highScore: highScore }, { merge: true }); } catch (e) { console.error("Error saving high score:", e); } } async function loadHighScore() { if (!userId || !isAuthReady) return; const userRef = doc(db, `artifacts/${appId}/users/${userId}/data/jungle_dash_game`); try { const docSnap = await getDoc(userRef); highScore = (docSnap.exists() && docSnap.data().highScore) ? docSnap.data().highScore : 0; highScoreEl.textContent = highScore; } catch (e) { console.error("Error loading high score:", e); highScore = 0; } }
+        function createPathSegment(z) { const segment = new THREE.Group(); const groundMat = new THREE.MeshLambertMaterial({ color: 0x696969 }); const ground = new THREE.Mesh(new THREE.BoxGeometry(laneWidth * 3.5, 1, 10), groundMat); ground.position.y = -0.5; ground.receiveShadow = true; segment.add(ground); const railMat = new THREE.MeshLambertMaterial({ color: 0x595959 }); const railHeight = 0.5; const rail1 = new THREE.Mesh(new THREE.BoxGeometry(0.5, railHeight, 10), railMat); rail1.position.set(-laneWidth * 1.6, railHeight/2, 0); const rail2 = rail1.clone(); rail2.position.x = laneWidth * 1.6; segment.add(rail1, rail2); segment.position.z = z; pathSegments.push(segment); scene.add(segment); }
+        function createObstacle(z) { const obstacle = new THREE.Group(); const material = new THREE.MeshLambertMaterial({ color: 0x5a4a2f }); const lane = Math.floor(Math.random() * 3) - 1; const type = Math.random() > 0.5 ? 'jump' : 'slide'; if(type === 'jump') { const pillar = new THREE.Mesh(new THREE.BoxGeometry(laneWidth - 0.5, 0.8, 2), material); pillar.rotation.x = Math.PI / 2; pillar.position.y = 0.4; obstacle.add(pillar); } else { const archTop = new THREE.Mesh(new THREE.BoxGeometry(laneWidth, 0.5, 0.5), material); archTop.position.y = 1.75; const post1 = new THREE.Mesh(new THREE.BoxGeometry(0.5, 1.75, 0.5), material); post1.position.set(-laneWidth/2 + 0.25, 0.875, 0); const post2 = post1.clone(); post2.position.x = laneWidth/2 - 0.25; obstacle.add(archTop, post1, post2); } obstacle.position.set(lane * laneWidth, 0, z); obstacle.userData = { lane, type }; obstacles.push(obstacle); scene.add(obstacle); }
+        function updateWorld(delta) { if (!player) return; pathSegments.forEach(segment => { segment.position.z += gameSpeed * delta; if (segment.position.z > 20) { segment.position.z -= pathSegments.length * 10; } }); if (!isGameOver && gameFrame % 50 === 0) { createObstacle(-180); } for (let i = obstacles.length - 1; i >= 0; i--) { const obstacle = obstacles[i]; obstacle.position.z += gameSpeed * delta; if (obstacle.position.z > 20) { scene.remove(obstacle); obstacles.splice(i, 1); } if (Math.abs(obstacle.position.z - player.position.z) < 0.5 && obstacle.userData.lane === player.lane) { const playerBox = new THREE.Box3().setFromObject(player); const obstacleBox = new THREE.Box3().setFromObject(obstacle); if(playerBox.intersectsBox(obstacleBox)){ gameOver(); } } } }
+        function startGame() { isGameOver = false; if(player) { player.position.set(0, 0.75, 0); player.lane = 0; } obstacles.forEach(obs => scene.remove(obs)); obstacles = []; pathSegments.forEach((seg, i) => seg.position.z = i * -10); score = 0; gameSpeed = 18; gameFrame = 0; startModal.classList.remove('visible'); gameOverModal.classList.remove('visible'); clock.start(); }
+        function gameOver() { isGameOver = true; clock.stop(); finalScoreEl.textContent = Math.floor(score); if (score > highScore) { highScore = Math.floor(score); highScoreEl.textContent = highScore; saveHighScore(); } gameOverModal.classList.add('visible'); }
+    });
+</script>
+</body>
+</html>
+
