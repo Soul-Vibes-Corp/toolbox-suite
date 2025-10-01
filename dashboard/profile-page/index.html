@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Abe Soul • Hub</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <main class="profile-hub">
+    <header class="profile-header">
+      <div class="banner">
+        <img src="https://source.unsplash.com/1600x400/?cyber,network" alt="Profile banner">
+      </div>
+      <div class="header-content">
+        <div class="avatar-container">
+          <img class="avatar" src="/toolbox-suite/dashboard/assets/default-user-icon.svg" alt="Abe Soul's Avatar">
+        </div>
+        <div class="user-info">
+          <h1>Abe Soul</h1>
+          <p class="handle">@abesoul</p>
+          <div class="tags">
+            <span>Cyber Engineer</span>
+            <span>Music Producer</span>
+            <span>Esports Enthusiast</span>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn-primary">Connect</button>
+          <button class="btn-secondary">Message</button>
+          <button class="btn-secondary">Tip $</button>
+          <button class="btn-secondary ai-assist">AI ✨</button>
+        </div>
+      </div>
+      <div class="stats">
+        <div><strong>3.1k</strong><span>Connections</span></div>
+        <div><strong>1.2k</strong><span>Followers</span></div>
+        <div><strong>142</strong><span>Following</span></div>
+      </div>
+    </header>
+
+    <nav class="profile-nav">
+      <button class="tab-link active" data-tab="activity">Activity</button>
+      <button class="tab-link" data-tab="professional">Professional</button>
+      <button class="tab-link" data-tab="gaming">Gaming</button>
+      <button class="tab-link" data-tab="marketplace">Marketplace</button>
+      <button class="tab-link" data-tab="media">Media</button>
+    </nav>
+
+    <div class="profile-content">
+      <section id="activity" class="tab-content active">
+        <div class="grid-gallery">
+          <div class="card">"Just closed a major security audit. The feeling of a clean network is unbeatable. #cybersecurity"</div>
+          <div class="card"><img src="https://source.unsplash.com/300x300/?music,studio" alt="Music studio setup"></div>
+          <div class="card"><img src="https://source.unsplash.com/300x300/?gaming,esports" alt="Esports event"></div>
+          <div class="card">"Quick Tip: Use layered authentication for all critical business apps. It's not optional anymore."</div>
+        </div>
+      </section>
+
+      <section id="professional" class="tab-content">
+        <div class="grid-gallery">
+          <div class="card"><strong>Service:</strong> Penetration Testing Consultation</div>
+          <div class="card"><strong>Article:</strong> "Top 5 AI Tools for Developers in 2025"</div>
+          <div class="card"><strong>Course:</strong> Intro to Network Security (Completed)</div>
+        </div>
+      </section>
+
+      <section id="gaming" class="tab-content">
+         <div class="grid-gallery">
+          <div class="card"><strong>Highlight Reel:</strong> Apex Legends Triple Kill</div>
+          <div class="card"><strong>Connected:</strong> Steam, PSN, Xbox Live</div>
+          <div class="card"><strong>Game Mod:</strong> Custom UI for Cyberpunk 2077</div>
+        </div>
+      </section>
+      
+      <section id="marketplace" class="tab-content"></section>
+      <section id="media" class="tab-content"></section>
+    </div>
+  </main>
+
+  <footer class="bottom-nav">
+    </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
