@@ -25,10 +25,12 @@ body {
 
 /* Profile Hub Layout */
 .profile-hub {
+  /* Start with a 900px max-width, we'll expand it for larger screens */
   max-width: 900px;
   margin: 0 auto;
   border-left: 1px solid var(--border-color);
   border-right: 1px solid var(--border-color);
+  min-height: 100vh; /* Ensure it takes up at least the full screen height */
 }
 
 /* Header Section */
@@ -38,7 +40,7 @@ body {
 
 .banner img {
   width: 100%;
-  height: 200px;
+  height: 220px;
   object-fit: cover;
 }
 
@@ -46,8 +48,10 @@ body {
   display: flex;
   align-items: flex-end;
   padding: 0 24px;
-  transform: translateY(-50px);
+  /* We use a negative margin instead of transform for more stable layout reflow */
+  margin-top: -60px;
   position: relative;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens if needed */
 }
 
 .avatar-container {
@@ -80,6 +84,7 @@ body {
 }
 .tags {
   display: flex;
+  flex-wrap: wrap; /* Allow tags to wrap on small screens */
   gap: 8px;
   margin-top: 8px;
 }
@@ -104,6 +109,7 @@ body {
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s;
+  white-space: nowrap; /* Prevent button text from wrapping */
 }
 .btn-primary {
   background-color: var(--accent-primary);
@@ -124,8 +130,8 @@ body {
 .stats {
   display: flex;
   gap: 2rem;
-  padding: 0 24px 24px;
-  margin-top: -30px; /* Pull it up a bit */
+  padding: 24px;
+  margin-top: -10px; /* Adjusted spacing */
 }
 .stats div {
   font-size: 1rem;
@@ -158,6 +164,7 @@ body {
   cursor: pointer;
   border-bottom: 3px solid transparent;
   transition: all 0.2s;
+  min-width: 100px; /* Give tabs a minimum width */
 }
 .tab-link:hover {
   background-color: var(--background-tertiary);
@@ -179,6 +186,7 @@ body {
 
 .grid-gallery {
   display: grid;
+  /* This is already very responsive! It will create as many 250px columns as fit */
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 16px;
 }
@@ -196,16 +204,34 @@ body {
   border-radius: 8px;
 }
 
-/* Responsive */
+
+/* --- RESPONSIVE ADJUSTMENTS --- */
+
+/* For larger desktop screens */
+@media (min-width: 1200px) {
+  .profile-hub {
+    max-width: 1100px; /* Widen the container for better use of space */
+  }
+}
+
+/* For tablets and larger phones */
 @media (max-width: 768px) {
   .header-content {
     flex-direction: column;
     align-items: flex-start;
-    transform: translateY(-60px);
+    margin-top: -70px; /* Adjust avatar position */
+    padding: 0 16px;
   }
   .user-info {
     margin-left: 0;
-    margin-top: 80px; /* Space for the avatar */
+    /* This creates a space where the avatar sits, preventing text overlap */
+    margin-top: 60px; 
+    width: 100%;
+  }
+  .avatar-container {
+    position: absolute; /* Lift the avatar above the user info text */
+    top: 0;
+    left: 16px;
   }
   .actions {
     margin-left: 0;
@@ -215,7 +241,56 @@ body {
     grid-template-columns: 1fr 1fr;
   }
   .stats {
-    margin-top: 0;
+    padding: 16px;
+    flex-direction: column; /* Stack stats vertically */
+    gap: 0.5rem;
+    margin-top: 1rem;
   }
-  .tab-link { font-size: 0.9rem; padding: 0.8rem; }
+  .tab-link { 
+    font-size: 0.9rem;
+    padding: 0.8rem 0.5rem;
+    min-width: unset; /* Let tabs shrink to fit */
+  }
+}
+
+/* For very small mobile devices */
+@media (max-width: 480px) {
+  .banner img {
+    height: 150px; /* Reduce banner height */
+  }
+  .avatar-container {
+    width: 90px;
+    height: 90px;
+  }
+  .header-content {
+    margin-top: -55px;
+  }
+  .user-info {
+    margin-top: 40px;
+  }
+  .user-info h1 {
+    font-size: 1.5rem;
+  }
+  .btn-primary, .btn-secondary {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+  .profile-nav {
+    overflow-x: auto; /* Make tabs scrollable horizontally if they don't fit */
+    justify-content: flex-start;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .profile-nav::-webkit-scrollbar {
+    display: none;
+  }
+  .tab-link {
+    flex: 0 0 auto; /* Allow tabs to have their natural width when scrolling */
+    padding: 0.8rem 1rem;
+  }
+  .grid-gallery {
+    /* On the smallest screens, switch to a single-column layout */
+    grid-template-columns: 1fr;
+  }
 }
