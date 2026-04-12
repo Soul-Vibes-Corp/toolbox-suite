@@ -9,19 +9,14 @@ const firebaseConfig = {
     measurementId: "G-XJKWXHF8WN"
 };
 
-// Initialize Firebase
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-}
-
+if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// Global data object for Phaser to read
+// Global data object
 window.playerData = { stamina: 100, xp: 0, rank: "PVT" };
 
 // --- Authentication ---
-// Explicitly attach to window so HTML onclick can find it
 window.handleLogin = async () => {
     const email = document.getElementById('email').value;
     const pass = document.getElementById('password').value;
@@ -35,13 +30,14 @@ window.handleLogin = async () => {
         const cred = await auth.signInWithEmailAndPassword(email, pass);
         console.log("Authenticated:", cred.user.uid);
         
+        // HIDE login and SHOW game ONLY after successful auth
         document.getElementById('login-screen').classList.add('hidden');
         document.getElementById('game-container').classList.remove('hidden');
         
         initDataSync(cred.user.uid);
     } catch (e) { 
         console.error(e);
-        alert("SITREP: Login Failure. Check connectivity or credentials."); 
+        alert("SITREP: Login Failure. Check credentials."); 
     }
 };
 
@@ -54,7 +50,6 @@ function initDataSync(uid) {
             window.playerData = doc.data();
             updateUI();
         } else {
-            // OPTIONAL: Create a default profile if the document doesn't exist
             console.log("No profile found. Creating enlistment papers...");
             playerRef.set(window.playerData);
         }
@@ -65,12 +60,11 @@ function initDataSync(uid) {
 
 // --- UI Updates ---
 function updateUI() {
-    // Check if elements exist before updating to avoid console errors
     const stamFill = document.getElementById('stamina-fill');
     const xpVal = document.getElementById('xp-val');
     const rankVal = document.getElementById('rank-val');
 
-    if (stamFill) stamFill.style.width = (window.playerData.stamina || 0) + "%";
+    if (stamFill) stamFill.style.width = Math.min(Math.max(window.playerData.stamina || 0, 0), 100) + "%";
     if (xpVal) xpVal.innerText = window.playerData.xp || 0;
     if (rankVal) rankVal.innerText = window.playerData.rank || "PVT";
 }
@@ -85,37 +79,8 @@ window.reportForFormation = async () => {
             xp: firebase.firestore.FieldValue.increment(25),
             stamina: firebase.firestore.FieldValue.increment(-5)
         });
-        console.log("Formation complete.");
-    } catch (e) {
-        console.error("Failed to update formation stats:", e);
-    }
+    } catch (e) { console.error("Formation Sync Error:", e); }
 };
-
-// Function to award XP for successful hits
-window.awardXP = async (amount) => {
-    const user = auth.currentUser;
-    if (!user) return;
-
-    try {
-        await db.collection("players").doc(user.uid).update({
-            xp: firebase.firestore.FieldValue.increment(amount),
-            // Shooting also drains a tiny bit of stamina
-            stamina: firebase.firestore.FieldValue.increment(-0.5) 
-        });
-    } catch (e) {
-        console.error("Failed to update score:", e);
-    }
-};
-
-// Automatically recover stamina every 30 seconds if not active
-setInterval(async () => {
-    const user = auth.currentUser;
-    if (user && window.playerData.stamina < 100) {
-        await db.collection("players").doc(user.uid).update({
-            stamina: firebase.firestore.FieldValue.increment(2)
-        });
-    }
-}, 30000); // Every 30 seconds
 
 window.awardXP = async (amount) => {
     const user = auth.currentUser;
@@ -124,14 +89,25 @@ window.awardXP = async (amount) => {
     try {
         const userRef = db.collection("players").doc(user.uid);
         await userRef.update({
-            xp: firebase.firestore.FieldValue.increment(amount)
+            xp: firebase.firestore.FieldValue.increment(amount),
+            stamina: firebase.firestore.FieldValue.increment(-0.5) 
         });
         
-        // Local update so the HUD changes instantly
-        if(window.playerData) window.playerData.xp += amount;
-        document.getElementById('xp-val').innerText = window.playerData.xp;
-        
-    } catch (e) {
-        console.error("XP Sync Error:", e);
-    }
+        // Instant Local Feedback
+        if(window.playerData) {
+            window.playerData.xp += amount;
+            window.playerData.stamina -= 0.5;
+            updateUI();
+        }
+    } catch (e) { console.error("XP Sync Error:", e); }
 };
+
+// Stamina Recovery Interval
+setInterval(async () => {
+    const user = auth.currentUser;
+    if (user && window.playerData.stamina < 100) {
+        await db.collection("players").doc(user.uid).update({
+            stamina: firebase.firestore.FieldValue.increment(2)
+        });
+    }
+}, 30000);
