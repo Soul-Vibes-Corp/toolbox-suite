@@ -1,0 +1,8 @@
+{
+  "equipped": {
+    "primary": "M4A1 Carbine",
+    "uniform": "OCP Scorpion W2",
+    "boots": "Belleville 330"
+  },
+  "storage": ["M67 Frag", "Night Vision Goggles", "Poncho Liner"]
+}
