@@ -93,3 +93,43 @@ function update() {
         // Add bullet logic here as needed
     }
 }
+
+const config = {
+    type: Phaser.AUTO,
+    parent: 'game-container',
+    width: window.innerWidth,
+    height: window.innerHeight,
+    transparent: true,
+    physics: { default: 'arcade' },
+    scene: { preload: preload, create: create, update: update }
+};
+
+const game = new Phaser.Game(config);
+let soldier;
+let joystick;
+
+function preload() {
+    // Relative path to assets
+    this.load.image('soldier', '../../assets/infantry/soldier.png');
+    this.load.plugin('rexvirtualjoystickplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js', true);
+}
+
+function create() {
+    soldier = this.physics.add.sprite(window.innerWidth/2, window.innerHeight/2, 'soldier');
+    
+    joystick = this.plugins.get('rexvirtualjoystickplugin').add(this, {
+        x: 100, y: window.innerHeight - 100,
+        radius: 60,
+        base: this.add.circle(0, 0, 60, 0x2b3a26, 0.5).setStrokeStyle(2, 0x4af626),
+        thumb: this.add.circle(0, 0, 30, 0x4af626)
+    });
+}
+
+function update() {
+    if (joystick.force > 0) {
+        this.physics.velocityFromRotation(joystick.rotation, 200, soldier.body.velocity);
+        soldier.setRotation(joystick.rotation);
+    } else {
+        soldier.setVelocity(0);
+    }
+}
