@@ -1,3 +1,4 @@
+// --- Firebase Configuration ---
 const firebaseConfig = {
     apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
     authDomain: "chat-code-forum.firebaseapp.com",
@@ -8,43 +9,84 @@ const firebaseConfig = {
     measurementId: "G-XJKWXHF8WN"
 };
 
-firebase.initializeApp(firebaseConfig);
+// Initialize Firebase
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+
 const auth = firebase.auth();
 const db = firebase.firestore();
 
+// Global data object for Phaser to read
 window.playerData = { stamina: 100, xp: 0, rank: "PVT" };
 
-async function handleLogin() {
+// --- Authentication ---
+// Explicitly attach to window so HTML onclick can find it
+window.handleLogin = async () => {
     const email = document.getElementById('email').value;
     const pass = document.getElementById('password').value;
+    
+    if (!email || !pass) {
+        alert("SITREP: Credentials missing.");
+        return;
+    }
+
     try {
         const cred = await auth.signInWithEmailAndPassword(email, pass);
+        console.log("Authenticated:", cred.user.uid);
+        
         document.getElementById('login-screen').classList.add('hidden');
         document.getElementById('game-container').classList.remove('hidden');
+        
         initDataSync(cred.user.uid);
-    } catch (e) { alert("SITREP: Login Failure."); }
-}
+    } catch (e) { 
+        console.error(e);
+        alert("SITREP: Login Failure. Check connectivity or credentials."); 
+    }
+};
 
+// --- Data Synchronization ---
 function initDataSync(uid) {
-    db.collection("players").doc(uid).onSnapshot(doc => {
+    const playerRef = db.collection("players").doc(uid);
+
+    playerRef.onSnapshot(doc => {
         if (doc.exists) {
             window.playerData = doc.data();
             updateUI();
+        } else {
+            // OPTIONAL: Create a default profile if the document doesn't exist
+            console.log("No profile found. Creating enlistment papers...");
+            playerRef.set(window.playerData);
         }
+    }, err => {
+        console.error("Firestore Sync Error:", err);
     });
 }
 
+// --- UI Updates ---
 function updateUI() {
-    document.getElementById('stamina-fill').style.width = window.playerData.stamina + "%";
-    document.getElementById('xp-val').innerText = window.playerData.xp;
-    document.getElementById('rank-val').innerText = window.playerData.rank;
+    // Check if elements exist before updating to avoid console errors
+    const stamFill = document.getElementById('stamina-fill');
+    const xpVal = document.getElementById('xp-val');
+    const rankVal = document.getElementById('rank-val');
+
+    if (stamFill) stamFill.style.width = (window.playerData.stamina || 0) + "%";
+    if (xpVal) xpVal.innerText = window.playerData.xp || 0;
+    if (rankVal) rankVal.innerText = window.playerData.rank || "PVT";
 }
 
-// Stats Update Functions
-window.reportForFormation = () => {
-    const uid = auth.currentUser.uid;
-    db.collection("players").doc(uid).update({
-        xp: firebase.firestore.FieldValue.increment(25),
-        stamina: firebase.firestore.FieldValue.increment(-5)
-    });
+// --- Stats Update Functions ---
+window.reportForFormation = async () => {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    try {
+        await db.collection("players").doc(user.uid).update({
+            xp: firebase.firestore.FieldValue.increment(25),
+            stamina: firebase.firestore.FieldValue.increment(-5)
+        });
+        console.log("Formation complete.");
+    } catch (e) {
+        console.error("Failed to update formation stats:", e);
+    }
 };
