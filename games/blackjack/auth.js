@@ -117,4 +117,21 @@ setInterval(async () => {
     }
 }, 30000); // Every 30 seconds
 
+window.awardXP = async (amount) => {
+    const user = auth.currentUser;
+    if (!user) return;
 
+    try {
+        const userRef = db.collection("players").doc(user.uid);
+        await userRef.update({
+            xp: firebase.firestore.FieldValue.increment(amount)
+        });
+        
+        // Local update so the HUD changes instantly
+        if(window.playerData) window.playerData.xp += amount;
+        document.getElementById('xp-val').innerText = window.playerData.xp;
+        
+    } catch (e) {
+        console.error("XP Sync Error:", e);
+    }
+};
