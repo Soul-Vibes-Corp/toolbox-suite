@@ -46,9 +46,14 @@
                     <span class="label">WEAPON</span>
                     <div id="weapon-display">M4A1</div>
                 </div>
+                
                 <div class="slot" id="slot-uniform">
-                    <span class="label">UNIFORM</span>
-                    <div id="uniform-display">OCP</div>
+                    <span class="label">UNIFORM SELECTION</span>
+                    <div class="uniform-options">
+                        <button onclick="equipItem('ocp')" class="btn-inv">OCP</button>
+                        <button onclick="equipItem('ghillie')" class="btn-inv">GHILLIE</button>
+                        <button onclick="equipItem('pt')" class="btn-inv">PT</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -57,20 +62,8 @@
             <button onclick="reportForFormation()" class="btn-tactical">FORMATION</button>
             <button onclick="window.startRuck && startRuck()" class="btn-tactical">RUCK MARCH</button>
         </div>
-
     </div>
 
-<div class="inventory-grid">
-    <div class="slot" id="slot-uniform">
-        <span class="label">UNIFORM (CLICK TO SWAP)</span>
-        <div class="uniform-options">
-            <button onclick="equipItem('ocp')" class="btn-inv">OCP</button>
-            <button onclick="equipItem('ghillie')" class="btn-inv">GHILLIE</button>
-            <button onclick="equipItem('pt')" class="btn-inv">PT</button>
-        </div>
-    </div>
-</div>
-    
     <script src="auth.js"></script>
     <script src="main.js"></script>
 </body>
