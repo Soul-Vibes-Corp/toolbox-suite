@@ -105,5 +105,48 @@
     <script src="game.js"></script>
 </body>
 
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MOS 11B: Garrison Life</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+</head>
+<body>
+    <div class="scanlines"></div>
+
+    <div id="login-screen">
+        <div class="terminal-box">
+            <h2 class="flicker">INFANTRY TERMINAL v2.0</h2>
+            <input type="email" id="email" placeholder="ENLISTED EMAIL">
+            <input type="password" id="password" placeholder="PASSWORD">
+            <button onclick="handleLogin()" class="btn-tactical">LOGIN</button>
+        </div>
+    </div>
+
+    <div id="game-container" class="hidden">
+        <div class="hud-overlay">
+            <div class="stat-row">
+                <span>RANK: <b id="rank-val">PVT</b></span>
+                <span>XP: <b id="xp-val">0</b></span>
+            </div>
+            <div class="stamina-container">
+                STAMINA: <div class="bar-outer"><div id="stamina-fill"></div></div>
+            </div>
+        </div>
+        
+        <div class="interaction-menu">
+            <button onclick="reportForFormation()" class="btn-tactical">FORMATION</button>
+            <button onclick="startRuck()" class="btn-tactical">RUCK MARCH</button>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script src="main.js"></script>
+</body>
 
 </html>
