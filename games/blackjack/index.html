@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>11B GARRISON SIM</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+</head>
+<body>
+    <div class="scanlines"></div>
+
+    <div id="login-screen">
+        <div class="terminal-box">
+            <h2 class="flicker">SECURE TERMINAL LOGIN</h2>
+            <input type="email" id="email" placeholder="ENLISTED EMAIL">
+            <input type="password" id="password" placeholder="PASSWORD">
+            <button onclick="handleLogin()" class="btn-tactical">AUTHENTICATE</button>
+        </div>
+    </div>
+
+    <div id="game-container" class="hidden">
+        <div id="ui-layer">
+            <div class="hud-header">
+                <div class="stat-box">RANK: <span id="rank-val">PVT</span></div>
+                <div class="stat-box">STAMINA: <div class="bar-bg"><div id="stamina-fill"></div></div></div>
+                <div class="stat-box">XP: <span id="xp-val">0</span></div>
+            </div>
+            
+            <div class="inventory-bar">
+                <div class="inv-slot" title="Primary Weapon">M4A1</div>
+                <div class="inv-slot" title="Armor">IOTV</div>
+            </div>
+
+            <button onclick="reportForFormation()" class="btn-formation">REPORT FOR FORMATION</button>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
