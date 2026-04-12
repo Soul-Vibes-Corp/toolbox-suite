@@ -1,6 +1,6 @@
 /**
  * MOS 11B: Garrison Life - Main Game Engine
- * Integrated with Custom Audio and Uniform Logic
+ * Consolidated Version: Combat, Uniforms, and Barracks Logic
  */
 
 const config = {
@@ -23,6 +23,9 @@ let soldier;
 let joystick;
 let bullets;
 let lastFired = 0;
+let isAtBarracks = false;
+let relaxPlayed = false;
+let cleaningSound; 
 
 function preload() {
     // 1. Load Sprite Assets
@@ -43,11 +46,11 @@ function preload() {
 }
 
 function create() {
-    // Initialize Soldier (Default OCP)
+    // Initialize Soldier
     soldier = this.physics.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'soldier_ocp');
     soldier.setCollideWorldBounds(true);
     soldier.setScale(0.8);
-    soldier.speedModifier = 1.0; // Base speed multiplier
+    soldier.speedModifier = 1.0; 
 
     // Initialize Bullets
     bullets = this.physics.add.group({
@@ -55,14 +58,17 @@ function create() {
         maxSize: 30
     });
 
-    // Initialize Targets
+    // Barracks Zone Setup
+    this.barracksZone = this.add.rectangle(0, 0, 300, 300, 0x2b3a26, 0.3).setOrigin(0, 0);
+    this.add.text(10, 10, "BARRACKS - REST AREA", { fontSize: '14px', fill: '#4af626', fontStyle: 'bold' });
+    cleaningSound = this.sound.add('cleaning', { loop: true, volume: 0.3 });
+
+    // Target System
     this.targets = this.physics.add.group();
-    
-    // Spawn target loop
     this.time.addEvent({ 
         delay: 4000, 
         callback: () => {
-            let x = Phaser.Math.Between(300, window.innerWidth - 50);
+            let x = Phaser.Math.Between(350, window.innerWidth - 50); // Spawn outside barracks
             let y = Phaser.Math.Between(50, window.innerHeight - 150);
             let t = this.targets.create(x, y, 'target');
             t.setScale(0.5);
@@ -72,14 +78,14 @@ function create() {
         loop: true 
     });
 
-    // Overlap Detection
+    // Hit Detection
     this.physics.add.overlap(bullets, this.targets, (bullet, target) => {
         bullet.destroy();
         target.destroy();
         if (window.awardXP) window.awardXP(10); 
     }, null, this);
 
-    // Initialize Joystick
+    // Joystick
     joystick = this.plugins.get('rexvirtualjoystickplugin').add(this, {
         x: 120, y: window.innerHeight - 120,
         radius: 60,
@@ -97,28 +103,50 @@ function create() {
 function update(time) {
     if (!soldier) return;
 
-    // Movement Logic with Uniform Speed Modifier
+    // --- 1. MOVEMENT LOGIC ---
     let baseSpeed = 200;
     if (joystick.force > 0) {
         this.physics.velocityFromRotation(joystick.rotation, baseSpeed * soldier.speedModifier, soldier.body.velocity);
         soldier.setRotation(joystick.rotation);
+        if (cleaningSound.isPlaying) cleaningSound.stop();
     } else {
         soldier.setVelocity(0);
+        if (isAtBarracks && !cleaningSound.isPlaying) cleaningSound.play();
     }
 
-    // Shooting Logic
-    if (this.input.activePointer.isDown && this.input.activePointer.x > 250 && time > lastFired) {
-        fireBullet(this);
-        lastFired = time + 200; 
+    // --- 2. BARRACKS DETECTION ---
+    if (soldier.x < 300 && soldier.y < 300) {
+        if (!isAtBarracks) {
+            isAtBarracks = true;
+            if (!relaxPlayed) {
+                this.sound.play('relax_trooper');
+                relaxPlayed = true; 
+            }
+        }
+        // Stamina Regen (Direct UI & Data update)
+        if (window.playerData && window.playerData.stamina < 100) {
+            window.playerData.stamina += 0.15;
+            document.getElementById('stamina-fill').style.width = Math.min(window.playerData.stamina, 100) + '%';
+        }
+    } else {
+        isAtBarracks = false;
+        if (cleaningSound.isPlaying) cleaningSound.stop();
+    }
+
+    // --- 3. SHOOTING LOGIC ---
+    // Prevent shooting in Barracks or if joystick is being used (left side)
+    if (this.input.activePointer.isDown && this.input.activePointer.x > 350 && !isAtBarracks) {
+        if (time > lastFired) {
+            fireBullet(this);
+            lastFired = time + 200;
+        }
     }
 }
 
 function fireBullet(scene) {
     const bullet = bullets.get(soldier.x, soldier.y);
     if (bullet) {
-        // Trigger the specific M4 sound you uploaded
         scene.sound.play('m4_shot', { volume: 0.5 });
-
         bullet.setActive(true).setVisible(true).setPosition(soldier.x, soldier.y);
 
         const currentStamina = window.playerData ? window.playerData.stamina : 100;
@@ -134,10 +162,8 @@ function fireBullet(scene) {
     }
 }
 
-// Global Uniform Switcher
 window.equipItem = (itemType) => {
     if (!soldier) return;
-
     switch(itemType) {
         case 'ghillie':
             soldier.setTexture('soldier_ghillie');
@@ -151,6 +177,4 @@ window.equipItem = (itemType) => {
             soldier.setTexture('soldier_ocp');
             soldier.speedModifier = 1.0;
     }
-    
-    console.log(`Uniform changed to ${itemType}. Speed modifier: ${soldier.speedModifier}`);
 };
