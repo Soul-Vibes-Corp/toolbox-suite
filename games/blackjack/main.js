@@ -61,6 +61,36 @@ function create() {
         this.scale.resize(window.innerWidth, window.innerHeight);
         joystick.setPosition(120, window.innerHeight - 120);
     });
+
+    // Create a group for targets
+this.targets = this.physics.add.group();
+
+// Function to spawn a random target
+this.spawnTarget = () => {
+    let x = Phaser.Math.Between(300, window.innerWidth - 50);
+    let y = Phaser.Math.Between(50, window.innerHeight - 150);
+    
+    let target = this.targets.create(x, y, 'target'); // Ensure 'target' is preloaded
+    target.setImmovable(true);
+    target.setScale(0.5);
+
+    // Target disappears after 3 seconds if not hit
+    this.time.delayedCall(3000, () => {
+        if (target.active) target.destroy();
+    });
+};
+
+// Spawn a target every 4 seconds
+this.time.addEvent({ delay: 4000, callback: this.spawnTarget, callbackScope: this, loop: true });
+
+// HIT DETECTION: Check if bullet overlaps target
+this.physics.add.overlap(bullets, this.targets, (bullet, target) => {
+    bullet.destroy();
+    target.destroy();
+    
+    // Reward player via Firebase
+    window.awardXP(10); 
+}, null, this);
 }
 
 function update(time) {
