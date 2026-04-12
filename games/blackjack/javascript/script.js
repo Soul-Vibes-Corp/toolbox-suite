@@ -1,33 +1,46 @@
-// Core Logic: Stamina impacts accuracy
-update() {
-    const playerStamina = firebaseData.stamina; 
-    // Lower stamina = higher deviation in the shot trajectory
-    let sway = (100 - playerStamina) * 0.5; 
-    
-    if (this.input.activePointer.isDown) {
-        this.fireWeapon(sway);
-    }
-}
-
-fireWeapon(sway) {
-    let accuracyOffset = Phaser.Math.Between(-sway, sway);
-    let bullet = bullets.get(player.x, player.y);
-    bullet.fire(player.rotation + accuracyOffset);
-}
-
+// Phaser Config for Web App
 const config = {
     type: Phaser.AUTO,
-    scale: {
-        mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_BOTH,
-        width: 800,
-        height: 450 // 16:9 Landscape is standard for mobile sims
-    }
+    parent: 'game-container',
+    width: window.innerWidth,
+    height: window.innerHeight,
+    physics: { 
+        default: 'arcade',
+        arcade: { debug: false } 
+    },
+    scene: { preload: preload, create: create, update: update }
 };
 
-// Inside your Phaser Scene
-create() {
-    this.joyStick = this.plugins.get('rexvirtualjoystickplugin').add(this, {
+let game = new Phaser.Game(config);
+let player;
+let joystick;
+let bullets;
+
+function preload() {
+    this.load.image('soldier', 'assets/11b_sprite.png');
+    this.load.image('bullet', 'assets/bullet.png');
+    // Plugin for Joystick
+    this.load.plugin('rexvirtualjoystickplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js', true);
+}
+
+function create() {
+    // 1. Responsive Resizing
+    window.addEventListener('resize', () => {
+        this.scale.resize(window.innerWidth, window.innerHeight);
+    });
+
+    // 2. Player Setup
+    this.player = this.physics.add.sprite(window.innerWidth/2, window.innerHeight/2, 'soldier');
+    this.player.setCollideWorldBounds(true);
+
+    // 3. Bullet Group
+    bullets = this.physics.add.group({
+        defaultKey: 'bullet',
+        maxSize: 10
+    });
+
+    // 4. Joystick Setup
+    this.joystick = this.plugins.get('rexvirtualjoystickplugin').add(this, {
         x: 150,
         y: window.innerHeight - 150,
         radius: 80,
@@ -36,34 +49,31 @@ create() {
     });
 }
 
-update() {
-    const cursorKeys = this.joyStick.createCursorKeys();
-    let speed = 200;
-
-    // Apply movement to the 11B Sprite
-    if (this.joyStick.force > 0) {
-        this.physics.velocityFromRotation(this.joyStick.rotation, speed, player.body.velocity);
-        player.setRotation(this.joyStick.rotation); // Soldier faces the direction of travel
+function update() {
+    // --- Movement Logic ---
+    let speed = 200; 
+    if (this.joystick.force > 0) {
+        this.physics.velocityFromRotation(this.joystick.rotation, speed, this.player.body.velocity);
+        this.player.setRotation(this.joystick.rotation);
     } else {
-        player.setVelocity(0);
+        this.player.setVelocity(0);
+    }
+
+    // --- Combat Logic (Stamina Impact) ---
+    // Accessing global stamina (updated by auth.js/Firebase)
+    const currentStamina = window.playerStats?.stamina || 100;
+    let sway = (100 - currentStamina) * 0.05; // Fixed multiplier for realistic sway
+
+    if (this.input.activePointer.isDown && this.input.activePointer.x > 300) { // Don't fire if touching joystick area
+        fireWeapon(this, sway);
     }
 }
 
-import { db } from "./firebase-config";
-import { doc, updateDoc, increment } from "firebase/firestore";
-
-async function reportForFormation(userId) {
-    const playerRef = doc(db, "players", userId);
-
-    try {
-        await updateDoc(playerRef, {
-            xp: increment(50),
-            stamina: increment(-10), // Formation is draining!
-            morale: increment(5)     // Good leadership increases morale
-        });
-        console.log("SITREP: Formation complete. XP gained.");
-        updateHUD(); // Refresh the UI stats
-    } catch (error) {
-        console.error("Critical Failure: Could not reach HQ", error);
+function fireWeapon(scene, sway) {
+    let bullet = bullets.get(scene.player.x, scene.player.y);
+    if (bullet) {
+        bullet.setActive(true).setVisible(true);
+        let accuracyOffset = Phaser.Math.FloatBetween(-sway, sway);
+        scene.physics.velocityFromRotation(scene.player.rotation + accuracyOffset, 400, bullet.body.velocity);
     }
 }
