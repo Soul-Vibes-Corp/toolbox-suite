@@ -1,9 +1,14 @@
-// Phaser Config for Web App
+/**
+ * MOS 11B: Garrison Life - Phaser Engine
+ * This file handles the 2D simulation logic.
+ */
+
 const config = {
     type: Phaser.AUTO,
     parent: 'game-container',
     width: window.innerWidth,
     height: window.innerHeight,
+    transparent: true,
     physics: { 
         default: 'arcade',
         arcade: { debug: false } 
@@ -11,15 +16,15 @@ const config = {
     scene: { preload: preload, create: create, update: update }
 };
 
-let game = new Phaser.Game(config);
-let player;
-let joystick;
+const game = new Phaser.Game(config);
 let bullets;
 
 function preload() {
-    this.load.image('soldier', 'assets/11b_sprite.png');
-    this.load.image('bullet', 'assets/bullet.png');
-    // Plugin for Joystick
+    // Relative paths based on your new repo structure
+    this.load.image('soldier', '../../assets/infantry/soldier.png');
+    this.load.image('bullet', '../../assets/infantry/bullet.png');
+    
+    // Virtual Joystick Plugin
     this.load.plugin('rexvirtualjoystickplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js', true);
 }
 
@@ -32,11 +37,12 @@ function create() {
     // 2. Player Setup
     this.player = this.physics.add.sprite(window.innerWidth/2, window.innerHeight/2, 'soldier');
     this.player.setCollideWorldBounds(true);
+    this.player.setScale(0.8);
 
     // 3. Bullet Group
     bullets = this.physics.add.group({
         defaultKey: 'bullet',
-        maxSize: 10
+        maxSize: 15
     });
 
     // 4. Joystick Setup
@@ -60,69 +66,36 @@ function update() {
     }
 
     // --- Combat Logic (Stamina Impact) ---
-    // Accessing global stamina (updated by auth.js/Firebase)
-    const currentStamina = window.playerStats?.stamina || 100;
-    let sway = (100 - currentStamina) * 0.05; // Fixed multiplier for realistic sway
+    // Reads from window.playerData (synced by auth.js)
+    const currentStamina = window.playerData?.stamina || 100;
+    
+    // Sway gets worse as stamina drops
+    let sway = (100 - currentStamina) * 0.03; 
 
-    if (this.input.activePointer.isDown && this.input.activePointer.x > 300) { // Don't fire if touching joystick area
+    // Fire if clicking/tapping right side of screen
+    if (this.input.activePointer.isDown && this.input.activePointer.x > 350) {
         fireWeapon(this, sway);
     }
 }
 
 function fireWeapon(scene, sway) {
+    // Simple rate limiting
+    const now = scene.time.now;
+    if (scene.lastFired && now < scene.lastFired + 250) return;
+    scene.lastFired = now;
+
     let bullet = bullets.get(scene.player.x, scene.player.y);
     if (bullet) {
         bullet.setActive(true).setVisible(true);
+        bullet.setPosition(scene.player.x, scene.player.y);
+        
         let accuracyOffset = Phaser.Math.FloatBetween(-sway, sway);
-        scene.physics.velocityFromRotation(scene.player.rotation + accuracyOffset, 400, bullet.body.velocity);
+        scene.physics.velocityFromRotation(scene.player.rotation + accuracyOffset, 500, bullet.body.velocity);
+        bullet.setRotation(scene.player.rotation);
+
+        // Despawn bullet after it leaves view
+        scene.time.delayedCall(1500, () => {
+            if (bullet.active) bullet.setActive(false).setVisible(false);
+        });
     }
 }
-
-import { initializeApp } from "firebase/app";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { getFirestore, doc, onSnapshot, updateDoc, increment } from "firebase/firestore";
-
-const firebaseConfig = { /* YOUR CONFIG HERE */ };
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-// Global Stats Object accessible by Phaser
-window.playerStats = { stamina: 100, xp: 0, morale: 100 };
-
-// 1. Handle Login
-async function handleLogin() {
-    const email = document.getElementById('email').value;
-    const pass = document.getElementById('password').value;
-    
-    try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, pass);
-        document.getElementById('login-screen').classList.add('hidden');
-        document.getElementById('game-container').classList.remove('hidden');
-        listenToStats(userCredential.user.uid);
-    } catch (error) {
-        alert("ACCESS DENIED: Check Credentials");
-    }
-}
-
-// 2. Real-time Stats Sync
-function listenToStats(uid) {
-    onSnapshot(doc(db, "players", uid), (doc) => {
-        if (doc.exists()) {
-            window.playerStats = doc.data();
-            updateHUD(); // Visual update
-        }
-    });
-}
-
-// 3. Garrison Formation Logic
-window.reportForFormation = async () => {
-    const user = auth.currentUser;
-    if (!user) return;
-
-    const playerRef = doc(db, "players", user.uid);
-    await updateDoc(playerRef, {
-        xp: increment(50),
-        stamina: increment(-10)
-    });
-};
