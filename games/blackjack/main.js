@@ -1,15 +1,14 @@
 /**
  * MOS 11B: Garrison Life - Main Game Engine
- * Handles Phaser 3 rendering, movement, and combat.
+ * Integrated with Custom Audio and Uniform Logic
  */
 
-// 1. PHASER CONFIGURATION
 const config = {
     type: Phaser.AUTO,
     parent: 'game-container',
     width: window.innerWidth,
     height: window.innerHeight,
-    transparent: true, // Allows CSS backgrounds/HUD to show through
+    transparent: true,
     physics: {
         default: 'arcade',
         arcade: { debug: false }
@@ -17,7 +16,6 @@ const config = {
     scene: { preload: preload, create: create, update: update }
 };
 
-// Global Game Instance
 const game = new Phaser.Game(config);
 
 // Global Variables
@@ -27,152 +25,132 @@ let bullets;
 let lastFired = 0;
 
 function preload() {
-    // Relative path to assets - ensure these files exist in your repo!
-    this.load.image('soldier', '../../assets/infantry/soldier.png');
+    // 1. Load Sprite Assets
+    this.load.image('soldier_ocp', '../../assets/infantry/soldier_ocp.png');
+    this.load.image('soldier_ghillie', '../../assets/infantry/soldier_ghillie.png');
+    this.load.image('soldier_pt', '../../assets/infantry/soldier_pt.png');
     this.load.image('bullet', '../../assets/infantry/bullet.png'); 
+    this.load.image('target', '../../assets/infantry/target.png'); 
     
-    // Virtual Joystick Plugin
+    // 2. Load Your Specific Audio Assets
+    this.load.audio('m4_shot', '../../assets/infantry/firearm-discharge-1.mp3');
+    this.load.audio('rifle_burst', '../../assets/infantry/firearm-rifle-discharges.mp3');
+    this.load.audio('relax_trooper', '../../assets/infantry/high-ranking-official-relax-trooper.mp3');
+    this.load.audio('cleaning', '../../assets/infantry/sound-of-cleaning-a-gun-in-mp3-format.mp3');
+    
+    // 3. Load Plugins
     this.load.plugin('rexvirtualjoystickplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js', true);
 }
 
 function create() {
-    // 1. Initialize Soldier
-    soldier = this.physics.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'soldier');
+    // Initialize Soldier (Default OCP)
+    soldier = this.physics.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'soldier_ocp');
     soldier.setCollideWorldBounds(true);
     soldier.setScale(0.8);
+    soldier.speedModifier = 1.0; // Base speed multiplier
 
-    // 2. Initialize Bullets Group
+    // Initialize Bullets
     bullets = this.physics.add.group({
         defaultKey: 'bullet',
         maxSize: 30
     });
 
-    // 3. Initialize Virtual Joystick
+    // Initialize Targets
+    this.targets = this.physics.add.group();
+    
+    // Spawn target loop
+    this.time.addEvent({ 
+        delay: 4000, 
+        callback: () => {
+            let x = Phaser.Math.Between(300, window.innerWidth - 50);
+            let y = Phaser.Math.Between(50, window.innerHeight - 150);
+            let t = this.targets.create(x, y, 'target');
+            t.setScale(0.5);
+            this.time.delayedCall(3000, () => { if (t.active) t.destroy(); });
+        }, 
+        callbackScope: this, 
+        loop: true 
+    });
+
+    // Overlap Detection
+    this.physics.add.overlap(bullets, this.targets, (bullet, target) => {
+        bullet.destroy();
+        target.destroy();
+        if (window.awardXP) window.awardXP(10); 
+    }, null, this);
+
+    // Initialize Joystick
     joystick = this.plugins.get('rexvirtualjoystickplugin').add(this, {
-        x: 120, 
-        y: window.innerHeight - 120,
+        x: 120, y: window.innerHeight - 120,
         radius: 60,
         base: this.add.circle(0, 0, 60, 0x2b3a26, 0.5).setStrokeStyle(2, 0x4af626),
         thumb: this.add.circle(0, 0, 30, 0x4af626)
     });
 
-    // 4. Handle Window Resize
+    // Resize Handler
     window.addEventListener('resize', () => {
         this.scale.resize(window.innerWidth, window.innerHeight);
         joystick.setPosition(120, window.innerHeight - 120);
     });
-
-    // Create a group for targets
-this.targets = this.physics.add.group();
-
-// Function to spawn a random target
-this.spawnTarget = () => {
-    let x = Phaser.Math.Between(300, window.innerWidth - 50);
-    let y = Phaser.Math.Between(50, window.innerHeight - 150);
-    
-    let target = this.targets.create(x, y, 'target'); // Ensure 'target' is preloaded
-    target.setImmovable(true);
-    target.setScale(0.5);
-
-    // Target disappears after 3 seconds if not hit
-    this.time.delayedCall(3000, () => {
-        if (target.active) target.destroy();
-    });
-};
-
-// Spawn a target every 4 seconds
-this.time.addEvent({ delay: 4000, callback: this.spawnTarget, callbackScope: this, loop: true });
-
-// HIT DETECTION: Check if bullet overlaps target
-this.physics.add.overlap(bullets, this.targets, (bullet, target) => {
-    bullet.destroy();
-    target.destroy();
-    
-    // Reward player via Firebase
-    window.awardXP(10); 
-}, null, this);
 }
 
 function update(time) {
-    // --- Movement Logic ---
+    if (!soldier) return;
+
+    // Movement Logic with Uniform Speed Modifier
+    let baseSpeed = 200;
     if (joystick.force > 0) {
-        this.physics.velocityFromRotation(joystick.rotation, 200, soldier.body.velocity);
+        this.physics.velocityFromRotation(joystick.rotation, baseSpeed * soldier.speedModifier, soldier.body.velocity);
         soldier.setRotation(joystick.rotation);
     } else {
         soldier.setVelocity(0);
     }
 
-    // --- Combat Logic (Shooting) ---
-    // Pointer is down, not touching the joystick area, and rate-limiting shots
+    // Shooting Logic
     if (this.input.activePointer.isDown && this.input.activePointer.x > 250 && time > lastFired) {
         fireBullet(this);
-        lastFired = time + 200; // Fire every 200ms
+        lastFired = time + 200; 
     }
 }
 
-/**
- * Handles weapon fire and applies accuracy sway based on Stamina
- */
 function fireBullet(scene) {
-    const bullet = bullets.get(soldier.x, soldier.x);
+    const bullet = bullets.get(soldier.x, soldier.y);
     if (bullet) {
-        bullet.setActive(true);
-        bullet.setVisible(true);
-        bullet.setPosition(soldier.x, soldier.y);
+        // Trigger the specific M4 sound you uploaded
+        scene.sound.play('m4_shot', { volume: 0.5 });
 
-        // Calculate accuracy sway from global window.playerData (synced in auth.js)
+        bullet.setActive(true).setVisible(true).setPosition(soldier.x, soldier.y);
+
         const currentStamina = window.playerData ? window.playerData.stamina : 100;
-        let sway = (100 - currentStamina) * 0.02; // Reduced multiplier for playable accuracy
-        
+        let sway = (100 - currentStamina) * 0.02;
         let randomOffset = Phaser.Math.FloatBetween(-sway, sway);
         
         scene.physics.velocityFromRotation(soldier.rotation + randomOffset, 600, bullet.body.velocity);
         bullet.setRotation(soldier.rotation);
 
-        // Auto-kill bullets after 2 seconds to save memory
         scene.time.delayedCall(2000, () => {
             if (bullet.active) bullet.setActive(false).setVisible(false);
         });
     }
 }
 
-function preload() {
-    this.load.image('soldier_ocp', '../../assets/infantry/soldier_ocp.png');
-    this.load.image('soldier_ghillie', '../../assets/infantry/soldier_ghillie.png');
-    this.load.image('soldier_pt', '../../assets/infantry/soldier_pt.png');
-    // ... load bullet and target
-}
-
-// Function to change equipment and apply stat buffs/debuffs
+// Global Uniform Switcher
 window.equipItem = (itemType) => {
-    if (!soldier || !soldier.active) return;
+    if (!soldier) return;
 
     switch(itemType) {
         case 'ghillie':
             soldier.setTexture('soldier_ghillie');
-            // Ghillie suit is heavy and hot; slower movement, higher stamina drain
-            soldier.speedBuff = 0.7; // 70% speed
-            window.playerData.equipped_uniform = "Ghillie Suit";
+            soldier.speedModifier = 0.7; 
             break;
         case 'pt':
             soldier.setTexture('soldier_pt');
-            // PT uniform is light; faster movement
-            soldier.speedBuff = 1.3; // 130% speed
-            window.playerData.equipped_uniform = "PT Uniform";
+            soldier.speedModifier = 1.4; 
             break;
-        default: // 'ocp'
+        default:
             soldier.setTexture('soldier_ocp');
-            soldier.speedBuff = 1.0; // Standard speed
-            window.playerData.equipped_uniform = "OCP Scorpion";
+            soldier.speedModifier = 1.0;
     }
-
-    // Optional: Update the DB with the new equipped item
-    const user = auth.currentUser;
-    if (user) {
-        db.collection("players").doc(user.uid).update({
-            equipped_uniform: window.playerData.equipped_uniform
-        });
-    }
+    
+    console.log(`Uniform changed to ${itemType}. Speed modifier: ${soldier.speedModifier}`);
 };
-
-
