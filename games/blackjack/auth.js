@@ -90,3 +90,31 @@ window.reportForFormation = async () => {
         console.error("Failed to update formation stats:", e);
     }
 };
+
+// Function to award XP for successful hits
+window.awardXP = async (amount) => {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    try {
+        await db.collection("players").doc(user.uid).update({
+            xp: firebase.firestore.FieldValue.increment(amount),
+            // Shooting also drains a tiny bit of stamina
+            stamina: firebase.firestore.FieldValue.increment(-0.5) 
+        });
+    } catch (e) {
+        console.error("Failed to update score:", e);
+    }
+};
+
+// Automatically recover stamina every 30 seconds if not active
+setInterval(async () => {
+    const user = auth.currentUser;
+    if (user && window.playerData.stamina < 100) {
+        await db.collection("players").doc(user.uid).update({
+            stamina: firebase.firestore.FieldValue.increment(2)
+        });
+    }
+}, 30000); // Every 30 seconds
+
+
