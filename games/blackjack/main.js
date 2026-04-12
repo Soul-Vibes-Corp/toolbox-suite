@@ -1,135 +1,107 @@
-// 1. FIREBASE INITIALIZATION
-const firebaseConfig = {
-    apiKey: "AIzaSyA0tfVT75kWle3uwz1HouHRQdEWyzW1YNU",
-    authDomain: "chat-code-forum.firebaseapp.com",
-    projectId: "chat-code-forum",
-    storageBucket: "chat-code-forum.firebasestorage.app",
-    messagingSenderId: "496765673859",
-    appId: "1:496765673859:web:6c2e6695be447d6e32d6b6",
-    measurementId: "G-XJKWXHF8WN"
-};
+/**
+ * MOS 11B: Garrison Life - Main Game Engine
+ * Handles Phaser 3 rendering, movement, and combat.
+ */
 
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-
-let player;
-let joystick;
-let windowStats = { stamina: 100, xp: 0, rank: "PVT" };
-
-// 2. AUTHENTICATION LOGIC
-window.handleLogin = async () => {
-    const email = document.getElementById('email').value;
-    const pass = document.getElementById('password').value;
-    try {
-        const userCred = await auth.signInWithEmailAndPassword(email, pass);
-        document.getElementById('login-screen').classList.add('hidden');
-        document.getElementById('game-container').classList.remove('hidden');
-        syncData(userCred.user.uid);
-    } catch (err) { alert("SITREP: Login Failed."); }
-};
-
-function syncData(uid) {
-    db.collection("players").doc(uid).onSnapshot((doc) => {
-        if (doc.exists()) {
-            windowStats = doc.data();
-            document.getElementById('stamina-fill').style.width = windowStats.stamina + "%";
-            document.getElementById('xp-val').innerText = windowStats.xp;
-            document.getElementById('rank-val').innerText = windowStats.rank;
-        }
-    });
-}
-
-window.reportForFormation = async () => {
-    const uid = auth.currentUser.uid;
-    await db.collection("players").doc(uid).update({
-        xp: firebase.firestore.FieldValue.increment(50),
-        stamina: firebase.firestore.FieldValue.increment(-5)
-    });
-};
-
-// 3. PHASER 3 GAME ENGINE
-const phaserConfig = {
-    type: Phaser.AUTO,
-    parent: 'game-container',
-    width: window.innerWidth,
-    height: window.innerHeight,
-    transparent: true, // Shows the CSS background
-    physics: { default: 'arcade' },
-    scene: { preload: preload, create: create, update: update }
-};
-
-const game = new Phaser.Game(phaserConfig);
-
-function preload() {
-    this.load.image('soldier', 'https://labs.phaser.io/assets/sprites/asikane.png'); // Placeholder
-    this.load.plugin('rexvirtualjoystickplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js', true);
-}
-
-function create() {
-    player = this.physics.add.sprite(400, 300, 'soldier').setScale(0.5);
-    
-    joystick = this.plugins.get('rexvirtualjoystickplugin').add(this, {
-        x: 100, y: window.innerHeight - 100,
-        radius: 60,
-        base: this.add.circle(0, 0, 60, 0x2b3a26, 0.5).setStrokeStyle(2, 0x4af626),
-        thumb: this.add.circle(0, 0, 30, 0x4af626)
-    });
-}
-
-function update() {
-    // Movement Logic
-    if (joystick.force > 0) {
-        this.physics.velocityFromRotation(joystick.rotation, 200, player.body.velocity);
-        player.setRotation(joystick.rotation);
-    } else {
-        player.setVelocity(0);
-    }
-
-    // Shooting Sway Logic
-    if (this.input.activePointer.isDown && this.input.activePointer.x > 250) {
-        let sway = (100 - windowStats.stamina) * 0.02; 
-        console.log("Firing with sway:", sway);
-        // Add bullet logic here as needed
-    }
-}
-
+// 1. PHASER CONFIGURATION
 const config = {
     type: Phaser.AUTO,
     parent: 'game-container',
     width: window.innerWidth,
     height: window.innerHeight,
-    transparent: true,
-    physics: { default: 'arcade' },
+    transparent: true, // Allows CSS backgrounds/HUD to show through
+    physics: {
+        default: 'arcade',
+        arcade: { debug: false }
+    },
     scene: { preload: preload, create: create, update: update }
 };
 
+// Global Game Instance
 const game = new Phaser.Game(config);
+
+// Global Variables
 let soldier;
 let joystick;
+let bullets;
+let lastFired = 0;
 
 function preload() {
-    // Relative path to assets
+    // Relative path to assets - ensure these files exist in your repo!
     this.load.image('soldier', '../../assets/infantry/soldier.png');
+    this.load.image('bullet', '../../assets/infantry/bullet.png'); 
+    
+    // Virtual Joystick Plugin
     this.load.plugin('rexvirtualjoystickplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js', true);
 }
 
 function create() {
-    soldier = this.physics.add.sprite(window.innerWidth/2, window.innerHeight/2, 'soldier');
-    
+    // 1. Initialize Soldier
+    soldier = this.physics.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'soldier');
+    soldier.setCollideWorldBounds(true);
+    soldier.setScale(0.8);
+
+    // 2. Initialize Bullets Group
+    bullets = this.physics.add.group({
+        defaultKey: 'bullet',
+        maxSize: 30
+    });
+
+    // 3. Initialize Virtual Joystick
     joystick = this.plugins.get('rexvirtualjoystickplugin').add(this, {
-        x: 100, y: window.innerHeight - 100,
+        x: 120, 
+        y: window.innerHeight - 120,
         radius: 60,
         base: this.add.circle(0, 0, 60, 0x2b3a26, 0.5).setStrokeStyle(2, 0x4af626),
         thumb: this.add.circle(0, 0, 30, 0x4af626)
     });
+
+    // 4. Handle Window Resize
+    window.addEventListener('resize', () => {
+        this.scale.resize(window.innerWidth, window.innerHeight);
+        joystick.setPosition(120, window.innerHeight - 120);
+    });
 }
 
-function update() {
+function update(time) {
+    // --- Movement Logic ---
     if (joystick.force > 0) {
         this.physics.velocityFromRotation(joystick.rotation, 200, soldier.body.velocity);
         soldier.setRotation(joystick.rotation);
     } else {
         soldier.setVelocity(0);
+    }
+
+    // --- Combat Logic (Shooting) ---
+    // Pointer is down, not touching the joystick area, and rate-limiting shots
+    if (this.input.activePointer.isDown && this.input.activePointer.x > 250 && time > lastFired) {
+        fireBullet(this);
+        lastFired = time + 200; // Fire every 200ms
+    }
+}
+
+/**
+ * Handles weapon fire and applies accuracy sway based on Stamina
+ */
+function fireBullet(scene) {
+    const bullet = bullets.get(soldier.x, soldier.x);
+    if (bullet) {
+        bullet.setActive(true);
+        bullet.setVisible(true);
+        bullet.setPosition(soldier.x, soldier.y);
+
+        // Calculate accuracy sway from global window.playerData (synced in auth.js)
+        const currentStamina = window.playerData ? window.playerData.stamina : 100;
+        let sway = (100 - currentStamina) * 0.02; // Reduced multiplier for playable accuracy
+        
+        let randomOffset = Phaser.Math.FloatBetween(-sway, sway);
+        
+        scene.physics.velocityFromRotation(soldier.rotation + randomOffset, 600, bullet.body.velocity);
+        bullet.setRotation(soldier.rotation);
+
+        // Auto-kill bullets after 2 seconds to save memory
+        scene.time.delayedCall(2000, () => {
+            if (bullet.active) bullet.setActive(false).setVisible(false);
+        });
     }
 }
