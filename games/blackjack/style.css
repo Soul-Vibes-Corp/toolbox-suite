@@ -1,97 +1,158 @@
+/* --- TACTICAL HUD SYSTEM VARIABLES --- */
 :root {
-    --green: #4af626;
-    --dark-green: #1a2318;
+    --terminal-green: #4af626;
+    --army-green: #1a2318;
+    --border-glow: rgba(74, 246, 38, 0.3);
+    --bg-black: #050505;
 }
 
-body, html { 
-    margin: 0; padding: 0; height: 100%; 
-    background: #000; color: var(--green);
-    font-family: 'Courier New', monospace;
+/* --- CORE LAYOUT --- */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-black);
+    color: var(--terminal-green);
+    font-family: 'Courier New', Courier, monospace;
+    overflow: hidden; /* Prevents mobile scrolling issues */
 }
 
-#game-container { position: relative; width: 100vw; height: 100vh; }
+#game-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    z-index: 5;
+}
 
 .hidden { display: none !important; }
 
-/* The Terminal Look */
-.terminal-box {
-    border: 2px solid var(--green);
-    padding: 2rem;
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0, 20, 0, 0.9);
-}
-
-.btn-tactical {
-    background: var(--dark-green);
-    color: var(--green);
-    border: 1px solid var(--green);
-    padding: 10px;
-    width: 100%;
-    margin-top: 10px;
-    cursor: pointer;
-}
-
-#stamina-bar {
-    width: 200px; height: 10px;
-    border: 1px solid var(--green);
-    margin-top: 5px;
-}
-
-#stamina-fill {
-    width: 100%; height: 100%;
-    background: var(--green);
-    transition: width 0.3s ease;
-}
-
-:root {
-    --army-green: #2b3a26;
-    --terminal-green: #4af626;
-    --low-red: #8b0000;
-}
-
-body {
-    margin: 0; background: #050505;
-    color: var(--terminal-green);
-    font-family: 'Courier New', monospace;
-    overflow: hidden;
-}
-
-.hidden { display: none; }
-
-/* CRT Scanline Effect */
+/* --- CRT SCANLINE EFFECT --- */
 .scanlines {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
     background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%),
                 linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
     background-size: 100% 3px, 3px 100%;
-    pointer-events: none; z-index: 100;
+    pointer-events: none;
+    z-index: 100;
 }
 
+/* --- AUTHENTICATION TERMINAL --- */
 .terminal-box {
     border: 2px solid var(--terminal-green);
-    padding: 30px; position: absolute;
-    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    padding: 30px;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
     background: rgba(10, 20, 10, 0.95);
     text-align: center;
+    box-shadow: 0 0 20px var(--border-glow);
+    z-index: 110;
 }
 
-.btn-tactical, .btn-formation {
-    background: var(--army-green); color: var(--terminal-green);
+.terminal-box input {
+    background: transparent;
     border: 1px solid var(--terminal-green);
-    padding: 10px 20px; cursor: pointer;
-    text-transform: uppercase; margin-top: 10px;
+    color: var(--terminal-green);
+    padding: 10px;
+    margin: 10px 0;
+    width: 80%;
 }
 
-.hud-header {
-    position: absolute; top: 10px; left: 10px; right: 10px;
-    display: flex; justify-content: space-between; z-index: 50;
+/* --- HUD OVERLAY (TOP STATS) --- */
+.hud-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    z-index: 50;
 }
 
-.bar-bg { width: 100px; height: 10px; border: 1px solid var(--terminal-green); display: inline-block; }
-#stamina-fill { height: 100%; background: var(--terminal-green); width: 100%; transition: 0.3s; }
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    text-shadow: 0 0 5px var(--terminal-green);
+}
 
+.stamina-container { margin-top: 10px; }
+
+.bar-outer {
+    width: 200px;
+    height: 12px;
+    border: 1px solid var(--terminal-green);
+    background: rgba(0, 40, 0, 0.5);
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#stamina-fill {
+    height: 100%;
+    background: var(--terminal-green);
+    width: 100%;
+    transition: width 0.4s ease-out;
+}
+
+/* --- INTERACTION MENU (BOTTOM BUTTONS) --- */
+.interaction-menu {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 60;
+}
+
+.btn-tactical {
+    background: var(--army-green);
+    color: var(--terminal-green);
+    border: 1px solid var(--terminal-green);
+    padding: 12px 24px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+}
+
+.btn-tactical:hover {
+    background: var(--terminal-green);
+    color: var(--army-green);
+}
+
+/* --- INVENTORY SIDE PANEL --- */
+.hud-side {
+    position: absolute;
+    left: 20px;
+    top: 100px;
+    border-left: 2px solid var(--terminal-green);
+    padding-left: 15px;
+    background: rgba(0, 20, 0, 0.3);
+}
+
+.inventory-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.slot {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.slot div {
+    font-size: 1.1rem;
+    color: var(--terminal-green);
+    border-bottom: 1px solid rgba(74, 246, 38, 0.2);
+    padding: 3px 0;
+}
+
+/* --- ANIMATIONS --- */
 @keyframes flicker {
     0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.9; }
 }
