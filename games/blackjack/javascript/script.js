@@ -77,3 +77,52 @@ function fireWeapon(scene, sway) {
         scene.physics.velocityFromRotation(scene.player.rotation + accuracyOffset, 400, bullet.body.velocity);
     }
 }
+
+import { initializeApp } from "firebase/app";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getFirestore, doc, onSnapshot, updateDoc, increment } from "firebase/firestore";
+
+const firebaseConfig = { /* YOUR CONFIG HERE */ };
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// Global Stats Object accessible by Phaser
+window.playerStats = { stamina: 100, xp: 0, morale: 100 };
+
+// 1. Handle Login
+async function handleLogin() {
+    const email = document.getElementById('email').value;
+    const pass = document.getElementById('password').value;
+    
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, pass);
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('game-container').classList.remove('hidden');
+        listenToStats(userCredential.user.uid);
+    } catch (error) {
+        alert("ACCESS DENIED: Check Credentials");
+    }
+}
+
+// 2. Real-time Stats Sync
+function listenToStats(uid) {
+    onSnapshot(doc(db, "players", uid), (doc) => {
+        if (doc.exists()) {
+            window.playerStats = doc.data();
+            updateHUD(); // Visual update
+        }
+    });
+}
+
+// 3. Garrison Formation Logic
+window.reportForFormation = async () => {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const playerRef = doc(db, "players", user.uid);
+    await updateDoc(playerRef, {
+        xp: increment(50),
+        stamina: increment(-10)
+    });
+};
