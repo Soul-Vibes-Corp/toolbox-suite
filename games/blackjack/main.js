@@ -135,3 +135,44 @@ function fireBullet(scene) {
         });
     }
 }
+
+function preload() {
+    this.load.image('soldier_ocp', '../../assets/infantry/soldier_ocp.png');
+    this.load.image('soldier_ghillie', '../../assets/infantry/soldier_ghillie.png');
+    this.load.image('soldier_pt', '../../assets/infantry/soldier_pt.png');
+    // ... load bullet and target
+}
+
+// Function to change equipment and apply stat buffs/debuffs
+window.equipItem = (itemType) => {
+    if (!soldier || !soldier.active) return;
+
+    switch(itemType) {
+        case 'ghillie':
+            soldier.setTexture('soldier_ghillie');
+            // Ghillie suit is heavy and hot; slower movement, higher stamina drain
+            soldier.speedBuff = 0.7; // 70% speed
+            window.playerData.equipped_uniform = "Ghillie Suit";
+            break;
+        case 'pt':
+            soldier.setTexture('soldier_pt');
+            // PT uniform is light; faster movement
+            soldier.speedBuff = 1.3; // 130% speed
+            window.playerData.equipped_uniform = "PT Uniform";
+            break;
+        default: // 'ocp'
+            soldier.setTexture('soldier_ocp');
+            soldier.speedBuff = 1.0; // Standard speed
+            window.playerData.equipped_uniform = "OCP Scorpion";
+    }
+
+    // Optional: Update the DB with the new equipped item
+    const user = auth.currentUser;
+    if (user) {
+        db.collection("players").doc(user.uid).update({
+            equipped_uniform: window.playerData.equipped_uniform
+        });
+    }
+};
+
+
