@@ -26,6 +26,9 @@ let lastFired = 0;
 let isAtBarracks = false;
 let relaxPlayed = false;
 let cleaningSound; 
+let ruckWaypoint;
+let ruckLabel;
+let isRucking = false;
 
 function preload() {
     // 1. Load Sprite Assets
@@ -56,6 +59,33 @@ function create() {
     bullets = this.physics.add.group({
         defaultKey: 'bullet',
         maxSize: 30
+
+    // Create the Ruck Waypoint (A glowing green circle)
+ruckWaypoint = this.add.circle(0, 0, 40, 0x4af626, 0.2).setStrokeStyle(2, 0x4af626);
+ruckLabel = this.add.text(0, 0, 'WAYPOINT', { fontSize: '12px', fill: '#4af626' }).setOrigin(0.5, 2.5);
+
+// Hide it by default
+ruckWaypoint.setVisible(false);
+ruckLabel.setVisible(false);
+
+// Function to generate a new waypoint
+this.spawnWaypoint = () => {
+    let newX = Phaser.Math.Between(100, window.innerWidth - 100);
+    let newY = Phaser.Math.Between(100, window.innerHeight - 100);
+    ruckWaypoint.setPosition(newX, newY).setVisible(true);
+    ruckLabel.setPosition(newX, newY).setVisible(true);
+    isRucking = true;
+};
+
+// Global trigger for the "RUCK MARCH" button in HTML
+window.startRuck = () => {
+    if (isAtBarracks) {
+        this.spawnWaypoint();
+        console.log("Ruck March Commenced. Move to the waypoint.");
+    } else {
+        alert("You must be at the Barracks to start a Ruck March.");
+    }
+};    
     });
 
     // Barracks Zone Setup
@@ -141,6 +171,26 @@ function update(time) {
             lastFired = time + 200;
         }
     }
+
+    // --- 4. RUCK WAYPOINT LOGIC ---
+if (isRucking) {
+    let dist = Phaser.Math.Distance.Between(soldier.x, soldier.y, ruckWaypoint.x, ruckWaypoint.y);
+    
+    // If player is moving while rucking, drain extra stamina
+    if (joystick.force > 0 && window.playerData) {
+        window.playerData.stamina -= 0.05; 
+    }
+
+    // Check if waypoint reached
+    if (dist < 40) {
+        isRucking = false;
+        ruckWaypoint.setVisible(false);
+        ruckLabel.setVisible(false);
+        
+        if (window.awardXP) window.awardXP(150); // Big reward for rucking
+        console.log("Waypoint Reached. XP Awarded.");
+    }
+}
 }
 
 function fireBullet(scene) {
