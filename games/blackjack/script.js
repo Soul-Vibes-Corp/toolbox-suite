@@ -25,6 +25,30 @@ const config = {
     }
 };
 
+// Inside your Phaser Scene
+create() {
+    this.joyStick = this.plugins.get('rexvirtualjoystickplugin').add(this, {
+        x: 150,
+        y: window.innerHeight - 150,
+        radius: 80,
+        base: this.add.circle(0, 0, 80, 0x2b3a26, 0.5).setStrokeStyle(2, 0x4af626),
+        thumb: this.add.circle(0, 0, 40, 0x4af626),
+    });
+}
+
+update() {
+    const cursorKeys = this.joyStick.createCursorKeys();
+    let speed = 200;
+
+    // Apply movement to the 11B Sprite
+    if (this.joyStick.force > 0) {
+        this.physics.velocityFromRotation(this.joyStick.rotation, speed, player.body.velocity);
+        player.setRotation(this.joyStick.rotation); // Soldier faces the direction of travel
+    } else {
+        player.setVelocity(0);
+    }
+}
+
 import { db } from "./firebase-config";
 import { doc, updateDoc, increment } from "firebase/firestore";
 
