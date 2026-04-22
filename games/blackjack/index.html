@@ -1,11 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MOS 11B: Garrison Life | Tactical Web</title>
     <link rel="stylesheet" href="style.css">
-    
     <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
@@ -13,57 +9,24 @@
 </head>
 <body>
     <div class="scanlines"></div>
-
     <div id="login-screen">
         <div class="terminal-box">
-            <h1 class="flicker">INFANTRY TERMINAL v2.0</h1>
-            <p>SECURE DATA LINK REQUIRED</p>
-            <input type="email" id="email" placeholder="CAC-ID (Email)">
+            <h2>COMMAND LOGIN</h2>
+            <input type="email" id="email" placeholder="EMAIL">
             <input type="password" id="password" placeholder="PASSWORD">
             <button onclick="handleLogin()" class="btn-tactical">AUTHENTICATE</button>
         </div>
     </div>
-
     <div id="game-container" class="hidden">
         <div class="hud-overlay">
-            <div class="stat-row">
-                <span>RANK: <b id="rank-val">PVT</b></span>
-                <span>XP: <b id="xp-val">0</b></span>
-            </div>
-            <div class="stamina-container">
-                STAMINA: 
-                <div class="bar-outer">
-                    <div id="stamina-fill"></div>
-                </div>
-            </div>
+            <div>RANK: <span id="rank-val">PVT</span> | XP: <span id="xp-val">0</span></div>
+            <div class="stamina-container"><div id="stamina-fill"></div></div>
         </div>
-
-        <div id="inventory-screen" class="hud-side">
-            <h3>EQUIPMENT MANIFEST</h3>
-            <div class="inventory-grid">
-                <div class="slot">
-                    <span class="label">WEAPON</span>
-                    <div id="weapon-display">M4A1</div>
-                </div>
-                <div class="slot">
-                    <span class="label">UNIFORM SELECTION</span>
-                    <div class="uniform-options">
-                        <button onclick="equipItem('ocp')" class="btn-inv">OCP</button>
-                        <button onclick="equipItem('ghillie')" class="btn-inv">GHILLIE</button>
-                        <button onclick="equipItem('pt')" class="btn-inv">PT</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <div class="interaction-menu">
-            <button onclick="reportForFormation()" class="btn-tactical">FORMATION</button>
-            <button onclick="window.startRuck && startRuck()" class="btn-tactical">RUCK MARCH</button>
+            <button onclick="window.startRuck()" class="btn-tactical">START RUCK</button>
         </div>
     </div>
-
     <script src="auth.js"></script>
     <script src="main.js"></script>
-    <script src="script.js"></script>
 </body>
 </html>
