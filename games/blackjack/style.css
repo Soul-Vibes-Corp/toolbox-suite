@@ -1,51 +1,14 @@
-:root {
-    --terminal-green: #4af626;
-    --glass-bg: rgba(5, 15, 5, 0.85);
-    --army-drab: #2b3a26;
-}
-
-body, html { margin: 0; padding: 0; background: #000; overflow: hidden; font-family: 'Courier New', monospace; }
-
+:root { --terminal-green: #4af626; --army-green: #1a2318; --bg-black: #050505; }
+body, html { margin: 0; padding: 0; background: var(--bg-black); color: var(--terminal-green); font-family: 'Courier New', monospace; overflow: hidden; }
 .hidden { display: none !important; }
-
-/* The "Visor" Scanlines */
-.scanlines {
-    position: fixed; width: 100vw; height: 100vh;
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%),
-                linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-    background-size: 100% 2px, 2px 100%;
-    pointer-events: none; z-index: 1000; opacity: 0.3;
-}
-
-/* Advanced HUD Styling */
-.hud-overlay {
-    position: absolute; top: 20px; left: 20px;
-    background: var(--glass-bg);
-    border-left: 4px solid var(--terminal-green);
-    padding: 15px; z-index: 100;
-    box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
-}
-
-.stamina-container {
-    width: 200px; height: 8px; background: rgba(0,0,0,0.5);
-    margin-top: 10px; border: 1px solid var(--terminal-green);
-}
-
-#stamina-fill {
-    height: 100%; background: var(--terminal-green);
-    box-shadow: 0 0 10px var(--terminal-green);
-    transition: width 0.3s ease;
-}
-
-.interaction-menu {
-    position: absolute; bottom: 30px; right: 30px;
-    display: flex; flex-direction: column; gap: 10px; z-index: 100;
-}
-
-.btn-tactical {
-    background: var(--army-drab); color: var(--terminal-green);
-    border: 1px solid var(--terminal-green); padding: 12px 25px;
-    cursor: pointer; text-transform: uppercase; font-weight: bold;
-}
-
+.scanlines { position: fixed; width: 100%; height: 100%; background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.1) 50%); background-size: 100% 3px; pointer-events: none; z-index: 1000; opacity: 0.2; }
+#login-screen { position: fixed; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 500; background: #000; }
+.terminal-box { border: 2px solid var(--terminal-green); padding: 40px; background: #050505; text-align: center; }
+.terminal-box input { display: block; width: 100%; margin: 10px 0; background: transparent; border: 1px solid var(--terminal-green); color: var(--terminal-green); padding: 10px; }
+.hud-overlay, .hud-side, .interaction-menu { position: absolute; z-index: 100; padding: 20px; }
+.hud-side { top: 120px; left: 0; border-left: 3px solid var(--terminal-green); }
+.interaction-menu { bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; }
+.bar-outer { width: 200px; height: 10px; border: 1px solid var(--terminal-green); }
+#stamina-fill { background: var(--terminal-green); height: 100%; width: 100%; }
+.btn-tactical, .btn-inv { background: var(--army-green); color: var(--terminal-green); border: 1px solid var(--terminal-green); cursor: pointer; padding: 10px; text-transform: uppercase; }
 .btn-tactical:hover { background: var(--terminal-green); color: #000; }
