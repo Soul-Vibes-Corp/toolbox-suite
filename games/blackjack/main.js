@@ -13,6 +13,7 @@ let soldier, joystick, bullets, cleaningSound, ruckWaypoint;
 let lastFired = 0, isAtBarracks = false, relaxPlayed = false, isRucking = false;
 
 function preload() {
+    this.load.image('terrain', 'https://labs.phaser.io/assets/textures/grass.png');
     this.load.image('soldier_ocp', '../../assets/infantry/soldier_ocp.png');
     this.load.image('soldier_ghillie', '../../assets/infantry/soldier_ghillie.png');
     this.load.image('soldier_pt', '../../assets/infantry/soldier_pt.png');
@@ -47,6 +48,32 @@ function create() {
     });
 
     this.physics.add.overlap(bullets, this.targets, (b, t) => { b.destroy(); t.destroy(); window.awardXP(10); });
+
+    // 1. SET THE WORLD SIZE (3000x3000px creates a massive battlefield)
+    const worldSize = 3000;
+    this.cameras.main.setBounds(0, 0, worldSize, worldSize);
+    this.physics.world.setBounds(0, 0, worldSize, worldSize);
+
+    // 2. THE BACKGROUND FIX: 
+    // We add a TileSprite. This repeats the 'terrain' image across the whole map.
+    // We set the depth to -1 to ensure it stays UNDER the soldier and buildings.
+    let ground = this.add.tileSprite(0, 0, worldSize, worldSize, 'terrain')
+        .setOrigin(0, 0)
+        .setDepth(-1)
+        .setAlpha(0.8); // 0.8 keeps it slightly dark/tactical
+
+    // 3. OPTIONAL: Add a "Grid" for that tactical sim look
+    let graphics = this.add.graphics();
+    graphics.lineStyle(1, 0x4af626, 0.05); // Very faint green lines
+    for (let i = 0; i < worldSize; i += 64) {
+        graphics.moveTo(i, 0);
+        graphics.lineTo(i, worldSize);
+        graphics.moveTo(0, i);
+        graphics.lineTo(worldSize, i);
+    }
+    graphics.strokePath();
+
+    // ... rest of your soldier and joystick code
 }
 
 function update(time) {
