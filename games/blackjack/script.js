@@ -18,7 +18,4 @@ window.reportForFormation = () => {
     window.awardXP(25);
     alert("Reported for formation. +25 XP");
 
-    // Update speed modifiers
-    const mods = { 'ghillie': 0.7, 'pt': 1.5, 'ocp': 1.0 };
-    soldier.speedModifier = mods[itemType];
 };
