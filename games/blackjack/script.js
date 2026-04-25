@@ -3,6 +3,7 @@ window.equipItem = (itemType) => {
     const mods = { 'ghillie': 0.7, 'pt': 1.5, 'ocp': 1.0 };
     soldier.setTexture(`soldier_${itemType}`);
     soldier.speedModifier = mods[itemType];
+    soldier.setDisplaySize(64, 64);
 };
 
 window.startRuck = () => {
@@ -16,4 +17,8 @@ window.startRuck = () => {
 window.reportForFormation = () => {
     window.awardXP(25);
     alert("Reported for formation. +25 XP");
+
+    // Update speed modifiers
+    const mods = { 'ghillie': 0.7, 'pt': 1.5, 'ocp': 1.0 };
+    soldier.speedModifier = mods[itemType];
 };
