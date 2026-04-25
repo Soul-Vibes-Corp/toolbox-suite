@@ -3,7 +3,7 @@ const config = {
     parent: 'game-container',
     width: window.innerWidth,
     height: window.innerHeight,
-    transparent: false, // Changed to false to support background colors
+    transparent: false, 
     backgroundColor: '#1a2318',
     physics: { default: 'arcade', arcade: { debug: false } },
     scene: { preload: preload, create: create, update: update }
@@ -37,35 +37,52 @@ function create() {
     let ground = this.add.tileSprite(0, 0, worldSize, worldSize, 'terrain')
         .setOrigin(0, 0).setDepth(-2).setAlpha(0.5);
 
-    // 2. VISUAL LOCATIONS
-    // Barracks (Top Left) - Where the official is
-    this.add.rectangle(150, 150, 300, 300, 0x333333, 0.8).setStrokeStyle(4, 0x4af626);
-    this.add.text(40, 40, "HQ BARRACKS\n(SAFE ZONE)", { font: "bold 18px Courier", fill: "#4af626" });
+    // --- 2. VISUAL LOCATIONS ---
 
-    // PT Field (Top Right)
-    this.add.grid(2500, 300, 400, 400, 64, 64, 0x4af626, 0.1, 0x4af626, 0.3);
-    this.add.text(2350, 100, "PT FORMATION AREA", { font: "bold 18px Courier", fill: "#4af626" });
+    // BARRACKS (SAFETY ZONE) - Moved to far right
+    const barracksX = worldSize - 400;
+    const barracksY = 100;
+    this.add.rectangle(barracksX + 150, barracksY + 150, 400, 400, 0x333333, 0.8).setStrokeStyle(4, 0x4af626);
+    this.add.text(barracksX + 20, barracksY + 20, "HQ BARRACKS\n(SAFETY ZONE)", { font: "bold 18px Courier", fill: "#4af626" });
 
-    // Ruck Start Point (Bottom Left)
-    this.add.circle(300, 2700, 100, 0x4af626, 0.2).setStrokeStyle(2, 0x4af626);
-    this.add.text(200, 2550, "RUCK MARCH\nDEPARTURE", { font: "bold 18px Courier", fill: "#4af626" });
+    // PT FIELD & RUNNING TRACK (Top Center-Right)
+    // Visual track: A large rounded rectangle outline
+    this.add.graphics()
+        .lineStyle(20, 0x555555, 0.8)
+        .strokeRoundedRect(barracksX - 900, 150, 600, 300, 100); 
+    this.add.grid(barracksX - 600, 300, 200, 200, 32, 32, 0x4af626, 0.1, 0x4af626, 0.3);
+    this.add.text(barracksX - 750, 80, "PT RUNNING TRACK", { font: "bold 18px Courier", fill: "#4af626" });
 
-    // 3. SOLDIER SETUP
-    soldier = this.physics.add.sprite(400, 400, 'soldier_ocp');
-    soldier.setDisplaySize(64, 64); // FIX: Keeps soldier small
+    // RUCK MARCH TRAIL (Bottom Left)
+    // Drawing a dirt-style trail line
+    let trail = this.add.graphics();
+    trail.lineStyle(40, 0x3d2b1f, 0.6);
+    trail.beginPath();
+    trail.moveTo(100, 2900);
+    trail.lineTo(500, 2500);
+    trail.lineTo(1000, 2600);
+    trail.lineTo(1500, 2200);
+    trail.strokePath();
+    
+    this.add.circle(300, 2700, 120, 0x4af626, 0.2).setStrokeStyle(2, 0x4af626);
+    this.add.text(180, 2520, "RUCK TRAIL START", { font: "bold 18px Courier", fill: "#4af626" });
+
+    // --- 3. SOLDIER SETUP ---
+    // Start the soldier inside the new barracks on the right
+    soldier = this.physics.add.sprite(barracksX + 150, barracksY + 150, 'soldier_ocp');
+    soldier.setDisplaySize(64, 64);
     soldier.setCollideWorldBounds(true);
     soldier.speedModifier = 1.0;
 
-    // Camera follow
     this.cameras.main.startFollow(soldier, true, 0.1, 0.1);
 
-    // 4. COMBAT & OBJECTS
+    // --- 4. COMBAT & OBJECTS ---
     bullets = this.physics.add.group({ defaultKey: 'bullet', maxSize: 20 });
     this.targets = this.physics.add.group();
     cleaningSound = this.sound.add('cleaning', { loop: true, volume: 0.3 });
     ruckWaypoint = this.add.circle(0, 0, 60, 0xff0000, 0.3).setStrokeStyle(3, 0xff0000).setVisible(false);
 
-    // 5. JOYSTICK (Fixed to Screen)
+    // --- 5. JOYSTICK (Fixed to Screen) ---
     joystick = this.plugins.get('rexvirtualjoystickplugin').add(this, {
         x: 120, y: window.innerHeight - 120, radius: 60,
         base: this.add.circle(0, 0, 60, 0x2b3a26, 0.5).setStrokeStyle(2, 0x4af626).setScrollFactor(0),
@@ -81,16 +98,16 @@ function update(time) {
     // Movement Logic
     if (joystick.force > 0) {
         this.physics.velocityFromRotation(joystick.rotation, 250 * soldier.speedModifier, soldier.body.velocity);
-        soldier.setRotation(joystick.rotation + 1.57); // Offset for sprite facing
+        soldier.setRotation(joystick.rotation + 1.57);
         if (cleaningSound.isPlaying) cleaningSound.stop();
     } else {
         soldier.setVelocity(0);
         if (isAtBarracks && !cleaningSound.isPlaying) cleaningSound.play();
     }
 
-    // Advanced Zone Detection
-    // Check if in Barracks (Top Left 300x300)
-    if (soldier.x < 300 && soldier.y < 300) {
+    // Safety Zone Detection (Checks far-right bounds)
+    const barracksLimit = 2600; // worldSize - 400
+    if (soldier.x > barracksLimit && soldier.y < 500) {
         if (!isAtBarracks) {
             isAtBarracks = true;
             if (!relaxPlayed) {
@@ -106,9 +123,8 @@ function update(time) {
         if (cleaningSound.isPlaying) cleaningSound.stop();
     }
 
-    // Shooting Logic (Locked in Barracks)
+    // Shooting Logic (Safety check)
     if (this.input.activePointer.isDown && !isAtBarracks && time > lastFired) {
-        // Only shoot if clicking far from joystick
         if (this.input.activePointer.x > 300) {
             fireBullet(this, time);
         }
@@ -123,16 +139,14 @@ function fireBullet(scene, time) {
         b.setDisplaySize(15, 15);
         scene.physics.velocityFromRotation(soldier.rotation - 1.57, 800, b.body.velocity);
         lastFired = time + 200;
-        // Auto-kill bullet after 1 second
         scene.time.delayedCall(1000, () => { if(b.active) b.setActive(false).setVisible(false); });
     }
 }
 
-// Global Uniform Switcher Fix
 window.equipItem = (itemType) => {
     if (!soldier) return;
     soldier.setTexture(`soldier_${itemType}`);
-    soldier.setDisplaySize(64, 64); // Ensure size stays small
+    soldier.setDisplaySize(64, 64);
     const mods = { 'ghillie': 0.7, 'pt': 1.5, 'ocp': 1.0 };
     soldier.speedModifier = mods[itemType] || 1.0;
 };
