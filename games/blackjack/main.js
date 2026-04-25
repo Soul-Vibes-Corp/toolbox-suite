@@ -3,62 +3,50 @@ const config = {
     parent: 'game-container',
     width: window.innerWidth,
     height: window.innerHeight,
-    physics: { 
-        default: 'arcade', 
-        arcade: { gravity: { y: 0 }, debug: false } 
-    },
+    transparent: true,
+    physics: { default: 'arcade', arcade: { debug: false } },
     scene: { preload: preload, create: create, update: update }
 };
 
 const game = new Phaser.Game(config);
+let soldier, joystick, bullets, cleaningSound, ruckWaypoint;
+let lastFired = 0, isAtBarracks = false, relaxPlayed = false, isRucking = false;
 
 function preload() {
-    // ADVANCED ASSETS
-    this.load.image('ground', 'https://labs.phaser.io/assets/textures/grass.png'); // Replace with your OCP-style ground
-    this.load.image('sandbags', 'https://labs.phaser.io/assets/sprites/crate.png'); // Placeholder for obstacles
     this.load.image('soldier_ocp', '../../assets/infantry/soldier_ocp.png');
+    this.load.image('soldier_ghillie', '../../assets/infantry/soldier_ghillie.png');
+    this.load.image('soldier_pt', '../../assets/infantry/soldier_pt.png');
     this.load.image('bullet', '../../assets/infantry/bullet.png');
-    
-    // Plugins
+    this.load.image('target', '../../assets/infantry/target.png');
+    this.load.audio('m4_shot', '../../assets/infantry/firearm-discharge-1.mp3');
+    this.load.audio('relax_trooper', '../../assets/infantry/high-ranking-official-relax-trooper.mp3');
+    this.load.audio('cleaning', '../../assets/infantry/sound-of-cleaning-a-gun-in-mp3-format.mp3');
     this.load.plugin('rexvirtualjoystickplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js', true);
 }
 
 function create() {
-    // 1. CREATE A LARGE WORLD (3000x3000px)
-    this.cameras.main.setBounds(0, 0, 3000, 3000);
-    this.physics.world.setBounds(0, 0, 3000, 3000);
-
-    // 2. TILE THE GROUND
-    this.add.tileSprite(1500, 1500, 3000, 3000, 'ground').setAlpha(0.4);
-
-    // 3. BARRACKS BUILDING (A more advanced visual)
-    const barracks = this.add.container(200, 200);
-    const roof = this.add.rectangle(0, 0, 400, 400, 0x333333, 0.8).setStrokeStyle(4, 0x4af626);
-    barracks.add([roof]);
-    this.add.text(50, 50, "HQ / BARRACKS", { font: "20px Arial", fill: "#4af626" });
-
-    // 4. OBSTACLES (War Game Elements)
-    this.obstacles = this.physics.add.staticGroup();
-    for(let i=0; i<10; i++) {
-        let x = Phaser.Math.Between(500, 2500);
-        let y = Phaser.Math.Between(500, 2500);
-        this.obstacles.create(x, y, 'sandbags').setScale(0.5).refreshBody();
-    }
-
-    // 5. PLAYER SETUP
-    soldier = this.physics.add.sprite(1500, 1500, 'soldier_ocp').setScale(1);
+    soldier = this.physics.add.sprite(400, 400, 'soldier_ocp').setScale(0.8);
     soldier.setCollideWorldBounds(true);
-    this.physics.add.collider(soldier, this.obstacles);
+    soldier.speedModifier = 1.0;
 
-    // 6. CAMERA FOLLOW (This makes it feel like a modern sim)
-    this.cameras.main.startFollow(soldier, true, 0.05, 0.05);
+    bullets = this.physics.add.group({ defaultKey: 'bullet', maxSize: 20 });
+    this.targets = this.physics.add.group();
 
-    // 7. JOYSTICK FIX (Ensure it stays fixed to the screen, not the world)
+    // Barracks Zone
+    this.add.rectangle(0, 0, 300, 300, 0x2b3a26, 0.3).setOrigin(0, 0);
+    cleaningSound = this.sound.add('cleaning', { loop: true, volume: 0.3 });
+
+    // Waypoint
+    ruckWaypoint = this.add.circle(0, 0, 40, 0x4af626, 0.2).setStrokeStyle(2, 0x4af626).setVisible(false);
+
+    // Joystick
     joystick = this.plugins.get('rexvirtualjoystickplugin').add(this, {
-        x: 150, y: window.innerHeight - 150, radius: 80,
-        base: this.add.circle(0, 0, 80, 0x000000, 0.5).setStrokeStyle(3, 0x4af626).setScrollFactor(0),
-        thumb: this.add.circle(0, 0, 40, 0x4af626).setScrollFactor(0)
+        x: 120, y: window.innerHeight - 120, radius: 60,
+        base: this.add.circle(0, 0, 60, 0x2b3a26, 0.5).setStrokeStyle(2, 0x4af626),
+        thumb: this.add.circle(0, 0, 30, 0x4af626)
     });
+
+    this.physics.add.overlap(bullets, this.targets, (b, t) => { b.destroy(); t.destroy(); window.awardXP(10); });
 }
 
 function update(time) {
@@ -66,18 +54,32 @@ function update(time) {
 
     // Movement
     if (joystick.force > 0) {
-        this.physics.velocityFromRotation(joystick.rotation, 250 * (soldier.speedModifier || 1), soldier.body.velocity);
-        soldier.setRotation(joystick.rotation + 1.57); // Adjusting for sprite facing
+        this.physics.velocityFromRotation(joystick.rotation, 200 * soldier.speedModifier, soldier.body.velocity);
+        soldier.setRotation(joystick.rotation);
+        if (cleaningSound.isPlaying) cleaningSound.stop();
     } else {
         soldier.setVelocity(0);
+        if (isAtBarracks && !cleaningSound.isPlaying) cleaningSound.play();
     }
 
-    // Advanced Zone Detection (Barracks)
-    let distToHQ = Phaser.Math.Distance.Between(soldier.x, soldier.y, 200, 200);
-    if (distToHQ < 300) {
-        // Regeneration logic here
-        soldier.setTint(0x99ff99); // Visual feedback
+    // Zone Detection
+    if (soldier.x < 300 && soldier.y < 300) {
+        isAtBarracks = true;
+        if (!relaxPlayed) { this.sound.play('relax_trooper'); relaxPlayed = true; }
+        if (window.playerData.stamina < 100) window.playerData.stamina += 0.2;
     } else {
-        soldier.clearTint();
+        isAtBarracks = false;
+        if (cleaningSound.isPlaying) cleaningSound.stop();
+    }
+
+    // Shooting
+    if (this.input.activePointer.isDown && this.input.activePointer.x > 350 && !isAtBarracks && time > lastFired) {
+        let b = bullets.get(soldier.x, soldier.y);
+        if (b) {
+            this.sound.play('m4_shot');
+            b.setActive(true).setVisible(true);
+            this.physics.velocityFromRotation(soldier.rotation, 600, b.body.velocity);
+            lastFired = time + 200;
+        }
     }
 }
