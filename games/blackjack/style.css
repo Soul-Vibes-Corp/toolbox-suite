@@ -22,3 +22,25 @@ body, html { margin: 0; padding: 0; background: var(--bg-black); color: var(--te
 canvas {
     display: block; /* Removes weird spacing at the bottom */
 }
+
+/* style.css */
+.army-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background-color: #2b3a26;
+    color: #4af626;
+    border: 2px solid #4af626;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 100; /* Ensures it stays above the game */
+    text-transform: uppercase;
+}
+
+.army-button:hover {
+    background-color: #4af626;
+    color: #1a2318;
+}
+
