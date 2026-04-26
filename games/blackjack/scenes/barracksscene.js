@@ -56,3 +56,44 @@ class BarracksScene extends Phaser.Scene {
         // This is where we trigger the "Customization UI"
     }
 }
+
+// Inside BarracksScene.js
+
+startWeaponMaintenance() {
+    // 1. Freeze soldier movement
+    this.soldier.body.moves = false;
+
+    // 2. Create the Cleaning UI Overlay
+    this.cleaningOverlay = this.add.container(400, 300);
+    
+    // Background for the bench
+    const benchBg = this.add.rectangle(0, 0, 500, 300, 0x333333).setStrokeStyle(4, 0x4af626);
+    const weaponSprite = this.add.image(0, 0, 'm4_rifle_topdown').setScale(0.8);
+    
+    this.cleaningOverlay.add([benchBg, weaponSprite]);
+
+    // 3. Generate "Dirt" spots
+    for(let i = 0; i < 5; i++) {
+        let dirt = this.add.circle(
+            Phaser.Math.Between(-150, 150), 
+            Phaser.Math.Between(-50, 50), 
+            10, 0x111111, 0.8
+        ).setInteractive();
+
+        this.cleaningOverlay.add(dirt);
+
+        // Cleaning interaction
+        dirt.on('pointerover', () => {
+            dirt.destroy(); // Simulating wiping away carbon
+            this.checkCleanliness();
+        });
+    }
+}
+
+checkCleanliness() {
+    // Once all dirt is gone
+    this.sound.play('cleaning_click'); // Visual/Audio feedback
+    this.registry.set('weaponCleanliness', 100);
+    // Add logic to close overlay and unfreeze soldier
+}
+
