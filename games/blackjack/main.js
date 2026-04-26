@@ -90,7 +90,7 @@ function create() {
         thumb: this.add.circle(0, 0, 30, 0x4af626).setScrollFactor(0)
     });
 
-    this.physics.add.overlap(bullets, this.targets, (b, t) => { b.destroy(); t.destroy(); window.awardXP(10); });
+    this.physics.add.overlap(bullets, this.targets, (b, t) => { b.destroy(); t.destroy(); if(window.awardXP) window.awardXP(10); });
 }
 
 function update(time) {
@@ -100,17 +100,17 @@ function update(time) {
     let velocityY = 0;
     const speed = 250 * soldier.speedModifier;
 
-    // --- 1. ROTATION LOGIC ---
+    // --- 1. MOVEMENT & ROTATION LOGIC ---
     if (joystick.force > 0) {
-        // Mobile: Face the direction you are moving
+        // MOBILE: Face direction of joystick movement
         this.physics.velocityFromRotation(joystick.rotation, speed, soldier.body.velocity);
         soldier.setRotation(joystick.rotation + 1.57);
     } else {
-        // PC: Face the Mouse Cursor
+        // PC: Character "strafes" by facing the mouse cursor
         let angle = Phaser.Math.Angle.Between(soldier.x, soldier.y, this.input.activePointer.worldX, this.input.activePointer.worldY);
         soldier.setRotation(angle + 1.57);
 
-        // --- 2. KEYBOARD MOVEMENT ---
+        // KEYBOARD MOVEMENT
         if (cursors.left.isDown || wasd.left.isDown) velocityX = -speed;
         else if (cursors.right.isDown || wasd.right.isDown) velocityX = speed;
 
@@ -125,7 +125,7 @@ function update(time) {
         }
     }
 
-    // --- 3. AUDIO & ZONE LOGIC ---
+    // --- 2. AUDIO & ZONE LOGIC ---
     const isMoving = soldier.body.velocity.length() > 0;
     if (isMoving && cleaningSound.isPlaying) cleaningSound.stop();
     
@@ -141,7 +141,7 @@ function update(time) {
         if (cleaningSound.isPlaying) cleaningSound.stop();
     }
 
-    // --- 4. SHOOTING LOGIC ---
+    // --- 3. SHOOTING LOGIC ---
     const isXPressed = keyX.isDown;
     const isPointerDown = this.input.activePointer.isDown && this.input.activePointer.x > 300;
 
@@ -155,7 +155,7 @@ function fireBullet(scene, time) {
     if (b) {
         scene.sound.play('m4_shot', { volume: 0.5 });
         b.setActive(true).setVisible(true).setDisplaySize(15, 15);
-        // Bullets fly exactly where the soldier is facing
+        // Corrected bullet firing angle to match corrected soldier rotation
         scene.physics.velocityFromRotation(soldier.rotation - 1.57, 800, b.body.velocity);
         lastFired = time + 200;
         scene.time.delayedCall(1000, () => { if(b.active) b.setActive(false).setVisible(false); });
