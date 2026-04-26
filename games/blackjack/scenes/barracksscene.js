@@ -4,36 +4,55 @@ class BarracksScene extends Phaser.Scene {
     }
 
     create() {
-        // 1. Scene Setup
-        this.add.text(20, 20, "INTERIOR: HQ BARRACKS", { font: "24px Courier", fill: "#4af626" });
+        // 1. Background / Floor
+        this.add.rectangle(0, 0, 800, 600, 0x222222).setOrigin(0);
+        this.add.text(20, 20, "HQ BARRACKS - ROOM 101", { font: "18px Courier", fill: "#4af626" });
 
-        // 2. Workstations (Visual Hitboxes)
-        const locker = this.add.rectangle(200, 300, 80, 120, 0x555555).setInteractive();
-        this.add.text(170, 220, "LOCKER", { font: "14px Courier", fill: "#ffffff" });
-
-        const armsBench = this.add.rectangle(500, 300, 150, 80, 0x3d2b1f).setInteractive();
-        this.add.text(460, 220, "ARMS BENCH", { font: "14px Courier", fill: "#ffffff" });
-
-        // 3. The Soldier
-        this.soldier = this.physics.add.sprite(400, 500, 'soldier_ocp').setDisplaySize(128, 128);
+        // 2. The Physical Wall Locker
+        this.locker = this.physics.add.staticSprite(150, 150, 'locker_image'); // Assume you have a locker asset
+        this.locker.setDisplaySize(60, 100);
         
-        // 4. Interaction Logic
-        locker.on('pointerdown', () => this.openLockerMenu());
-        armsBench.on('pointerdown', () => this.startWeaponCleaning());
+        // 3. The Soldier
+        // Retrieve current skin from Global State (default to OCP)
+        const currentSkin = this.registry.get('soldierSkin') || 'soldier_ocp';
+        this.soldier = this.physics.add.sprite(400, 300, currentSkin);
+        this.soldier.setDisplaySize(64, 64);
+        this.soldier.setCollideWorldBounds(true);
 
-        // 5. Exit Door (Go back to Main Map)
-        const exitDoor = this.add.rectangle(400, 580, 100, 40, 0xff0000).setInteractive();
-        this.add.text(370, 570, "EXIT", { font: "bold 16px Courier", fill: "#ffffff" });
-        exitDoor.on('pointerdown', () => this.scene.start('BaseMap'));
+        // 4. Keyboard Setup
+        this.cursors = this.input.keyboard.createCursorKeys();
+        this.interactKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
+
+        // 5. Interaction UI (Hidden by default)
+        this.promptText = this.add.text(150, 100, "[E] OPEN LOCKER", { font: "14px Courier", fill: "#ffff00" }).setVisible(false);
     }
 
-    openLockerMenu() {
-        console.log("Opening Gear Customization...");
-        // Here we will eventually add buttons to switch between OCP, PT, and Ghillie
+    update() {
+        // Standard Movement Logic
+        this.soldier.setVelocity(0);
+        const speed = 200;
+
+        if (this.cursors.left.isDown) this.soldier.setVelocityX(-speed);
+        else if (this.cursors.right.isDown) this.soldier.setVelocityX(speed);
+        if (this.cursors.up.isDown) this.soldier.setVelocityY(-speed);
+        else if (this.cursors.down.isDown) this.soldier.setVelocityY(speed);
+
+        // --- PROXIMITY CHECK ---
+        const dist = Phaser.Math.Distance.Between(this.soldier.x, this.soldier.y, this.locker.x, this.locker.y);
+        
+        if (dist < 80) {
+            this.promptText.setVisible(true);
+            if (Phaser.Input.Keyboard.JustDown(this.interactKey)) {
+                this.openGearMenu();
+            }
+        } else {
+            this.promptText.setVisible(false);
+        }
     }
 
-    startWeaponCleaning() {
-        console.log("Starting Weapon Maintenance...");
-        // Here we will add the clicking mini-game
+    openGearMenu() {
+        // Instead of a scene change, we can overlay HTML buttons or Phaser buttons
+        console.log("Locker Opened. Choose your Uniform.");
+        // This is where we trigger the "Customization UI"
     }
 }
