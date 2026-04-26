@@ -19,3 +19,10 @@ window.reportForFormation = () => {
     alert("Reported for formation. +25 XP");
 
 };
+
+// Initial stats for the soldier's rifle
+const weaponStats = {
+    cleanliness: 100, // percentage
+    isJamming: false,
+    roundsFired: 0
+};
