@@ -1,6 +1,3 @@
-// Import the new Barracks Scene
-import BarracksScene from './scenes/BarracksScene.js';
-
 const config = {
     type: Phaser.AUTO,
     parent: 'game-container',
@@ -8,19 +5,11 @@ const config = {
     height: window.innerHeight,
     transparent: false, 
     backgroundColor: '#1a2318',
-    physics: { 
-        default: 'arcade', 
-        arcade: { debug: false } 
-    },
-    // We define the main map with the key 'BaseMap'
-    scene: [
-        { key: 'BaseMap', preload: preload, create: create, update: update },
-        BarracksScene
-    ]
+    physics: { default: 'arcade', arcade: { debug: false } },
+    scene: { preload: preload, create: create, update: update }
 };
 
 const game = new Phaser.Game(config);
-
 let soldier, joystick, bullets, cleaningSound, ruckWaypoint, cursors, wasd, keyX;
 let lastFired = 0, isAtBarracks = false, relaxPlayed = false, isRucking = false;
 
@@ -111,13 +100,17 @@ function update(time) {
     let velocityY = 0;
     const speed = 250 * soldier.speedModifier;
 
+    // --- 1. MOVEMENT & ROTATION LOGIC ---
     if (joystick.force > 0) {
+        // MOBILE: Face direction of joystick movement
         this.physics.velocityFromRotation(joystick.rotation, speed, soldier.body.velocity);
         soldier.setRotation(joystick.rotation + 1.57);
     } else {
+        // PC: Character "strafes" by facing the mouse cursor
         let angle = Phaser.Math.Angle.Between(soldier.x, soldier.y, this.input.activePointer.worldX, this.input.activePointer.worldY);
         soldier.setRotation(angle + 1.57);
 
+        // KEYBOARD MOVEMENT
         if (cursors.left.isDown || wasd.left.isDown) velocityX = -speed;
         else if (cursors.right.isDown || wasd.right.isDown) velocityX = speed;
 
@@ -126,11 +119,13 @@ function update(time) {
 
         soldier.setVelocity(velocityX, velocityY);
 
+        // Normalize Diagonal Speed
         if (velocityX !== 0 && velocityY !== 0) {
             soldier.body.velocity.normalize().scale(speed);
         }
     }
 
+    // --- 2. AUDIO & ZONE LOGIC ---
     const isMoving = soldier.body.velocity.length() > 0;
     if (isMoving && cleaningSound.isPlaying) cleaningSound.stop();
     
@@ -146,6 +141,7 @@ function update(time) {
         if (cleaningSound.isPlaying) cleaningSound.stop();
     }
 
+    // --- 3. SHOOTING LOGIC ---
     const isXPressed = keyX.isDown;
     const isPointerDown = this.input.activePointer.isDown && this.input.activePointer.x > 300;
 
@@ -159,6 +155,7 @@ function fireBullet(scene, time) {
     if (b) {
         scene.sound.play('m4_shot', { volume: 0.5 });
         b.setActive(true).setVisible(true).setDisplaySize(15, 15);
+        // Corrected bullet firing angle to match corrected soldier rotation
         scene.physics.velocityFromRotation(soldier.rotation - 1.57, 800, b.body.velocity);
         lastFired = time + 200;
         scene.time.delayedCall(1000, () => { if(b.active) b.setActive(false).setVisible(false); });
@@ -173,11 +170,12 @@ window.equipItem = (itemType) => {
     soldier.speedModifier = mods[itemType] || 1.0;
 };
 
-// --- BRIDGE: HTML BUTTON TO PHASER MANAGER ---
+// Wait for the DOM to load
 document.getElementById('btn-barracks').addEventListener('click', () => {
-    // This tells Phaser to stop 'BaseMap' and start 'BarracksScene'
-    if (game.scene.isActive('BaseMap')) {
-        game.scene.stop('BaseMap');
-        game.scene.start('BarracksScene');
-    }
+    // This tells Phaser to stop whatever scene is running and start the Barracks
+    game.scene.scenes.forEach(scene => {
+        if (game.scene.isActive(scene.scene.key)) {
+            scene.scene.start('BarracksScene');
+        }
+    });
 });
