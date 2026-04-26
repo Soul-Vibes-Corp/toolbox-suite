@@ -169,3 +169,13 @@ window.equipItem = (itemType) => {
     const mods = { 'ghillie': 0.7, 'pt': 1.5, 'ocp': 1.0 };
     soldier.speedModifier = mods[itemType] || 1.0;
 };
+
+// Wait for the DOM to load
+document.getElementById('btn-barracks').addEventListener('click', () => {
+    // This tells Phaser to stop whatever scene is running and start the Barracks
+    game.scene.scenes.forEach(scene => {
+        if (game.scene.isActive(scene.scene.key)) {
+            scene.scene.start('BarracksScene');
+        }
+    });
+});
